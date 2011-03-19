@@ -1,0 +1,198 @@
+\documentclass[10pt]{article} 
+%\documentclass[12pt]{amsart}
+
+% Headers and footers.
+% useful options:
+%   \thepage : the current page
+%   \thispagestyle{empty} : kill header/footer on current page
+%\renewcommand{\headrulewidth}{0.4pt}
+%\renewcommand{\footrulewidth}{0.4pt}
+
+\usepackage{hyperref}
+
+% Control page header/footer.
+%\pagestyle{empty}
+%\pagestyle{plain}
+%\pagestyle{headings}
+%\pagestyle{myheadings}
+%\pagestyle{fancy}
+
+% Simpler tables
+\usepackage{tabularx}
+
+% Muliple rows
+\usepackage{multirow}
+
+% Margins
+\usepackage[margin=2.5cm]{geometry}
+
+% Uncomment for 1 in margins
+%\usepackage[in]{fullpage}
+
+\usepackage[usenames,dvipsnames]{color}
+
+% Font stuff
+%\usepackage{times} % default
+%\usepackage{pslatex}
+%\usepackage{newcent}
+\usepackage{palatino}
+%\usepackage{palatcm}
+
+\usepackage{listings}
+% Code listings
+\lstset{
+	language=C, 
+    %basicstyle=\footnotesize\ttfamily\textbf,
+    basicstyle=\small\ttfamily,
+    %backgroundcolor=\color{white},
+    %frame=single,
+    %stringstyle=\ttfamily,
+	keywordstyle=\color{black}\bfseries,
+	%basicstyle=\footnotesize\ttfamily,
+	%basicstyle=\ttfamily,
+    %backgroundcolor=\color{MyLightGray},
+	commentstyle=\color{OliveGreen},
+}
+
+\begin{document}
+\title{ENEL429 Project Coding Standards: DRAFT}
+\author{Benjamin Washington-Yule}
+\maketitle
+
+\section{Introduction}
+This document goes over a few high level coding standards to make sure we can all work with each others code. It is \emph{by no means} declaring that this is the way we have do things, but I hope it will serve as a starting point so we can each have our say on what our opinions are on coding style.
+
+Please tell me what your feelings are on these matters. Especially anything you'd like to change/add that you feel is important.
+
+\section{Revision Control}
+An svn repository has been set up already, but I know that the computer engineers of the group would rather use git. I have no experience with git, but I'm not too fussed about which we use, although I do wonder about the benefits we'd gain from using git over svn for such a small project.
+
+It looks to me like we have three options:
+\begin{enumerate}
+  \item Ditch svn (if we are allowed) and use git. The onus would be on the computer engineers to teach the rest of us how to use the new system.
+  \item Stick with svn. I have a feeling Mike has given himself access to our repo for a reason: he wants to keep an eye on what we are doing. Will he be able to do this if we move to git?
+  \item Employ something like git-svn so that those who want to use git can do so, while the others can use svn. See \url{http://ecewiki.elec.canterbury.ac.nz/mediawiki/index.php/Git}. Of note is the passage: \emph{``Git-svn allows Git to interface with a subversion repository. This is useful if you already have a project that uses subversion."}
+\end{enumerate}
+
+\section{Coding Style}
+With six people, it is more than likely that there will be six individual coding styles. Probably the easiest rule is simply to follow the style of whoever created or owns the module. That said, we can lay down some basic style rules from the outset. Personally, I tend to default to whatever Mike Hayes uses\footnote{Except for operating system choice.} as it is clear and makes sense to me. Also, he is the one marking our code,
+
+The norm for (embedded) C seems to be \texttt{underscore\_separators} rather than \texttt{camelCase}. If anyone does want to use camelCase (and they own the module), it is important to call variable/function names the same as they would be had they been written with underscores. E.g. \texttt{pio\_config\_set(...)} becomes \texttt{pioConfigSet(...)} et cetera.
+
+Other things like the position of the opening brace for loops and finicky white-space issues, for example: ``\texttt{my\_way()}" versus ``\texttt{their\_way ()}" are probably best dealt with by following the golden rule of sticking with the existing style, decided on by whoever owns the module.
+
+\subsection{Naming Conventions}
+It is important that we get these correct so that we know if we are dealing with a structure, function or variable and which module it belongs to.
+\subsubsection{Functions}
+Mike Hayes uses the following style: \texttt{<module\_name>-<verb>}, or \texttt{<module\_name>-<property>-<verb>}. Examples of these are:
+\begin{itemize}
+  \item \texttt{pio\_config\_set(...)}
+  \item \texttt{spi\_eeprom\_write(...)}
+  \item \texttt{spi\_mode\_set(...)}
+  \item \texttt{adc\_read(...)}
+\end{itemize}
+At the very minimum I suggest we prefix functions with the module name.
+\subsubsection{Structures}
+There's three naming options here: \texttt{NamingExample}, \texttt{Naming\_Example} and \texttt{naming\_example\_t}. Personally I like the latter but I think the last two are clear enough to be recognised immediately (the first may clash with anyone using camelCase). It may also may life easier if the structure is typedef'd to a pointer to that structure.
+
+\begin{lstlisting}[frame=single]
+/* Naming method 1: */
+struct example_struct {
+	uint8_t something;
+	bool something_else;
+};
+
+typedef example_struct *example_t;
+
+/* Usage: */
+
+example_t instance = example_init(); // Returns a pointer to a struct.
+
+\end{lstlisting}
+\begin{lstlisting}[frame=single]
+/* Naming method 2: */
+struct Example_Struct {
+	uint8_t something;
+	bool something_else;
+};
+
+typedef Example_Struct *Example;
+
+/* Usage: */
+
+Example instance = example_init(); // Returns a pointer to a struct.
+\end{lstlisting}
+
+\subsubsection{Enumerations}
+To avoid clashing with each others enumerations, it may help to prefix the module name to the enumeration, especially if an element of the enum is a common word. Example:
+\begin{lstlisting}[frame=single]
+enum motor_speed_enum {MOTOR_SLOW = 0, MOTOR_NORMAL, MOTOR_FAST};
+
+typedef enum motor_speed_enum motor_speed_t;
+\end{lstlisting}
+\section{Code Structure}
+Since we will be working in C, it will probably make life easier if we ``pretend" it is an OO language. We can do this by:
+\begin{itemize}
+  \item Prefixing all public functions in a module with the module name, e.g., \texttt{\emph{pwm}\_init()}, \texttt{\emph{bluetooth}\_wait()}, 
+  \item Where possible, declare a structure and a set of functions that act on it (i.e, an ADT) for each module.
+  \item Declaring that the first argument of any function in a module to be the ``object" we are acting on.
+  \item Write a pseudo-constructor for all modules named \emph{module}\_init, which returns a pointer to an instance of that particular structure.
+\end{itemize}
+
+\noindent Here's an example function prototype from Mike's code that shows some of these ideas, note the first argument in red, which is a pointer to the ``instance" of the structure we are working with.
+\lstset{
+	emph={eeprom},
+	emphstyle=\color{red},
+}
+
+\begin{lstlisting}[frame=single]
+spi_eeprom_size_t
+spi_eeprom_write (spi_eeprom_t eeprom, spi_eeprom_addr_t addr, const void *buffer, 
+				  spi_eeprom_size_t size);
+\end{lstlisting}
+
+\lstset{
+	emph={motor_t},
+	emphstyle=\color{red},
+}
+\noindent And here's an absolutely contrived example of a motor ADT showing these ideas (based of what I've seen in Mike's code):
+\lstset{
+	emph={motor_t},
+	emphstyle=\color{blue},
+}
+\begin{lstlisting}[frame=single]
+struct motor_struct {
+	pio_t control_line;
+	uint8_t speed;
+	motor_state_t state;
+	...
+};
+
+typedef motor_struct *motor_t;
+
+/** Constructor. Returns a pointer to a filled-out motor stucture. */
+motor_t motor_init(pio_t control_line);
+
+/** Set motor speed. */
+void motor_speed_set(motor_t motor, uint8_t speed);
+
+/** Get motor state. */
+motor_state_t motor_state_get(motor_t motor);
+\end{lstlisting}
+\noindent And another equally contrived usage situation:
+\begin{lstlisting}[frame=single]
+int main(void)
+{
+	motor_t leftmotor = motor_init(LMOTOR_PIO);
+	
+	if (motor_state_get(leftmotor) == MOTOR_ON) {
+		motor_speed_set(leftmotor, 100);
+	}
+}
+	
+\end{lstlisting}
+
+\section{Final Words}
+What say you? I'd like to know what you agree with and disagree with. Especially around coding style. It's almost guaranteed I've left something important out too.
+
+\end{document}
