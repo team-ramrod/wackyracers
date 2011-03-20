@@ -1,24 +1,6 @@
 \documentclass[10pt]{article} 
-%\documentclass[12pt]{amsart}
-
-% Headers and footers.
-% useful options:
-%   \thepage : the current page
-%   \thispagestyle{empty} : kill header/footer on current page
-%\renewcommand{\headrulewidth}{0.4pt}
-%\renewcommand{\footrulewidth}{0.4pt}
 
 \usepackage{hyperref}
-
-% Control page header/footer.
-%\pagestyle{empty}
-%\pagestyle{plain}
-%\pagestyle{headings}
-%\pagestyle{myheadings}
-%\pagestyle{fancy}
-
-% Simpler tables
-\usepackage{tabularx}
 
 % Muliple rows
 \usepackage{multirow}
@@ -32,25 +14,15 @@
 \usepackage[usenames,dvipsnames]{color}
 
 % Font stuff
-%\usepackage{times} % default
-%\usepackage{pslatex}
-%\usepackage{newcent}
 \usepackage{palatino}
-%\usepackage{palatcm}
+
 
 \usepackage{listings}
 % Code listings
 \lstset{
 	language=C, 
-    %basicstyle=\footnotesize\ttfamily\textbf,
     basicstyle=\small\ttfamily,
-    %backgroundcolor=\color{white},
-    %frame=single,
-    %stringstyle=\ttfamily,
 	keywordstyle=\color{black}\bfseries,
-	%basicstyle=\footnotesize\ttfamily,
-	%basicstyle=\ttfamily,
-    %backgroundcolor=\color{MyLightGray},
 	commentstyle=\color{OliveGreen},
 }
 
@@ -81,6 +53,19 @@ The norm for (embedded) C seems to be \texttt{underscore\_separators} rather tha
 
 Other things like the position of the opening brace for loops and finicky white-space issues, for example: ``\texttt{my\_way()}" versus ``\texttt{their\_way ()}" are probably best dealt with by following the golden rule of sticking with the existing style, decided on by whoever owns the module.
 
+\subsection{Environments and Layouts}
+We will all be using very different development environments and we must be able to easily browse each others code. To make life easier on everyone we can adopt a maximum line length of 80 characters, anything longer should be manually broken. Luckily C is not sensitive to whitespace so this is relatively easy using the backslash character.
+
+\begin{lstlisting}[frame=single,showstringspaces=false]
+/* A function broken over two lines. */
+static void rblack_rating (int annoyance_level, int talent_level \
+                             int attractiveness)
+{
+    printf("Rebecca Black is the new queen of \\b\\\n");
+    ...
+}
+\end{lstlisting}
+
 \subsection{Naming Conventions}
 It is important that we get these correct so that we know if we are dealing with a structure, function or variable and which module it belongs to.
 \subsubsection{Functions}
@@ -107,7 +92,6 @@ typedef example_struct *example_t;
 /* Usage: */
 
 example_t instance = example_init(); // Returns a pointer to a struct.
-
 \end{lstlisting}
 \begin{lstlisting}[frame=single]
 /* Naming method 2: */
@@ -130,6 +114,27 @@ enum motor_speed_enum {MOTOR_SLOW = 0, MOTOR_NORMAL, MOTOR_FAST};
 
 typedef enum motor_speed_enum motor_speed_t;
 \end{lstlisting}
+
+\subsection{Documentation}
+The use of Doxygen throughout modules is an excellent idea. At the very least, functions should have a one-line comment about what they do. 
+
+\begin{lstlisting}[frame=single]
+/* Good: */
+
+/* Set the current motor speed out of 255 */
+bool motor_speed_set(motor_t m, uint8_t speed);
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single]
+/* Better: */
+
+/** Set the current motor speed. 
+	@param m The motor object.
+	@param speed A number from 0 to 255. 0 = stopped, 255 = full speed.
+	@return 1 on success, 0 on failure. */
+bool motor_speed_set(motor_t m, uint8_t speed);
+\end{lstlisting}
+
 \section{Code Structure}
 Since we will be working in C, it will probably make life easier if we ``pretend" it is an OO language. We can do this by:
 \begin{itemize}
