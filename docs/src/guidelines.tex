@@ -135,68 +135,6 @@ bool motor_speed_set(motor_t m, uint8_t speed);
 bool motor_speed_set(motor_t m, uint8_t speed);
 \end{lstlisting}
 
-\section{Code Structure}
-Since we will be working in C, it will probably make life easier if we ``pretend" it is an OO language. We can do this by:
-\begin{itemize}
-  \item Prefixing all public functions in a module with the module name, e.g., \texttt{\emph{pwm}\_init()}, \texttt{\emph{bluetooth}\_wait()}, 
-  \item Where possible, declare a structure and a set of functions that act on it (i.e, an ADT) for each module.
-  \item Declaring that the first argument of any function in a module to be the ``object" we are acting on.
-  \item Write a pseudo-constructor for all modules named \emph{module}\_init, which returns a pointer to an instance of that particular structure.
-\end{itemize}
-
-\noindent Here's an example function prototype from Mike's code that shows some of these ideas, note the first argument in red, which is a pointer to the ``instance" of the structure we are working with.
-\lstset{
-	emph={eeprom},
-	emphstyle=\color{red},
-}
-
-\begin{lstlisting}[frame=single]
-spi_eeprom_size_t
-spi_eeprom_write (spi_eeprom_t eeprom, spi_eeprom_addr_t addr, const void *buffer, 
-				  spi_eeprom_size_t size);
-\end{lstlisting}
-
-\lstset{
-	emph={motor_t},
-	emphstyle=\color{red},
-}
-\noindent And here's an absolutely contrived example of a motor ADT showing these ideas (based of what I've seen in Mike's code):
-\lstset{
-	emph={motor_t},
-	emphstyle=\color{blue},
-}
-\begin{lstlisting}[frame=single]
-struct motor_struct {
-	pio_t control_line;
-	uint8_t speed;
-	motor_state_t state;
-	...
-};
-
-typedef motor_struct *motor_t;
-
-/** Constructor. Returns a pointer to a filled-out motor stucture. */
-motor_t motor_init(pio_t control_line);
-
-/** Set motor speed. */
-void motor_speed_set(motor_t motor, uint8_t speed);
-
-/** Get motor state. */
-motor_state_t motor_state_get(motor_t motor);
-\end{lstlisting}
-\noindent And another equally contrived usage situation:
-\begin{lstlisting}[frame=single]
-int main(void)
-{
-	motor_t leftmotor = motor_init(LMOTOR_PIO);
-	
-	if (motor_state_get(leftmotor) == MOTOR_ON) {
-		motor_speed_set(leftmotor, 100);
-	}
-}
-	
-\end{lstlisting}
-
 \section{Final Words}
 What say you? I'd like to know what you agree with and disagree with. Especially around coding style. It's almost guaranteed I've left something important out too.
 
