@@ -12,9 +12,9 @@ assigned a task:
   Wim - Motor Driver and control
   Benjamin - Image Capture / Bluetooth
   Simon - MCU evaluation ( Look at various possibilities for the main MCU and
-work out which would be best and why )
+            work out which would be best and why )
   Daniel - IR coms
   Henry - Team Leader / power supply
 
-Once we know more information, schematic design will be the next task to
-divides and concur.
+Once we know more information, schematic design will be the next task to divide
+and conquer.
