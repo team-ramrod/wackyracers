@@ -135,6 +135,18 @@ bool motor_speed_set(motor_t m, uint8_t speed);
 bool motor_speed_set(motor_t m, uint8_t speed);
 \end{lstlisting}
 
+\section{SCR's input}
+I'm on team Benjamin for all of the above. I definitely prefer embedded C looking like 'noun\_verb(args)' than any of that java-esque shite, typedefs ending in \_t and keeping the namespace clean from obvious enum names. 
+I have a couple of things to add, some of which I actually think are semi-important, and some of which are more software than syntax:
+\begin{list}{*}{}
+	\item Always brace blocks (ie even if it's just one line).
+	\item No nested comments.
+	\item Temporarily remove large blocks of code only using preprocessor blocks.
+	\item One action per line (more of a suggestion than a guideline however assignments in conditional statements make baby jesus cry: 'if ((date = getDate()) == FRIDAY){...}'
+	\item No reliance on operator precedence.
+	\item Heavy handed encapsulation, which pretty much just comes down to static-ing everything you don't want exposed outside of you module.
+\end{list}
+
 \section{Final Words}
 What say you? I'd like to know what you agree with and disagree with. Especially around coding style. It's almost guaranteed I've left something important out too.
 
