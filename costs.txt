@@ -1,0 +1,34 @@
+Bluetooth:
+ $32
+ RN-41
+ From sparkfun
+
+Micros x 2:
+ ATXMEGA16A4-AU
+ $8.65
+ From element14
+
+XMEGA Programmer:
+ $52.62
+ digikey
+
+IR:
+ TSOP31436
+ Free Sample
+ Vishay
+
+Image Capture:
+ ~$50
+ CMOS Cammera 2
+ $12
+ sparkfun
+
+Power Supply:
+ Samples from TI
+ TL2575-05
+ TL2575-33
+ 
+Wacky Racer chassis:
+ ~$100
+
+            Total: $199
