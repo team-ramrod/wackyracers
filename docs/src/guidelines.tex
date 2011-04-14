@@ -28,7 +28,7 @@
 
 \begin{document}
 \title{ENEL429 Project Coding Standards: DRAFT}
-\author{Benjamin Washington-Yule}
+\author{Benjamin Washington-Yule et al.}
 \maketitle
 
 \section{Introduction}
@@ -55,7 +55,6 @@ Other things like the position of the opening brace for loops and finicky white-
 
 \subsection{Environments and Layouts}
 We will all be using very different development environments and we must be able to easily browse each others code. To make life easier on everyone we can adopt a maximum line length of 80 characters, anything longer should be manually broken. Luckily C is not sensitive to whitespace so this is relatively easy using the backslash character.
-
 \begin{lstlisting}[frame=single,showstringspaces=false]
 /* A function broken over two lines. */
 static void rblack_rating (int annoyance_level, int talent_level \
@@ -65,11 +64,7 @@ static void rblack_rating (int annoyance_level, int talent_level \
     ...
 }
 \end{lstlisting}
-
-Also because of the mix of operating systems (Linux, BSD, Darwin, Windows) we
-need to utilise a common line ending.  Because of its long standing value in
-programming environments this should be Unix (LF or {\texttt\textbackslash n})
-endings.
+Also because of the mix of operating systems (Linux, BSD, Darwin, Windows) we need to utilise a common line ending.  Because of its long standing value in programming environments this should be Unix (LF or {\texttt\textbackslash n}) endings.
 
 \subsection{Naming Conventions}
 It is important that we get these correct so that we know if we are dealing with a structure, function or variable and which module it belongs to.
