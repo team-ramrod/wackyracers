@@ -2,3 +2,5 @@
 *.log
 *.out
 /docs/src/*.pdf
+*.SchDocPreview
+/TopLevel/History
