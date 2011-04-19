@@ -18,10 +18,14 @@ IR:
  Vishay
 
 Image Capture:
- ~$50
- CMOS Cammera 2
+ $50
+ CMOS Camera - 640x480
  $12
  sparkfun
+
+Motor Driver:
+ MC33886
+ $7.78 each x 2
 
 Power Supply:
  Samples from TI
