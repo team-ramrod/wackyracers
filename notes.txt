@@ -1,0 +1,1 @@
+The IR has to use Timer1, all of Timer0 is being used by the motor PWMs.
