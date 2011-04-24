@@ -1,6 +1,10 @@
 *.aux
 *.log
 *.out
+*.o
+*.hex
+/src/motor
+/src/camera
 /docs/src/*.pdf
 *.SchDocPreview
 /TopLevel/History
