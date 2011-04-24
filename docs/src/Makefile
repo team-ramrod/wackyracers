@@ -2,7 +2,7 @@
 
 # You should be able to simply add your main document file here, rubber takes
 # care of detecting all dependencies automatically.
-docs = guidelines
+docs = guidelines issues
 
 pss      = $(addsuffix    .ps, $(docs))
 pdfs     = $(addsuffix   .pdf, $(docs))
