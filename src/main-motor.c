@@ -8,6 +8,7 @@
  *  Status: Untested
 */
 #include "common.h"
+#include "motor.h"
 
 int main(int argc, char *argv[]) {
     

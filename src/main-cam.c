@@ -7,13 +7,15 @@
  *  Status: Untested
 */
 #include "common.h"
+#include "bluetooth.h"
+#include "camera.h"
 
 
 int main(int argc, char *argv[]) {
 //    set_sleep_state(A_SLEEP_STATE_THAT_WORKS);
-    bluetooth_init();
-    camera_init();
-    sei();        
+//    bluetooth_init();
+//    camera_init();
+//    sei();        
     while(1) {
         sleep();
     }
