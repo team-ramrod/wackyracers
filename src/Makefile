@@ -1,7 +1,9 @@
 CC = avr-gcc
 LIB = 
-CFLAGS = -Wall
-LFLAGS =  
+CFLAGS = -Wall -mmcu=atxmega16a4
+LFLAGS = -mmcu=atxmega16a4
+
+MCU=atxmega16a4
 
 TARGET = ATXMega16
 SN = :

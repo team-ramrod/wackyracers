@@ -8,17 +8,21 @@
 #define motor_h
 
 #include "common.h"
+#include <avr/io.h>
 
-typedef uint8_t direction_t;
+#define FORWARD 0
+#define REVERSE 1
+#define LEFT    2
+#define RIGHT   4
 
-#define FORWARD 1
-#define REVERSE 0
-
-typedef uint8_t speed_t;
+typedef uint8_t motor_direction_t;
+typedef uint8_t motor_speed_t;
+typedef uint8_t motor_side_t;
 
 struct _motor {
-    direction_t direction;
-    speed_t speed;
+    motor_direction_t direction;
+    motor_speed_t speed;
+    motor_side_t side;
 };
 
 typedef struct _motor *motor_t;
@@ -28,15 +32,16 @@ typedef struct _motor *motor_t;
  *
  * @param motor The motor struct to initialise.
  */
-void init_motor(motor_t motor);
+void motor_init(motor_t motor, motor_side_t side);
 
 /**
  * Sets the speed of the provided motor.
  *
  * @param motor The motor to set the speed of.
- * @param speed The speed to set the motor at, 0 for stopped to 255 for full speed.
+ * @param speed The speed to set the motor at, 0 for stopped to 255 for full
+ *              speed.
  */
-void set_motor_speed(motor_t motor, speed_t speed);
+void motor_set_speed(motor_t motor, motor_speed_t speed);
 
 /**
  * Sets the direction of the provided motor.
@@ -44,6 +49,6 @@ void set_motor_speed(motor_t motor, speed_t speed);
  * @param motor     The motor the set the direction on.
  * @param direction The direction to set the motor to.
  */
-void set_motor_direction(motor_t motor, direction_t direction);
+void motor_set_direction(motor_t motor, motor_direction_t direction);
 
 #endif
