@@ -1,9 +1,9 @@
+MCU=atxmega16a4
+
 CC = avr-gcc
 LIB = 
-CFLAGS = -Wall -mmcu=atxmega16a4
-LFLAGS = -mmcu=atxmega16a4
-
-MCU=atxmega16a4
+CFLAGS = -Wall -mmcu=${MCU}
+LDFLAGS = -mmcu=${MCU}
 
 TARGET = ATXMega16
 SN = :
@@ -25,14 +25,11 @@ bluetooth.o: bluetooth.h common.h
 
 rebuild: clean build
 
-#%.o: %.c
-#	$(CC) $(CFLAGS) -c $<
-
 build-camera: $(CAM_OBJS)
-	$(CC) -o camera $(LFLAGS) $(CAM_OBJS)
+	$(CC) -o camera $(LDFLAGS) $(CAM_OBJS)
 
 build-motor: $(MOTOR_OBJS)
-	$(CC) -o motor $(LFLAGS) $(MOTOR_OBJS)
+	$(CC) -o motor $(LDFLAGS) $(MOTOR_OBJS)
 
 program-camera-stk:
 	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifcamera.hex
@@ -52,4 +49,6 @@ clean:
 cleanall: clean
 	rm -f camera motor
 
-.PHONY : clean cleanall program-camera program-motor
+.PHONY: clean cleanall
+.PHONY: program-camera-stk program-camera-dude
+.PHONY: program-motor-stk program-motor-dude

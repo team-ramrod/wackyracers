@@ -10,10 +10,8 @@
 #include "common.h"
 #include "motor.h"
 
-struct _motor left_motor;
-
 int main(int argc, char *argv[]) {
-    motor_init(&left_motor, LEFT);
+    motor_init();
 
     while(1) {
         
