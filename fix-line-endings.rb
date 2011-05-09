@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-files = Dir['**/*.c'] + Dir['**/*.h'] + Dir['**/*.tex'] + Dir['**/*.txt'] + ['README', '.gitignore', 'Makefile']
+files = Dir['**/*.c'] + Dir['**/*.h'] + Dir['**/*.tex'] + Dir['**/*.txt'] + Dir['**/README'] + Dir['**/.gitignore'] + ['src/Makefile']
 
 files.map do |file_name|
   input = ''
