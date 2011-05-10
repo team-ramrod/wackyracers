@@ -27,6 +27,21 @@ PushECOToAnnotationFile=1
 DItemRevisionGUID=
 
 [Document1]
+DocumentPath=Schematics\Camera_LED_Display.SchDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+
+[Document2]
 DocumentPath=Schematics\Bluetooth.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -41,7 +56,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
-[Document2]
+[Document3]
 DocumentPath=Schematics\Camera.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -56,7 +71,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
-[Document3]
+[Document4]
 DocumentPath=Schematics\Camera_Board.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -71,7 +86,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
-[Document4]
+[Document5]
 DocumentPath=Libraries\Wacky_1.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -86,7 +101,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
-[Document5]
+[Document6]
 DocumentPath=Libraries\Wacky_1.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -101,7 +116,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
-[Document6]
+[Document7]
 DocumentPath=PCBs\Camera_Board.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -116,7 +131,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
-[Document7]
+[Document8]
 DocumentPath=Schematics\Camera_MCU.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -124,21 +139,6 @@ AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
 AnnotateOrder=3
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-DItemRevisionGUID=
-
-[Document8]
-DocumentPath=Schematics\Camera_LED_Display.SchDoc
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
