@@ -73,7 +73,7 @@ DItemRevisionGUID=
 
 [Document4]
 DocumentPath=Schematics\Motor_MCU.SchDoc
-AnnotationEnabled=1
+AnnotationEnabled=0
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
@@ -88,7 +88,7 @@ DItemRevisionGUID=
 
 [Document5]
 DocumentPath=Schematics\Power_Supply.SchDoc
-AnnotationEnabled=1
+AnnotationEnabled=0
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
@@ -118,7 +118,7 @@ DItemRevisionGUID=
 
 [Document7]
 DocumentPath=Schematics\Motor_Board.SchDoc
-AnnotationEnabled=1
+AnnotationEnabled=0
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
@@ -133,7 +133,7 @@ DItemRevisionGUID=
 
 [Document8]
 DocumentPath=Schematics\IR.SchDoc
-AnnotationEnabled=1
+AnnotationEnabled=0
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
@@ -148,7 +148,7 @@ DItemRevisionGUID=
 
 [Document9]
 DocumentPath=Schematics\LED_Display.SchDoc
-AnnotationEnabled=1
+AnnotationEnabled=0
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
@@ -159,6 +159,10 @@ DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
+DItemRevisionGUID=
+
+[GeneratedDocument1]
+DocumentPath=Project Outputs for Wacky_Init\Design Rule Check - Motor_Board.html
 DItemRevisionGUID=
 
 [Generic_SmartPDF]
