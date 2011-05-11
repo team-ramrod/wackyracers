@@ -1,4 +1,12 @@
 1. The MCU 11-pin breakout headers do not have a supplier or part number.
 (do 11 pin headers exist?)
 
-2.
+2. PDI programming header does not have a supplier or part number.
+
+3. The two pin headers (P12 - Motor_MCU), 
+
+4. The switching regulators are TI samples. Are we sure we can get them?
+
+5. The two pin headers (H2, H3, P2 - Motor_Board) do not have suppliers or part numbers.
+
+6. The ten pin interboard connectors have no supplier or part number.
