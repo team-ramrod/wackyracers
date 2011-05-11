@@ -1,0 +1,4 @@
+1. The MCU 11-pin breakout headers do not have a supplier or part number.
+(do 11 pin headers exist?)
+
+2.
