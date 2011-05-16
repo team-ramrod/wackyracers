@@ -1,4 +1,5 @@
-MCU=atxmega16a4
+MCU = atxmega16a4
+F_CPU = 8000000
 
 CC = avr-gcc
 LIB = 
