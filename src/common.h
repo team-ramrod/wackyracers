@@ -17,4 +17,14 @@
 
 #define next(i,n) i = (i < n) ? i+1 : 0
 
+typedef enum {
+    CMD_FORWARD   = 1,
+    CMD_BACK      = 2,
+    CMD_LEFT      = 4,
+    CMD_RIGHT     = 8,
+    CMD_BACK      = 16,
+    CMD_TOGGGLE   = 32,
+    CMD_GET_IMAGE = 64,
+} cmd_t;
+
 #endif

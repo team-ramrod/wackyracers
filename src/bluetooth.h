@@ -3,6 +3,8 @@
 
 #include "common.h"
 
-void bluetooth_init();
+void blue_init();
+bool blue_send_byte(uint8_t byte);
+
 
 #endif
