@@ -8,14 +8,13 @@
 #define motor_h
 
 #include "common.h"
-#include <avr/io.h>
 
-typedef enum motor_direction_enum {
+typedef enum {
     FORWARD = 0,
     REVERSE = 1
 } motor_direction_t;
 
-typedef enum motor_enum {
+typedef enum {
     LEFT  = 2,
     RIGHT = 4
 } motor_t;
@@ -33,12 +32,15 @@ void motor_init();
  * @param motor     The motor to set the speed of.
  * @param speed     The speed to set the motor at, 0 for stopped to 255 for full
  *                  speed.
+ */
+void motor_set_speed(motor_t, motor_speed_t);
+
+/**
+ * Sets the direction of the provided motor.
+ *
+ * @param motor     The motor to set the direction of.
  * @param direction The direction to spin the motor.
  */
-void motor_set_values(
-        motor_t           motor,
-        motor_direction_t direction,
-        motor_speed_t     speed
-);
+void motor_set_direction(motor_t, motor_direction_t);
 
 #endif
