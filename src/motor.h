@@ -10,13 +10,13 @@
 #include "common.h"
 
 typedef enum {
-    FORWARD = 0,
-    REVERSE = 1
+    FORWARD = 2,
+    REVERSE = 4
 } motor_direction_t;
 
 typedef enum {
-    LEFT  = 2,
-    RIGHT = 4
+    LEFT  = 0,
+    RIGHT = 1
 } motor_t;
 
 typedef uint8_t motor_speed_t;
@@ -36,10 +36,11 @@ void motor_init();
 void motor_set_speed(motor_t, motor_speed_t);
 
 /**
- * Sets the direction of the provided motor.
+ * Sets the direction of the provided motor, also resets speed to 0 so
+ * motor_set_speed should be called afterwards.
  *
- * @param motor     The motor to set the direction of.
- * @param direction The direction to spin the motor.
+ * @param motor     The motor to set the direction of.  @param direction The
+ * direction to spin the motor.
  */
 void motor_set_direction(motor_t, motor_direction_t);
 

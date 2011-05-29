@@ -2,22 +2,22 @@
 ##  Microcontroller Properties  ##
 ##################################
 MCU = atxmega16a4
-F_CPU = 8000000L
+F_CPU = 8000000
 TARGET = ATXMega16
 
 
 ##  Toolchain Config  ##
 CC = avr-gcc
 LIB = 
-CFLAGS = -Wall -mmcu=$(MCU)
+CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
 LDFLAGS = -mmcu=$(MCU)
 
 ##  Files  ##
 CAM_FILES = main-cam camera bluetooth
 MOTOR_FILES = main-motor motor camera bluetooth
 
-all: init build/camera.hex build/motor.hex
-rebuild: clean build
+all: build build/camera.hex build/motor.hex
+rebuild: clean all
 
 build/camera.hex: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.hex:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
@@ -35,7 +35,7 @@ build/%.o: %.c
 build/%.hex:
 	$(CC) -o build/$*.hex $(LDFLAGS) $^
 
-init:
+build:
 	mkdir -p build
 
 program-camera-stk:
