@@ -17,6 +17,8 @@ static struct {
     motor_direction_t direction;
 } __motors[2];
 
+static bool __currently_executing = false;
+
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
         case LEFT + FORWARD:
@@ -120,7 +122,7 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         temp = __currently_executing;
-        __currently_executing = TRUE;
+        __currently_executing = true;
     }
 
     if (temp) {
@@ -132,7 +134,7 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
 
     // If set to the same direction this is a no-op.
     if (__motors[motor].direction == direction) { 
-        return;
+        return true;
     }
 
     // Disable the old enable pin.
@@ -149,7 +151,7 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
     __motors[motor].direction = direction;
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        __currently_executing = FALSE;
+        __currently_executing = false;
     }
 
     return true;

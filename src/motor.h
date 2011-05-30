@@ -38,7 +38,7 @@ void motor_set_speed(motor_t, motor_speed_t);
 /**
  * Sets the direction of the provided motor, also resets speed to 0 so
  * motor_set_speed should be called afterwards.  Non-reentrant, if called
- * while already executing will return false.
+ * while already executing will return false and nothing will be changed.
  *
  * @param motor     The motor to set the direction of.  @param direction The
  * direction to spin the motor.
