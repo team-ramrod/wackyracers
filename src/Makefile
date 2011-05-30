@@ -2,7 +2,7 @@
 ##  Microcontroller Properties  ##
 ##################################
 MCU = atxmega16a4
-F_CPU = 8000000
+F_CPU = 32000000L
 TARGET = ATXMega16
 
 
