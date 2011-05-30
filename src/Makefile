@@ -41,10 +41,10 @@ build/bluetooth.o: common.h bluetooth.h
 ##  Internal Implementation  ##
 ###############################
 build/%.o: %.c
-	$(CC) -o $@ $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 build/%.hex:
-	$(CC) -o build/$*.hex $(LDFLAGS) $^
+	$(CC) $(LDFLAGS) -o build/$*.hex $^
 
 build:
 	mkdir -p build
