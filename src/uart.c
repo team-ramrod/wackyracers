@@ -8,6 +8,11 @@
 #include "common.h"
 #define BUFFER_LENGTH 10
 
+/**
+ * Commented since it massively breaks the build and
+ * I can't be bothered fixing it now - wgl18
+ *
+
 typedef enum {
     C0,
     C1,
@@ -106,4 +111,4 @@ void usartc1_putch(char byte)
     //set_tx1_mode;
     while (usartc1_busy);
         USARTC1.DATA = byte;
-}
+}*/

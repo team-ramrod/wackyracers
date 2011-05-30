@@ -13,8 +13,8 @@ CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 LDFLAGS = -mmcu=$(MCU)
 
 ##  Files  ##
-CAM_FILES = main-cam camera bluetooth
-MOTOR_FILES = main-motor motor camera bluetooth
+CAM_FILES =   main-cam    uart  led  camera  bluetooth
+MOTOR_FILES = main-motor  uart  led  motor   ir
 
 all: build build/camera.hex build/motor.hex
 rebuild: clean all
@@ -22,9 +22,12 @@ rebuild: clean all
 build/camera.hex: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.hex:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
 
-build/main-camera.o: common.h uart.h bluetooth.h camera.h
-build/main-motor.o:  common.h uart.h motor.h     ir.h
+build/main-camera.o: common.h uart.h led.h camera.h  bluetooth.h
+build/main-motor.o:  common.h uart.h led.h motor.h   ir.h
 
+build/ir.o:        common.h ir.h
+build/led.o:       common.h led.h
+build/uart.o:      common.h uart.h
 build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
 build/bluetooth.o: common.h bluetooth.h
