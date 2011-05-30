@@ -3,8 +3,6 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 
-#define MOTOR_TC TCC0
-
 #define LEFT_FORWARD_PWM  MOTOR_TC.CCC
 #define LEFT_REVERSE_PWM  MOTOR_TC.CCD
 #define RIGHT_FORWARD_PWM MOTOR_TC.CCA

@@ -9,8 +9,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define MOTOR_TC TCC0
+
 #define sleep() asm("sleep")
 
+// Why not just use _BV ?
 #define bit(x) (1 << (x))
 #define max(x, y) ((x) > (y) ? (x) : (y))
 #define min(x, y) ((x) < (y) ? (x) : (y))
