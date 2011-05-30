@@ -1,5 +1,6 @@
 #include "led.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define LED_VALUE_PINS ( _BV(1) | _BV(2) | _BV(3) | _BV(4) )
 #define LED_ENABLE_PIN _BV(6)
@@ -13,7 +14,7 @@ static struct {
 
 static enum { __L_D, __R_D } __current;
 
-void __callback() {
+ISR(LED_TC_OVF_vect) {
     switch (__current) {
         case __L_D:
             __current = __R_D;
