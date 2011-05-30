@@ -1,14 +1,16 @@
 #include "motor.h"
 #include <avr/io.h>
 #include <util/delay.h>
+#include <util/atomic.h>
 
-#define LEFT_FORWARD_PWM  TCC0_CCC
-#define LEFT_REVERSE_PWM  TCC0_CCD
-#define RIGHT_FORWARD_PWM TCC0_CCA
-#define RIGHT_REVERSE_PWM TCC0_CCB
+#define MOTOR_TC TCC0
 
-#define ENABLE_PORT     PORTD_OUT
-#define ENABLE_PORT_DIR PORTD_DIR
+#define LEFT_FORWARD_PWM  MOTOR_TC.CCC
+#define LEFT_REVERSE_PWM  MOTOR_TC.CCD
+#define RIGHT_FORWARD_PWM MOTOR_TC.CCA
+#define RIGHT_REVERSE_PWM MOTOR_TC.CCB
+
+#define ENABLE_PORT     PORTD
 
 #define LEFT_FORWARD_EN  _BV(6)
 #define LEFT_REVERSE_EN  _BV(7)
@@ -21,19 +23,19 @@ static struct {
 
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
-        case LEFT + FORWARD:  ENABLE_PORT &= ~LEFT_FORWARD_EN;  break;
-        case LEFT + REVERSE:  ENABLE_PORT &= ~LEFT_REVERSE_EN;  break;
-        case RIGHT + FORWARD: ENABLE_PORT &= ~RIGHT_FORWARD_EN; break;
-        case RIGHT + REVERSE: ENABLE_PORT &= ~RIGHT_REVERSE_EN; break;
+        case LEFT + FORWARD:  ENABLE_PORT.OUTCLR = LEFT_FORWARD_EN;  break;
+        case LEFT + REVERSE:  ENABLE_PORT.OUTCLR = LEFT_REVERSE_EN;  break;
+        case RIGHT + FORWARD: ENABLE_PORT.OUTCLR = RIGHT_FORWARD_EN; break;
+        case RIGHT + REVERSE: ENABLE_PORT.OUTCLR = RIGHT_REVERSE_EN; break;
     }
 }
 
 static inline void __enable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
-        case LEFT + FORWARD:  ENABLE_PORT |= LEFT_FORWARD_EN;  break;
-        case LEFT + REVERSE:  ENABLE_PORT |= LEFT_REVERSE_EN;  break;
-        case RIGHT + FORWARD: ENABLE_PORT |= RIGHT_FORWARD_EN; break;
-        case RIGHT + REVERSE: ENABLE_PORT |= RIGHT_REVERSE_EN; break;
+        case LEFT + FORWARD:  ENABLE_PORT.OUTSET = LEFT_FORWARD_EN;  break;
+        case LEFT + REVERSE:  ENABLE_PORT.OUTSET = LEFT_REVERSE_EN;  break;
+        case RIGHT + FORWARD: ENABLE_PORT.OUTSET = RIGHT_FORWARD_EN; break;
+        case RIGHT + REVERSE: ENABLE_PORT.OUTSET = RIGHT_REVERSE_EN; break;
     }
 }
 
@@ -48,36 +50,29 @@ static void __set_speed(
     motor_speed_t speed
 ) {
     uint8_t value = (speed << 4) + (speed >> 4);
-    /*switch (motor + direction) {
-        case LEFT + FORWARD:
-            TCC0_CCA = 0x1000;
-            TCC0_CCB = value;
-            break;
-        case RIGHT + FORWARD:
-            TCC0_CCC = 0x1000;
-            TCC0_CCD = value;
-            break;
-        case LEFT + REVERSE:
-            TCC0_CCA = value;
-            TCC0_CCB = 0x1000;
-            break;
-        case RIGHT + REVERSE:
-            TCC0_CCC = value;
-            TCC0_CCD = 0x1000;
-            break;
-    }*/
+
+    switch (motor + direction) {
+        case LEFT + FORWARD:  LEFT_FORWARD_PWM  = value; break;
+        case LEFT + REVERSE:  LEFT_REVERSE_PWM  = value; break;
+        case RIGHT + FORWARD: RIGHT_FORWARD_PWM = value; break;
+        case RIGHT + REVERSE: RIGHT_REVERSE_PWM = value; break;
+    }
 }
 
 void motor_init() {
     // Set the pre-scaler to 1
-    TCC0_CTRLA = 0x01;
+    MOTOR_TC.CTRLA = 0x01;
 
-    // Set all 4 pwm outputs and set to single slope PWM mode.
-    TCC0_CTRLB = 0xF3;
+    // Set the pins required for PWM to be outputs.
+    PORTE.DIRSET = 0x0F;
+
+    // Set all 4 pwm outputs to override the pins
+    // and set to single slope PWM mode.
+    MOTOR_TC.CTRLB = 0xF0 | 0x03;
 
     // Set the period of the output.
-    // 8 kHz at 32 MHz clock = period of 4096 = 0x1000.
-    TCC0_PER = 0x1000;
+    // 8 kHz at 32 MHz clock = period of 4096 - 1 = 0x0999.
+    MOTOR_TC.PER = 0x0999;
 
     // Set the pwm outputs to fully off.
     __set_speed(LEFT,  FORWARD, 0x0);
@@ -86,10 +81,10 @@ void motor_init() {
     __set_speed(RIGHT, REVERSE, 0x0);
 
     // Set the enable pins to outputs.
-    ENABLE_PORT_DIR |= LEFT_FORWARD_EN 
-                    |  LEFT_REVERSE_EN
-                    | RIGHT_FORWARD_EN
-                    | RIGHT_REVERSE_EN;
+    ENABLE_PORT.DIRSET =   LEFT_FORWARD_EN 
+                        |  LEFT_REVERSE_EN
+                        | RIGHT_FORWARD_EN
+                        | RIGHT_REVERSE_EN;
 
     // Set the reverse enables off.
     __disable_path(LEFT,  REVERSE);
@@ -109,24 +104,26 @@ void motor_set_speed(motor_t motor, motor_speed_t speed) {
 }
 
 void motor_set_direction(motor_t motor, motor_direction_t direction) {
-    // Turn off the pwm first.
-    __set_speed(motor, __motors[motor].direction, 0x0);
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        // Turn off the pwm first.
+        __set_speed(motor, __motors[motor].direction, 0x0);
 
-    // If set to the same direction this is a no-op.
-    if (__motors[motor].direction == direction) { 
-        return;
+        // If set to the same direction this is a no-op.
+        if (__motors[motor].direction == direction) { 
+            return;
+        }
+
+        // Disable the old enable pin.
+        __disable_path(motor, __motors[motor].direction);
+
+        // Pause to let mosfet turn off.  From data sheet max off time is 36 ns,
+        // giving it a safety factor of 20x this comes to 0.72 us of dead time.
+        _delay_us(0.72);
+
+        // Enable the new enable pin.
+        __enable_path(motor, direction);
+
+        // Update the motor struct.
+        __motors[motor].direction = direction;
     }
-
-    // Disable the old enable pin.
-    __disable_path(motor, __motors[motor].direction);
-
-    // Pause to let mosfet turn off.  From data sheet max off time is 36 ns,
-    // giving it a whole us this gives it a safety factor of 27x.
-    _delay_us(1.0);
-
-    // Enable the new enable pin.
-    __enable_path(motor, direction);
-
-    // Update the struct.
-    __motors[motor].direction = direction;
 }

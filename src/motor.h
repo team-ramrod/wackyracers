@@ -1,7 +1,7 @@
 /**
  * @file   motor.h
  * @author Wim Looman
- * @date 20110424
+ * @date   20110530
  */
 
 #ifndef motor_h

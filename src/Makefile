@@ -9,7 +9,7 @@ TARGET = ATXMega16
 ##  Toolchain Config  ##
 CC = avr-gcc
 LIB = 
-CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
+CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 LDFLAGS = -mmcu=$(MCU)
 
 ##  Files  ##
