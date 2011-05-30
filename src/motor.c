@@ -8,8 +8,6 @@
 #define RIGHT_FORWARD_PWM MOTOR_TC.CCA
 #define RIGHT_REVERSE_PWM MOTOR_TC.CCB
 
-#define ENABLE_PORT     PORTD
-
 #define LEFT_FORWARD_EN  _BV(6)
 #define LEFT_REVERSE_EN  _BV(7)
 #define RIGHT_FORWARD_EN _BV(5)
@@ -21,19 +19,35 @@ static struct {
 
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
-        case LEFT + FORWARD:  ENABLE_PORT.OUTCLR = LEFT_FORWARD_EN;  break;
-        case LEFT + REVERSE:  ENABLE_PORT.OUTCLR = LEFT_REVERSE_EN;  break;
-        case RIGHT + FORWARD: ENABLE_PORT.OUTCLR = RIGHT_FORWARD_EN; break;
-        case RIGHT + REVERSE: ENABLE_PORT.OUTCLR = RIGHT_REVERSE_EN; break;
+        case LEFT + FORWARD:
+            MOTOR_ENABLE_PORT.OUTCLR = LEFT_FORWARD_EN;
+            break;
+        case LEFT + REVERSE:
+            MOTOR_ENABLE_PORT.OUTCLR = LEFT_REVERSE_EN;
+            break;
+        case RIGHT + FORWARD:
+            MOTOR_ENABLE_PORT.OUTCLR = RIGHT_FORWARD_EN;
+            break;
+        case RIGHT + REVERSE:
+            MOTOR_ENABLE_PORT.OUTCLR = RIGHT_REVERSE_EN;
+            break;
     }
 }
 
 static inline void __enable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
-        case LEFT + FORWARD:  ENABLE_PORT.OUTSET = LEFT_FORWARD_EN;  break;
-        case LEFT + REVERSE:  ENABLE_PORT.OUTSET = LEFT_REVERSE_EN;  break;
-        case RIGHT + FORWARD: ENABLE_PORT.OUTSET = RIGHT_FORWARD_EN; break;
-        case RIGHT + REVERSE: ENABLE_PORT.OUTSET = RIGHT_REVERSE_EN; break;
+        case LEFT + FORWARD:
+            MOTOR_ENABLE_PORT.OUTSET = LEFT_FORWARD_EN;
+            break;
+        case LEFT + REVERSE:
+            MOTOR_ENABLE_PORT.OUTSET = LEFT_REVERSE_EN;
+            break;
+        case RIGHT + FORWARD:
+            MOTOR_ENABLE_PORT.OUTSET = RIGHT_FORWARD_EN;
+            break;
+        case RIGHT + REVERSE:
+            MOTOR_ENABLE_PORT.OUTSET = RIGHT_REVERSE_EN;
+            break;
     }
 }
 
@@ -79,10 +93,10 @@ void motor_init() {
     __set_speed(RIGHT, REVERSE, 0x0);
 
     // Set the enable pins to outputs.
-    ENABLE_PORT.DIRSET =   LEFT_FORWARD_EN 
-                        |  LEFT_REVERSE_EN
-                        | RIGHT_FORWARD_EN
-                        | RIGHT_REVERSE_EN;
+    MOTOR_ENABLE_PORT.DIRSET =   LEFT_FORWARD_EN 
+                              |  LEFT_REVERSE_EN
+                              | RIGHT_FORWARD_EN
+                              | RIGHT_REVERSE_EN;
 
     // Set the reverse enables off.
     __disable_path(LEFT,  REVERSE);

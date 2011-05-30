@@ -13,6 +13,9 @@
 #define MOTOR_TC TCE0
 #define LED_TC   TCD1
 
+#define LED_PORT          PORTA
+#define MOTOR_ENABLE_PORT PORTD
+
 #define sleep() asm("sleep")
 
 // Why not just use _BV ?
