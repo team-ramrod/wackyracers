@@ -40,9 +40,6 @@ void led_init() {
     // Period of 260 = 31250 / 260 ~= 120 Hz.
     LED_TC.PER = 0x0104;
 
-    // Enable the interrupt and assign the callback.
-    // LED_TC.INTCTRLA = 0x01 ? 0x02 ? 0x03;
-
     LED_PORT.DIRSET =  LED_VALUE_PINS
                      | LED_ENABLE_PIN
                      | LED_SELECT_PIN;
@@ -54,6 +51,13 @@ void led_init() {
     __right_display.value    = 0x00;
     __right_display.enabled  = 0x00;
     __right_display.selected = 0x00;
+
+    // Enable the interrupt at a low level.
+    LED_TC.INTCTRLA = 0x01;
+
+    // Enable the global interrupt register
+    sei();
+    PMIC.CTRL |= 0x01;
 }
 
 void led_display_left(uint8_t number) {
