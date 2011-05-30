@@ -14,7 +14,7 @@ static struct {
 
 static enum { __L_D, __R_D } __current;
 
-ISR(LED_TC_OVF_vect) {
+ISR(LED_TC_OVF_vect, ISR_NOBLOCK) {
     switch (__current) {
         case __L_D:
             __current = __R_D;
