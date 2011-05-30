@@ -9,7 +9,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MOTOR_TC TCD0
+
+#define MOTOR_TC TCE0
+#define LED_TC   TCD1
 
 #define sleep() asm("sleep")
 
