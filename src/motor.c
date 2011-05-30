@@ -115,27 +115,42 @@ void motor_set_speed(motor_t motor, motor_speed_t speed) {
     __set_speed(motor, __motors[motor].direction, speed);
 }
 
-void motor_set_direction(motor_t motor, motor_direction_t direction) {
+bool motor_set_direction(motor_t motor, motor_direction_t direction) {
+    bool temp;
+
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        // Turn off the pwm first.
-        __set_speed(motor, __motors[motor].direction, 0x0);
-
-        // If set to the same direction this is a no-op.
-        if (__motors[motor].direction == direction) { 
-            return;
-        }
-
-        // Disable the old enable pin.
-        __disable_path(motor, __motors[motor].direction);
-
-        // Pause to let mosfet turn off.  From data sheet max off time is 36 ns,
-        // giving it a safety factor of 20x this comes to 0.72 us of dead time.
-        _delay_us(0.72);
-
-        // Enable the new enable pin.
-        __enable_path(motor, direction);
-
-        // Update the motor struct.
-        __motors[motor].direction = direction;
+        temp = __currently_executing;
+        __currently_executing = TRUE;
     }
+
+    if (temp) {
+        return false;
+    }
+
+    // Turn off the pwm first.
+    __set_speed(motor, __motors[motor].direction, 0x0);
+
+    // If set to the same direction this is a no-op.
+    if (__motors[motor].direction == direction) { 
+        return;
+    }
+
+    // Disable the old enable pin.
+    __disable_path(motor, __motors[motor].direction);
+
+    // Pause to let mosfet turn off.  From data sheet max off time is 36 ns,
+    // giving it a safety factor of 20x this comes to 0.72 us of dead time.
+    _delay_us(0.72);
+
+    // Enable the new enable pin.
+    __enable_path(motor, direction);
+
+    // Update the motor struct.
+    __motors[motor].direction = direction;
+
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        __currently_executing = FALSE;
+    }
+
+    return true;
 }
