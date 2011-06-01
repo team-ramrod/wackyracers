@@ -9,7 +9,7 @@
 
 #include "serial.h"
 
-#define DEBUG
+//#define DEBUG
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof (array[0]))
 
@@ -22,12 +22,6 @@
  */
 unsigned char CAM_RESET_CMD[] = {0x56, 0x00, 0x26, 0x00};
 unsigned char CAM_RESET_RET[] = {0x76, 0x00, 0x26, 0x00};
-unsigned char CAM_STARTIMAGE_CMD[] = {0x56, 0x00, 0x36, 0x01, 0x00};
-unsigned char CAM_STARTIMAGE_RET[] = {0x76, 0x00, 0x36, 0x00, 0x00};
-unsigned char CAM_STOPIMAGE_CMD[] = {0x56, 0x00, 0x36, 0x01, 0x03};
-unsigned char CAM_STOPIMAGE_RET[] = {0x76, 0x00, 0x36, 0x00, 0x00};
-unsigned char CAM_SIZE_CMD[] = {0x56, 0x00, 0x34, 0x01, 0x00};
-unsigned char CAM_SIZE_RET[] = {0x76, 0x00, 0x34, 0x00, 0x04, 0x00, 0x00};
 
 /** Dump rxed message to screen. */
 void dump_contents(unsigned char *rxed, int len)
@@ -39,11 +33,17 @@ void dump_contents(unsigned char *rxed, int len)
     }
 }
 
-/** Check for the correct return sequence from the camera.
-    @todo */
-int camera_check_retcode(char * buffer, int len, unsigned char retcode[])
+/** Check for the correct return sequence from the camera. */
+int camera_check_retcode(uint8_t buffer[], uint8_t retcode[], int len)
 {
-    return 1;
+    int i;
+
+    for (i = 0; i < len; i++) {
+        if (buffer[i] != retcode[i]) {
+            return -1;
+        }
+    }
+    return 0;
 }
 
 /** Reset the camera device. */
@@ -59,80 +59,161 @@ int camera_reset(int serial_fd)
     dump_contents(rx_buffer, 4);
     fprintf(stderr, "\n");
 #endif
-    
-    return camera_check_retcode(rx_buffer, 4, CAM_RESET_RET);
+    return 0;
 }
 
 /** Take a picture */
 int camera_start_image(int serial_fd) 
 {
-    unsigned char rx_buffer[MAX_MESSAGE_LENGTH];
-    memset(&rx_buffer, 0, MAX_MESSAGE_LENGTH);
+    uint8_t cmd[] = {0x56, 0x00, 0x36, 0x01, 0x00};
+    uint8_t ret[] = {0x76, 0x00, 0x36, 0x00, 0x00};
+    uint8_t response[sizeof(ret)];
     
-    serial_write(serial_fd, CAM_STARTIMAGE_CMD, 5);
-    serial_read(serial_fd, rx_buffer, 5);
+    serial_write(serial_fd, cmd, sizeof(cmd));
+    serial_read(serial_fd, response, sizeof(response));
+
+    int result = camera_check_retcode(response, ret, sizeof(ret));
+    if (result < 0) {
+        fprintf(stderr, "ERROR uexpected response in camera_start_image\n");
+        return -1;
+    }
 #ifdef DEBUG
     fprintf(stderr, "camera_start_image returned:\n");
     dump_contents(rx_buffer, 5);
     fprintf(stderr, "\n");
 #endif
-    
-    return camera_check_retcode(rx_buffer, 5, CAM_STARTIMAGE_RET);
+    return 0;
 }
 
 /** Stop taking an image.
     @note Still yet to figure out exactly what this means. */
 int camera_stop_image(int serial_fd)
 {
-    unsigned char rx_buffer[MAX_MESSAGE_LENGTH];
-    memset(&rx_buffer, 0, MAX_MESSAGE_LENGTH);
+    uint8_t cmd[] = {0x56, 0x00, 0x36, 0x01, 0x03};
+    uint8_t ret[] = {0x76, 0x00, 0x36, 0x00, 0x00};
+    uint8_t response[sizeof(ret)];
     
-    serial_write(serial_fd, CAM_STOPIMAGE_CMD, 5);
-    serial_read(serial_fd, rx_buffer, 5);  
+    serial_write(serial_fd, cmd, sizeof(cmd));
+    serial_read(serial_fd, response, sizeof(response));
+
+    int result = camera_check_retcode(response, ret, sizeof(ret));
+    if (result < 0) {
+        fprintf(stderr, "ERROR uexpected response in camera_stop_image\n");
+        return -1;
+    }
 #ifdef DEBUG
     fprintf(stderr, "camera_stop_image returned:\n");
     dump_contents(rx_buffer, 5);
     fprintf(stderr, "\n");
 #endif
-    
-    return camera_check_retcode(rx_buffer, 5, CAM_STOPIMAGE_RET);
+    return 0;
 }
 
 uint16_t
 camera_get_filesize(int serial_fd)
 {
-    unsigned char rx_buffer[MAX_MESSAGE_LENGTH];
-    memset(&rx_buffer, 0, MAX_MESSAGE_LENGTH);
+    uint8_t cmd[] = {0x56, 0x00, 0x34, 0x01, 0x00};
+    /* NOTE Last two bytes of ret represent filesize, they are set to 0x00 to
+     * keep the correct return length. */
+    uint8_t ret[]= {0x76, 0x00, 0x34, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00};
+    uint8_t response[sizeof(ret)];
     
-    serial_write(serial_fd, CAM_SIZE_CMD, 5);
-    serial_read(serial_fd, rx_buffer, 9);
+    serial_write(serial_fd, cmd, sizeof(cmd));
+    serial_read(serial_fd, response, sizeof(response));
+
+    /* NOTE Non-standard use of camera_check_response. See above */
+    int result = camera_check_retcode(response, ret, 7);
+    if (result < 0) {
+        fprintf(stderr, "ERROR uexpected response in camera_get_filesize\n");
+        return -1;
+    }
 #ifdef DEBUG
     fprintf(stderr, "camera_get_filesize returned:\n");
     dump_contents(rx_buffer, 9);
     fprintf(stderr, "\n");
 #endif
-    
-    /* NOTE: Non-standard use of camera_check_retcode here. Only the first 7 
-     * bytes are passed for checking as the last two bytes are the image size 
-     * and will be different for each image. */
-    if (camera_check_retcode(rx_buffer, 7, CAM_SIZE_RET)) {
-        uint16_t size;
-        fprintf(stderr, "DEBUG: rx_buffer[7] << 8 = %d\n", rx_buffer[7] << 8);
-        fprintf(stderr, "DEBUG: rx_buffer[8] = %x\n", rx_buffer[8]);
-        size = ((uint8_t)rx_buffer[7] << 8) + (uint8_t)rx_buffer[8];
-        return size;
+    uint16_t size;
+    size = ((uint8_t)response[7] << 8) + (uint8_t)response[8];
+    return size;
+}
+
+/** Set camera baud rate.
+    @param baud An integer BUT be sure to enter only POSIX valid speeds.
+    @return -1 on error, 0 on success. */
+int camera_set_baud(int serial_fd, int baud)
+{
+    uint8_t cmd[] = {0x56, 0x00, 0x24, 0x03, 0x01, 0x00, 0x00};
+    uint8_t ret[] = {0x76, 0x00, 0x24, 0x00, 0x00};
+    uint8_t response[5];
+
+    switch (baud) {
+        case 9600:
+            cmd[5] = 0xAE;
+            cmd[6] = 0xC8;
+            break;
+        case 19200:
+            cmd[5] = 0x56;
+            cmd[6] = 0xE4;
+            break;
+        case 38400:
+            cmd[5] = 0x2A;
+            cmd[6] = 0xF2;
+            break;
+        case 57600:
+            cmd[5] = 0x1C;
+            cmd[6] = 0x4C;
+            break;
+        case 115200:
+            cmd[5] = 0x0D;
+            cmd[6] = 0xA6;
+            break;
+        default:
+            fprintf(stderr, "ERROR invalid baud");
+            return -1;
     }
-    else {
+
+    serial_write(serial_fd, cmd, sizeof(cmd));
+    serial_read(serial_fd, response, sizeof(response));
+
+    int result = camera_check_retcode(response, ret, sizeof(ret));
+    if (result < 0) {
+        fprintf(stderr, "ERROR uexpected response in camera_set_baud\n");
         return -1;
     }
+#ifdef DEBUG
+    fprintf(stderr, "camera_set_baud returned:\n");
+    dump_contents(response, sizeof(response));
+    fprintf(stderr, "\n");
+#endif
+    return 0;
 }
 
 /** Get an image from the camera.
     @param serial_fd Serial connection file descriptor.
     @param buffer Pre-allocated buffer to store image data.
     @return */
-int camera_get_image(int serial_fd, unsigned char *buffer)
+int camera_get_image(int serial_fd, unsigned char *buffer, uint16_t filesize)
 {
+    unsigned char data[16];
+    uint16_t m = 0; // Starting address.
+    //uint16_t k = 0xf8; // Chunk size.
+    uint16_t k = sizeof(data);
+
+    while (m < filesize) {
+        camera_get_block(serial_fd, m, k, data);
+        m += sizeof(data); /* Bump up address. */
+        fprintf(stderr, "DEBUG: m = %d\n", m);
+    }
+    return 0;
+}
+
+/** Get a data chunk from the camera. */
+int camera_get_block(int serial_fd, unsigned int address,
+                     unsigned int blocksize, unsigned char *buff)
+{
+    // Interval time. XX XX * 0.01m[sec]
+    unsigned char interval = 0x0A; /* Put here out of reach intentionally. */
+
     unsigned char cmd[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
                            0x00, // MH
                            0x00, // ML
@@ -143,40 +224,27 @@ int camera_get_image(int serial_fd, unsigned char *buffer)
                            0x00, // XL
     };
 
-    unsigned char data[32]; 
-    uint16_t m = 0; // Starting address.
-    uint16_t k = sizeof(data); // Chunk size.
-    uint16_t x = 10; // Interval time. XX XX * 0.01m[sec]
+    cmd[8] = (address >> 8) & 0xFF;
+    cmd[9] = (address >> 0) & 0xFF;
+    cmd[12] = (blocksize >> 8) & 0xFF;
+    cmd[13] = (blocksize >> 0) & 0xFF;
+    cmd[14] = (interval >> 8) & 0xFF;
+    cmd[15] = (interval >> 0) & 0xFF;
 
-    while (m < 1000) { // for testing
-        cmd[8] = (m >> 8) & 0xFF;
-        cmd[9] = (m >> 0) & 0xFF;
-        cmd[12] = (k >> 8) & 0xFF;
-        cmd[13] = (k >> 0) & 0xFF;
-        cmd[14] = (x >> 8) & 0xFF;
-        cmd[15] = (x >> 0) & 0xFF;
+    /* Send command and get header, then throw away. */
+    serial_write(serial_fd, cmd, sizeof(cmd));
+    //serial_read(serial_fd, cmd, sizeof(cmd));
 
-        serial_write(serial_fd, cmd, sizeof(cmd));
-        //unsigned char chunk[5+5+32];
-        //serial_read(serial_fd, chunk, sizeof(chunk));
+    //serial_read(serial_fd, buff, blocksize);
 
-//         unsigned char header[5];
-//         serial_read(serial_fd, header, sizeof(header));
-// 
-//         serial_read(serial_fd, data, sizeof(data));
-//         fprintf(stderr, "data dump:\n");
-//         dump_contents(data, sizeof(data)-1);
-// 
-//         unsigned char footer[5];
-//         serial_read(serial_fd, footer, sizeof(footer));
+    /* Get footer and throw away. */
+    //serial_read(serial_fd, cmd, sizeof(cmd));
 
-        m += sizeof(data); /* Bump up address. */
-
-        fprintf(stderr, "DEBUG: m = %d\n", m);
-    }
+    uint8_t response[100];
+    serial_read(serial_fd, response, sizeof(response));
+    dump_contents(response, sizeof(response));
 
     return 0;
-        
 }
 
 /* Must sleep for 2-3 seconds after camera power on. */
@@ -188,47 +256,41 @@ int main(int argc, char *argv[])
     unsigned char image_buffer[600*240*100];
     memset(image_buffer, 0, sizeof(image_buffer));
 
+    uint16_t filesize = 0;
+
     /* WARNING this is probably not setting the speed correctly */
     int serial_fd = serial_open("/dev/ttyU1", B38400);
 
+    /* Sleep for 3 seconds after reset. */
     camera_reset(serial_fd);
-    usleep(1000000);
+    fprintf(stderr, "INFO: sleeping for 3 seconds after resetting...");
+    usleep(3000000);
+    
     /* set cam baud */
-    unsigned char baud_cmd[] = {0x56, 0x00, 0x24, 0x03, 0x01, 0x2A, 0xF2};
-    serial_write(serial_fd, baud_cmd, sizeof(baud_cmd));
+    camera_set_baud(serial_fd, 38400);
+
+    /* Take picture */
     camera_start_image(serial_fd);
-    usleep(1000000);
 
-
-
-    uint16_t filesize = camera_get_filesize(serial_fd);
+    /* Get the filesize of picture. */
+    filesize = camera_get_filesize(serial_fd);
     fprintf(stderr, "DEBUG: filesize = %d\n", filesize);
 
-    int ret = camera_get_image(serial_fd, image_buffer);
+    uint8_t data[16];
+    camera_get_block(serial_fd, 0x00, 0x10, data);
+    camera_get_block(serial_fd, 0x10, 0x10, data);
+    camera_get_block(serial_fd, 0x20, 0x10, data);
+    camera_get_block(serial_fd, 0x30, 0x10, data);
 
     camera_stop_image(serial_fd);
-    usleep(100);
-
-    printf("rxed image:\n");
-    int i = 0;
-    while (*(image_buffer + i) != 0) {
-        printf("%x, ", image_buffer[i]);
-        i++;
-    }
     
     close(serial_fd);
     
     return 0;
 }
 
-//     unsigned char cmd1[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
-//                             0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x0A};
+
 // 
-//     unsigned char cmd2[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
-//                             0x00, 0x20, 0x00, 0x00, 0x00, 0x20, 0x00, 0x0A};
+
 // 
-//     unsigned char cmd3[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
-//                             0x00, 0x40, 0x00, 0x00, 0x00, 0x20, 0x00, 0x0A};
-// 
-//     unsigned char cmd4[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
-//                             0x00, 0x60, 0x00, 0x00, 0x00, 0x20, 0x00, 0x0A};
+
