@@ -29,14 +29,14 @@
 #define next(i,n) i = (i < n) ? i+1 : 0
 
 typedef enum {
-    CMD_NONE      = 0,
-    CMD_FORWARD   = 1,
-    CMD_BACK      = 2,
-    CMD_LEFT      = 4,
-    CMD_RIGHT     = 8,
-    CMD_STOP      = 16,
-    CMD_TOGGLE    = 32,
-    CMD_GET_IMAGE = 64,
+    CMD_NONE        = 0,
+    CMD_FORWARD     = 1,
+    CMD_BACK        = 2,
+    CMD_LEFT        = 4,
+    CMD_RIGHT       = 8,
+    CMD_STOP        = 16,
+    CMD_ASSUME_CTRL = 32,
+    CMD_GET_IMAGE   = 64,
 } cmd_t;
 
 #endif
