@@ -142,6 +142,19 @@ int uart_getchar_cam_board (FILE *stream)
     return ret;
 }
 
+//get data from computer
+int uart_getchar_debug (FILE *stream)
+{
+    unsigned char ret;
+
+    while ( !( USARTD0.STATUS & USART_RXCIF_bm) );
+
+    // Put our character into the transmit buffer
+    ret = USARTD0.DATA;
+
+    return ret;
+}
+
 
 // Init USART for camera board.
 // Want 9600 baud. Have a 32 MHz clock. BSCALE = 0

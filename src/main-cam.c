@@ -13,15 +13,6 @@
 #include "led.h"
 #include "clock.h"
 
-//sets up stdio for bluetooth
-FILE stdio_blue = FDEV_SETUP_STREAM (uart_putchar_blue, uart_getchar_blue, _FDEV_SETUP_RW);
-
-//sets up stdio for communicating with motor board
-FILE stdio_motor = FDEV_SETUP_STREAM (uart_putchar_motor, uart_getchar_motor, _FDEV_SETUP_RW);
-
-//sets up stdio for camera
-FILE stdio_cam = FDEV_SETUP_STREAM (uart_putchar_cam, uart_getchar_cam, _FDEV_SETUP_RW);
-
 char input;
 uint8_t num = 0;
 int main(int argc, char *argv[]) {
