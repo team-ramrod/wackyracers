@@ -12,6 +12,7 @@
 
 #define MOTOR_TC TCE0
 #define LED_TC   TCD1
+#define IR_TC    TCD0
 
 #define LED_TC_OVF_vect TCD1_OVF_vect
 

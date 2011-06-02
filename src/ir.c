@@ -1,11 +1,19 @@
 #include "ir.h"
 
+static cmd_t last_cmd = CMD_NONE;
 
 void ir_init(void) {
-
+	//timer init
+	IR_TC.CTRLA = 0x06; // clk/256
+	IR_TC.INTCTRLA = 0x02;
 }
 
 cmd_t ir_get_cmd(void) {
-
+	cmd_t tmp_cmd = last_cmd;
+	last_cmd = CMD_NONE;
+	return tmp_cmd;
 }
 
+uint16_t get_time(void){
+	return IR_TC.CNT.i;
+}
