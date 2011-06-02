@@ -8,7 +8,8 @@
  *  Status: Untested
 */
 #include "common.h"
-#include "motor.h"
+#include "charger.h"
+#include "motor_controller.h"
 #include "led.h"
 
 #include <avr/interrupt.h>
@@ -18,7 +19,8 @@ ISR(BADISR_vect) {
 }
 
 int main(int argc, char *argv[]) {
-    motor_init();
+    charger_init();
+    motor_controller_init();
     led_init();
 
     uint8_t num = 0;

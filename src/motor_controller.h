@@ -5,15 +5,15 @@
  */
 
 typedef enum {
-    VERTICAL_FORWARD;
-    VERTICAL_BACKWARD;
-    VERTICAL_STOPPED;
+    VERTICAL_FORWARD,
+    VERTICAL_BACKWARD,
+    VERTICAL_STOPPED,
 } motor_vertical_t;
 
 typedef enum {
-    HORIZONTAL_LEFT;
-    HORIZONTAL_RIGHT;
-    HORIZONTAL_STOPPED;
+    HORIZONTAL_LEFT,
+    HORIZONTAL_RIGHT,
+    HORIZONTAL_STOPPED
 } motor_horizontal_t;
 
 /**
