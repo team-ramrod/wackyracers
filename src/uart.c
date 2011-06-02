@@ -12,6 +12,24 @@ FILE stdio_to_cam_board = FDEV_SETUP_STREAM (uart_putchar_cam_board, uart_getcha
 //sets up stdio for camera
 FILE stdio_cam = FDEV_SETUP_STREAM (uart_putchar_cam, uart_getchar_cam, _FDEV_SETUP_RW);
 
+/* File stream for debuggin. */
+FILE DEBUG = FDEV_SETUP_STREAM (uart_putchar_debug, uart_getchar_debug, _FDEV_SETUP_RW);
+
+/* Send characters to PC */
+int uart_putchar_debug (char c, FILE *stream)
+{
+    if (c == '\n')
+        uart_putchar_blue('\r', stream);
+
+    // Wait for the transmit buffer to be empty
+    while ( !( USARTB0.STATUS & USART_DREIF_bm) );
+
+    // Put our character into the transmit buffer
+    USARTB0.DATA = c;
+
+    return 0;
+}
+
 //send data to bluetooth
 int uart_putchar_blue (char c, FILE *stream)
 {

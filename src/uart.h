@@ -28,6 +28,8 @@ void uart_init_cam_board (void);
 //initilizes uart on camera board
 void uart_init_motor_board (void);
 
+int uart_putchar_debug(char c, FILE *stream);
+
 //sends data to bluetooth
 int uart_putchar_blue(char c, FILE *stream);
 
