@@ -36,8 +36,12 @@ int main(int argc, char *argv[]) {
     while(1) {
         switch(controller) {
             case BT:
+                if (ir_get_cmd() == ASSUME_CTRL) {
+                    controller = IR;
                 break;
             case IR:
+                if (blue_get_cmd() == ASSUME_CTRL) { //TODO: camera_board_get_cmd(); or something
+                    controller = IR;
                 break;
         }
     }
