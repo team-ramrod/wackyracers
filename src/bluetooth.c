@@ -18,7 +18,7 @@
  * Based on the UART command line process by Micheal Hayes on ECE wiki
  *
  */
-void blue_read_bluetooth(FILE *stdio_blue, FILE *stdio_motor) {
+void blue_read_bluetooth(FILE *stdio_blue, FILE *stdio_motor, FILE *stdio_cam) {
     char input;
     char error[] = "invalid input\n";
 
@@ -51,7 +51,8 @@ void blue_read_bluetooth(FILE *stdio_blue, FILE *stdio_motor) {
             break;
 
         case 'c':
-            fprintf(stdio_motor, "%i", CMD_GET_IMAGE);
+            //would send command to get image here
+            //fprintf(stdio_cam, "%i", CMD_GET_IMAGE);
             break;
 
         case 'z':

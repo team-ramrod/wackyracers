@@ -24,8 +24,6 @@ int main(int argc, char *argv[]) {
     uart_init_cam_board();
     sei();
 
-    
-
     while(1) {
         led_display(num++);
         _delay_ms(500.0);
@@ -34,8 +32,15 @@ int main(int argc, char *argv[]) {
     return 0;	
 }
 
-ISR(INTERRUPT_MOTOR)
+//sends bluetooth command to motor board
+ISR(INTERRUPT_BLUE)
 {
-    num = num+ 10;
-    blue_read_bluetooth(&stdio_blue, &stdio_to_motor_board);
+    blue_read_bluetooth(&stdio_blue, &stdio_to_motor_board, &stdio_cam);
+}
+
+//sends camera data to bluetooth
+ISR(INTERRUPT_CAM)
+{
+    uint8_t input = fgetc(&stdio_cam);
+    fprintf(&stdio_blue, "%i", input);
 }
