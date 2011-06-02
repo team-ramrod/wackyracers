@@ -36,6 +36,9 @@ int uart_putchar_blue(char c, FILE *stream);
 //sends data to motor board
 int uart_putchar_motor(char c, FILE *stream);
 
+//sends data to computer
+int uart_putchar_debug(char c, FILE *stream);
+
 //sends data to camera
 int uart_putchar_cam(char c, FILE *stream);
 
@@ -47,6 +50,9 @@ int uart_getchar_blue(FILE *stream);
 
 //gets data from motor
 int uart_getchar_motor(FILE *stream);
+
+//gets data from computer
+int uart_getchar_debug(FILE *stream);
 
 //gets data from camera
 int uart_getchar_cam(FILE *stream);

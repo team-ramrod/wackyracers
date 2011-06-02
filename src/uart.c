@@ -1,4 +1,4 @@
-#include "uart_cam_board.h"
+#include "uart.h"
 
 //sets up stdio for bluetooth
 FILE stdio_blue = FDEV_SETUP_STREAM (uart_putchar_blue, uart_getchar_blue, _FDEV_SETUP_RW);
@@ -22,10 +22,10 @@ int uart_putchar_debug (char c, FILE *stream)
         uart_putchar_blue('\r', stream);
 
     // Wait for the transmit buffer to be empty
-    while ( !( USARTB0.STATUS & USART_DREIF_bm) );
+    while ( !( USARTD0.STATUS & USART_DREIF_bm) );
 
     // Put our character into the transmit buffer
-    USARTB0.DATA = c;
+    USARTD0.DATA = c;
 
     return 0;
 }

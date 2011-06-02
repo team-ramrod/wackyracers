@@ -8,7 +8,7 @@
  */
 
 #include "common.h"
-#include "uart_cam_board.h"
+#include "uart.h"
 #include <stdint.h>
 #include <stdlib.h>
 

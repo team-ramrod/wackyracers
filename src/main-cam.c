@@ -7,7 +7,7 @@
  *  Status: Untested
 */
 #include "common.h"
-#include "uart_cam_board.h"
+#include "uart.h"
 #include "bluetooth.h"
 #include "camera.h"
 #include "led.h"
@@ -46,5 +46,5 @@ int main(int argc, char *argv[]) {
 ISR(INTERRUPT_MOTOR)
 {
     num = num+ 10;
-    blue_read_bluetooth(&stdio_blue, &stdio_motor);
+    blue_read_bluetooth(&stdio_blue, &stdio_to_motor_board);
 }
