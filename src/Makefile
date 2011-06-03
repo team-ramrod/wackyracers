@@ -52,14 +52,11 @@ build:
 program-camera-stk:
 	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifcamera.hex
 
-program-camera-dude:
-	avrdude ...? camera.hex
-
 program-motor-stk:
 	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifmotor.hex
 
-program-motor-dude:
-	avrdude ...? motor.hex
+dude-%: build/%.hex
+	avrdude -p x16a4 -c avrispmkII -P usb -U $< -v
 
 clean:
 	rm -f build/*.o build/*.ls build/*.lis build/*.dbg build/*.mp build/*.s build/*.lst
@@ -69,5 +66,3 @@ cleanall:
 
 .PHONY: all rebuild
 .PHONY: clean cleanall
-.PHONY: program-camera-stk program-camera-dude
-.PHONY: program-motor-stk program-motor-dude

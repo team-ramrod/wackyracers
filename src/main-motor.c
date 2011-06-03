@@ -21,8 +21,10 @@ int main(int argc, char *argv[]) {
     motor_init();
     led_init();
 
+    uint8_t num = 0;
+
     while(1) {
-        
+        led_display(num++);
     }
 
     return 0;	

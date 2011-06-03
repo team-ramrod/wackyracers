@@ -31,7 +31,7 @@ void led_display_left(uint8_t);
 void led_display_right(uint8_t);
 
 /**
- * Displays an up to 16-bit number across both LEDs.
+ * Displays an up to 8-bit number across both LEDs.
  *
  * @param number    The number to display.
  */

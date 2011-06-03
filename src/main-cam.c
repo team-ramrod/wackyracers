@@ -9,6 +9,7 @@
 #include "common.h"
 #include "bluetooth.h"
 #include "camera.h"
+#include "led.h"
 
 
 int main(int argc, char *argv[]) {
@@ -16,8 +17,13 @@ int main(int argc, char *argv[]) {
 //    bluetooth_init();
 //    camera_init();
 //    sei();        
+    led_init();
+
+    uint8_t num = 0;
+
     while(1) {
-        sleep();
+        led_display(num++);
     }
+
     return 0;	
 }
