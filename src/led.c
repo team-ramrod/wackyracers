@@ -3,8 +3,9 @@
 #include <avr/interrupt.h>
 
 #define LED_VALUE_PINS ( _BV(1) | _BV(2) | _BV(3) | _BV(4) )
-#define LED_ENABLE_PIN _BV(6)
-#define LED_SELECT_PIN _BV(7)
+#define LED_ENABLE_PIN   _BV(6)
+#define LED_SELECT_LEFT  _BV(5)
+#define LED_SELECT_RIGHT _BV(7)
 
 static struct {
     uint8_t value;
@@ -42,15 +43,16 @@ void led_init() {
 
     LED_PORT.DIRSET =  LED_VALUE_PINS
                      | LED_ENABLE_PIN
-                     | LED_SELECT_PIN;
+                     | LED_SELECT_LEFT
+                     | LED_SELECT_RIGHT;
 
     // Set the default values for the structs.
     __left_display.value     = 0x00;
     __left_display.enabled   = 0x00;
-    __left_display.selected  = LED_SELECT_PIN;
+    __left_display.selected  = LED_SELECT_LEFT;
     __right_display.value    = 0x00;
     __right_display.enabled  = 0x00;
-    __right_display.selected = 0x00;
+    __right_display.selected = LED_SELECT_RIGHT;
 
     // Enable the interrupt at a low level.
     LED_TC.INTCTRLA = 0x01;
