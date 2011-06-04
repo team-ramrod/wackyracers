@@ -9,6 +9,8 @@ void ir_init(void) {
 }
 
 cmd_t ir_get_cmd(void) {
+    // Please read the header file for what this should return! it should hold
+    // no state :}
 	cmd_t tmp_cmd = last_cmd;
 	last_cmd = CMD_NONE;
 	return tmp_cmd;

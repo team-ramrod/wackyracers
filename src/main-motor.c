@@ -1,16 +1,18 @@
 /** @file   main-motor.c
- *  @author Simon Richards
+ *  @author Simon Richards, Henry Jenkins
  *  @date   Created: 19 April 2011
  *
  *	Initiation calls and main loop.
  *
- *  
+ *
  *  Status: Untested
 */
-#include "common.h"
 #include "charger.h"
-#include "motor_controller.h"
+#include "common.h"
+#include "ir.h"
 #include "led.h"
+#include "motor_controller.h"
+#include "uart.h"
 
 #include <avr/interrupt.h>
 
@@ -19,54 +21,84 @@ ISR(BADISR_vect) {
 }
 
 typedef enum {BT, IR} controller_t;
-typedef enum {OFF, LEFT, RIGHT} y_state_t;
-typedef enum {OFF, FWD, BACK} x_state_t;
 
 int main(int argc, char *argv[]) {
     charger_init();
+    uart_init_motor_board();
     motor_controller_init();
     led_init();
 
-    x_state_t x_state = OFF;
-    y_state_t y_state = OFF;
+    motor_horizontal_t motor_horizontal = HORIZONTAL_STOPPED;
+    motor_vertical_t motor_vertical = VERTICAL_STOPPED;
     controller_t controller = IR;
-
-    uint8_t num = 0;
 
     while(1) {
         cmd_t latest_cmd, ir_cmd, bt_cmd;
         ir_cmd = ir_get_cmd();
         bt_cmd = CMD_NONE;// cam_get_cmd(); // TODO
         if (controller == BT) {
-            if (ir_cmd == ASSUME_CTRL) {
+            if (ir_cmd == CMD_ASSUME_CTRL) {
                 controller = IR;
-                continue;
+                latest_cmd = CMD_NONE;
             } else {
                 latest_cmd = bt_cmd;
             }
         } else {
-            if (bt_cmd == ASSUME_CTRL) {
+            if (bt_cmd == CMD_ASSUME_CTRL) {
                 controller = BT;
-                continue;
+                latest_cmd = CMD_NONE;
             } else {
                 latest_cmd = ir_cmd;
             }
         }
 
-        switch(controller) {
-            case BT:
-                if (ir_get_cmd() == ASSUME_CTRL) {
-                    controller = IR;
+        // take latest command and change state
+        switch (latest_cmd) {
+            case CMD_FORWARD:
+                if (motor_vertical == VERTICAL_BACKWARD) {
+                    motor_vertical = VERTICAL_STOPPED;
+                } else {
+                    motor_vertical = VERTICAL_FORWARD;
                 }
+                led_display_left(0);
                 break;
-            case IR:
-                if (blue_get_cmd() == ASSUME_CTRL) { //TODO: camera_board_get_cmd(); or something
-                    controller = IR;
+            case CMD_BACK:
+                if (motor_vertical == VERTICAL_FORWARD) {
+                    motor_vertical = VERTICAL_STOPPED;
+                } else {
+                    motor_vertical = VERTICAL_BACKWARD;
                 }
+                led_display_left(2);
                 break;
-        /}
+            case CMD_LEFT:
+                if (motor_horizontal == HORIZONTAL_RIGHT) {
+                    motor_horizontal = HORIZONTAL_STOPPED;
+                } else {
+                    motor_horizontal = HORIZONTAL_LEFT;
+                }
+                led_display_right(0);
+                break;
+            case CMD_RIGHT:
+                if (motor_horizontal == HORIZONTAL_LEFT) {
+                    motor_horizontal = HORIZONTAL_STOPPED;
+                } else {
+                    motor_horizontal = HORIZONTAL_RIGHT;
+                }
+                led_display_right(2);
+                break;
+            case CMD_STOP:
+                motor_horizontal = HORIZONTAL_STOPPED;
+                motor_vertical = VERTICAL_STOPPED;
+                led_display_left(1);
+                led_display_right(1);
+                break;
+            default:
+                //do nothing as the state does not need changing
+                break;
+        }
 
+        // Now actually set the motors to the new state
+        motor_set_movement(motor_vertical, motor_horizontal);
     }
-
-    return 0;	
+    return 0;
 }
