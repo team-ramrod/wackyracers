@@ -37,6 +37,9 @@ build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
 build/bluetooth.o: common.h bluetooth.h
 
+build/test.hex:   build/test.o
+build/test.o:     test.c
+
 ###############################
 ##  Internal Implementation  ##
 ###############################
