@@ -11,15 +11,10 @@
 
 //#define DEBUG
 
-#define ARRAY_SIZE(array) (sizeof(array) / sizeof (array[0]))
-
 #define MAX_MESSAGE_LENGTH 120
 
-/* Camera commands:
- * RESET: reset the camera device
- * STARTPIC: take a picture
- * SIZE: read JPEG file size
- */
+unsigned char * global_image_buffer;
+
 unsigned char CAM_RESET_CMD[] = {0x56, 0x00, 0x26, 0x00};
 unsigned char CAM_RESET_RET[] = {0x76, 0x00, 0x26, 0x00};
 
@@ -240,9 +235,16 @@ int camera_get_block(int serial_fd, unsigned int address,
     /* Get footer and throw away. */
     //serial_read(serial_fd, cmd, sizeof(cmd));
 
-    uint8_t response[100];
+    /* Read the full response. */
+    uint8_t response[26];
     serial_read(serial_fd, response, sizeof(response));
+
+    /* Copy data (from between headers) into global image buffer. */
+    bcopy((response + 5), &global_image_buffer[address], 16);
+    
     dump_contents(response, sizeof(response));
+    //fprintf(stderr, "contents of glob_im_buff:\n");
+    //dump_contents(global_image_buffer, 26*3);
 
     return 0;
 }
@@ -250,11 +252,12 @@ int camera_get_block(int serial_fd, unsigned int address,
 /* Must sleep for 2-3 seconds after camera power on. */
 int main(int argc, char *argv[])
 {
+    /* Set up global image buffer. */
+    global_image_buffer = malloc(600*240*100);
+    memset(global_image_buffer, 0, sizeof(global_image_buffer));
+    
     char rx_buffer[MAX_MESSAGE_LENGTH];
     memset(&rx_buffer, 3, MAX_MESSAGE_LENGTH);
-
-    unsigned char image_buffer[600*240*100];
-    memset(image_buffer, 0, sizeof(image_buffer));
 
     uint16_t filesize = 0;
 
@@ -276,11 +279,13 @@ int main(int argc, char *argv[])
     filesize = camera_get_filesize(serial_fd);
     fprintf(stderr, "DEBUG: filesize = %d\n", filesize);
 
-    uint8_t data[16];
-    camera_get_block(serial_fd, 0x00, 0x10, data);
-    camera_get_block(serial_fd, 0x10, 0x10, data);
-    camera_get_block(serial_fd, 0x20, 0x10, data);
-    camera_get_block(serial_fd, 0x30, 0x10, data);
+    camera_get_image(serial_fd, global_image_buffer, 25000);
+
+    fprintf(stderr, "RXed data:\n");
+    int i;
+    for (i = 0; i < 40; i++) {
+        fprintf(stderr, "image[%d] = %x\n",i, global_image_buffer[i]);
+    }
 
     camera_stop_image(serial_fd);
     
