@@ -134,6 +134,9 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
 
     // If set to the same direction this is a no-op.
     if (__motors[motor].direction == direction) { 
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+            __currently_executing = false;
+        }
         return true;
     }
 
