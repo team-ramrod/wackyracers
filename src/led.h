@@ -31,13 +31,13 @@ void led_display_left(uint8_t);
 void led_display_right(uint8_t);
 
 /**
- * Displays an up to 8-bit number across both LEDs.
+ * Displays a decimal integer across the display.
  *
  * @param number    The number to display.
  */
 static inline void led_display(uint8_t number) {
-    led_display_left(number & 0x0F);
-    led_display_right(number >> 4);
+    led_display_left(number % 10);
+    led_display_right(number / 10);
 }
 
 #endif

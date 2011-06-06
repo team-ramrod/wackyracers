@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     PORTB.DIRSET = 0x01;
     
     while (1) {
-        led_display(num++);
+        led_display(num = (num + 1) % 100);
         PORTB.OUTTGL = 0x01;
         _delay_ms(500.0);
     }
