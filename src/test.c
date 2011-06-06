@@ -17,9 +17,12 @@ int main(int argc, char *argv[]) {
 
     clock_init();
     led_init();
+
+    PORTB.DIRSET = 0x01;
     
     while (1) {
         led_display(num++);
+        PORTB.OUTTGL = 0x01;
         _delay_ms(500.0);
     }
 
