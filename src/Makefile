@@ -2,7 +2,7 @@
 ##  Microcontroller Properties  ##
 ##################################
 MCU = atxmega16a4
-F_CPU = 32000000L
+F_CPU = 8000000L
 TARGET = ATXMega16
 
 
@@ -22,16 +22,19 @@ rebuild: clean all
 #############
 ##  Files  ##
 #############
-CAM_FILES =   main-cam    uart  led  camera  bluetooth
+CAM_FILES   = main-cam    uart  led  camera  bluetooth
 MOTOR_FILES = main-motor  uart  led  motor   ir
+TEST_FILES  = test              led  
 UART_TEST_FILES = uart uart_test
 
 build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
-build/uart_test.hex: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
+build/test.out:   $(addprefix build/, $(addsuffix .o, $(TEST_FILES)))
+build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 
-build/main-camera.o: common.h uart.h led.h camera.h  bluetooth.h
-build/main-motor.o:  common.h uart.h led.h motor.h   ir.h
+build/main-camera.o: common.h uart.h led.h clock.h camera.h  bluetooth.h
+build/main-motor.o:  common.h uart.h led.h clock.h motor.h   ir.h
+build/test.o:                        led.h clock.h
 build/uart_test.o: common.h uart.h
 
 build/uart.o:      common.h uart.h
@@ -41,9 +44,6 @@ build/uart.o:      common.h uart.h
 build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
 build/bluetooth.o: common.h bluetooth.h
-
-build/test.out:   build/test.o
-build/test.o:     test.c
 
 ###############################
 ##  Internal Implementation  ##
