@@ -68,7 +68,7 @@ program-motor-stk:
 	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifmotor.hex
 
 dude-%: build/%.hex
-	avrdude -p x16a4 -c avrispmkII -P usb -U $< -q
+	avrdude -p x16a4 -c avrispmkII -P usb -U $< -qq
 
 v-dude-%: build/%.hex
 	avrdude -p x16a4 -c avrispmkII -P usb -U $< -v
