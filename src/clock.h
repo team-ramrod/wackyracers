@@ -25,7 +25,7 @@ static inline void clock_init() {
     CCP = 0xD8;
 
     // Change to the 32Mhz internal oscillator.
-    OSC.CTRL = 0x01;
+    CLK.CTRL = 0x01;
 }
 
 #endif
