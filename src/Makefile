@@ -2,7 +2,7 @@
 ##  Microcontroller Properties  ##
 ##################################
 MCU = atxmega16a4
-F_CPU = 128000000L
+F_CPU = 32000000L
 TARGET = ATXMega16
 
 
@@ -74,7 +74,7 @@ v-dude-%: build/%.hex
 	avrdude -p x16a4 -c avrispmkII -P usb -U $< -v
 
 clean:
-	rm -f build/*.o build/*.ls build/*.lis build/*.dbg build/*.mp build/*.s build/*.lst
+	rm -f build/*.o build/*.ls build/*.lis build/*.dbg build/*.mp build/*.s build/*.lst build/*.out
 
 cleanall:
 	rm -rf build
