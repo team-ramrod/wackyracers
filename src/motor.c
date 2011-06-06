@@ -132,7 +132,7 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
     // Pause to let mosfet turn off.  From data sheet max off time is 36 ns,
     // giving it a safety factor of 20x this comes to 0.72 us of dead time.
     // After some quick testing this actually results in a delay of ~26.1 us,
-    // or a safety factor of over 700.
+    // or a safety factor of over 700x.
     _delay_us(0.72);
 
     // Enable the new enable pin.
