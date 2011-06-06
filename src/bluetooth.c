@@ -56,7 +56,7 @@ void blue_read_bluetooth(FILE *stdio_blue, FILE *stdio_motor, FILE *stdio_cam) {
             break;
 
         case 'z':
-            fprintf(stdio_motor, "%i", CMD_TOGGLE);
+            fprintf(stdio_motor, "%i", CMD_ASSUME_CTRL);
             break;
         case '\n':
             break;

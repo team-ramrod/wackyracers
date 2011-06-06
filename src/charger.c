@@ -15,7 +15,7 @@ static charger_callback __charger_callback = NULL;
 
 ISR(PORTB_INT0_vect) {
     //check that the callback function has been set
-    if (__charger_calback) {
+    if (__charger_callback) {
         __charger_callback(charger_read());
     }
 }
@@ -33,6 +33,6 @@ bool charger_read() {
 }
 
 void charger_set_callback(charger_callback callback) {
-    __charger_state = callback;
+    __charger_callback = callback;
 }
 
