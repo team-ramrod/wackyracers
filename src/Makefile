@@ -14,7 +14,7 @@ LIB =
 CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 LDFLAGS = -mmcu=$(MCU)
 
-all: build build/camera.hex build/motor.hex
+all: build/camera.hex build/motor.hex
 rebuild: clean all
 
 
@@ -43,7 +43,7 @@ build/test.o:     test.c
 ###############################
 ##  Internal Implementation  ##
 ###############################
-build/%.o: %.c
+build/%.o: %.c build
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 build/%.hex:
