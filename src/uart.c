@@ -13,11 +13,10 @@
  * This structure
  */
 struct uart_struct{
-    char data_in;
-    char data_out;
     void (*data_in_callback)(char *, int);
     char buffer[BUFFER_LENGTH];
 };
+
 
 /**
  * Anonymous data structure; this is only known to the implementation
@@ -41,14 +40,15 @@ static USART_t *uart_devices[] = {
 /** 
  * Initialise UART for desired channel, baud rate, etc.  
  */
-uart_t uart_init (uart_cfg_t *uart_cfg) {
-    uart_devices[uart_cfg->channel]->DATA = 0x00;
-    uart_devices[uart_cfg->channel]->CTRLA = 0x2A;
-    uart_devices[uart_cfg->channel]->CTRLB = 0x18;
-    uart_devices[uart_cfg->channel]->CTRLC = 0x03;
-    uart_devices[uart_cfg->channel]->BAUDCTRLA = 0xD0;
-    uart_devices[uart_cfg->channel]->BAUDCTRLB = 0x00;
-    return uart_structs[uart_cfg->channel];
+uart_t uart_init (uart_cfg_t *cfg) {
+    uart_id_t id = cfg->channel;
+    uart_devices[id]->DATA = 0x00;           // Clear the data register
+    uart_devices[id]->CTRLA = 0x2A;          // Set all interrupts to MED priority
+    uart_devices[id]->CTRLB = USART_RXEN_bm | USART_TXEN_bm;  // Enable sending and receiving on this channel 
+    uart_devices[id]->CTRLC = (cfg->parity)<<4 | (cfg->bits-5); // User defined parity, asynchronous, 1 stop bit, 
+    uart_devices[id]->BAUDCTRLA = 0xD0;
+    uart_devices[id]->BAUDCTRLB = 0x00;
+    return uart_structs[id];
 }
 
 /**

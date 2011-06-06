@@ -10,7 +10,11 @@
 #include <stdint.h>
 #define NUM_UARTS 5
 
-typedef enum {UART_PARITY_NONE, UART_PARITY_EVEN, UART_PARITY_ODD} uart_parity_t;
+typedef enum {
+    UART_PARITY_NONE, 
+    UART_PARITY_EVEN = 2, 
+    UART_PARITY_ODD
+} uart_parity_t;
 
 /**
  * Used to index the uart_t structs
