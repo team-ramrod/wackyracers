@@ -49,7 +49,7 @@ build/bluetooth.o: common.h bluetooth.h
 ###############################
 ##  Internal Implementation  ##
 ###############################
-build/%.o: %.c build
+build/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 build/%.hex: build/%.out
@@ -68,6 +68,9 @@ program-motor-stk:
 	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifmotor.hex
 
 dude-%: build/%.hex
+	avrdude -p x16a4 -c avrispmkII -P usb -U $< -q
+
+v-dude-%: build/%.hex
 	avrdude -p x16a4 -c avrispmkII -P usb -U $< -v
 
 clean:
