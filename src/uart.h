@@ -13,16 +13,6 @@
 typedef enum {UART_PARITY_NONE, UART_PARITY_EVEN, UART_PARITY_ODD} uart_parity_t;
 
 /**
- * Configuration structure.  
- */
-typedef struct uart_cfg_struct {
-    uint8_t channel;
-    uint16_t baud;
-    uint8_t bits;
-    uart_parity_t parity;
-} uart_cfg_t;
-
-/**
  * Used to index the uart_t structs
  */
 typedef enum {
@@ -32,6 +22,17 @@ typedef enum {
     D1,
     E0
 } uart_id_t;
+
+/**
+ * Configuration structure.  
+ */
+typedef struct uart_cfg_struct {
+    uart_id_t channel;
+    uint16_t baud;
+    uint8_t bits;
+    uart_parity_t parity;
+} uart_cfg_t;
+
 
 /**
  * Anonymous data structure; this is only known to the implementation

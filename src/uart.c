@@ -24,8 +24,9 @@ struct uart_struct{
  *  to keep the fields of the structure private.  
  */
 
-static uart_struct[NUM_UARTS];
-static USART_t uarts[NUM_UARTS] = {
+static uart_struct uart_structs[NUM_UARTS];
+
+static USART_t uart_devices[NUM_UARTS] = {
     USARTC0,
     USARTC1,
     USARTD0,
@@ -33,28 +34,21 @@ static USART_t uarts[NUM_UARTS] = {
     USARTE0
 }
 
-/*
-
-    uint8_t channel;
+/*  uart_id_t channel;
     uint16_t baud;
     uint8_t bits;
-    uart_parity_t parity;
-    */
+    uart_parity_t parity;  */
 /** 
  * Initialise UART for desired channel, baud rate, etc.  
  */
 uart_t uart_init (uart_cfg_t *uart_cfg) {
-    USARTC1.DATA = 0x00;
-    USARTC1.CTRLA = 0x2A;
-    USARTC1.CTRLB = 0x18;
-    USARTC1.CTRLC = 0x03;
-    USARTC1.BAUDCTRLA = 0xD0;
-    USARTC1.BAUDCTRLB = 0x00;
-}
-
-
-
-void uartc1_rx_isr() {
+    uart_devices[uart_cfg_t.channel].DATA = 0x00;
+    uart_devices[uart_cfg_t.channel].CTRLA = 0x2A;
+    uart_devices[uart_cfg_t.channel].CTRLB = 0x18;
+    uart_devices[uart_cfg_t.channel].CTRLC = 0x03;
+    uart_devices[uart_cfg_t.channel].BAUDCTRLA = 0xD0;
+    uart_devices[uart_cfg_t.channel].BAUDCTRLB = 0x00;
+    return uart_structs + uart_cfg_t.channel;
 }
 
 /**
@@ -62,15 +56,7 @@ void uartc1_rx_isr() {
  * @param callback The callback function for incoming data
  */
 void uart_set_callback(uart_t uart, void (*callback)(char *, int)) {
-    uart.data_in_callback = callback;
-}
-
-
-void uartc1_tx_isr() //ISR(LED_TC_OVF_vect) {
-{
-}
-
-void uartc1_write(char *ptr) {
+    uart->data_in_callback = callback;
 }
 
 
