@@ -2,7 +2,7 @@
 ##  Microcontroller Properties  ##
 ##################################
 MCU = atxmega16a4
-F_CPU = 8000000L
+F_CPU = 128000000L
 TARGET = ATXMega16
 
 
@@ -44,6 +44,7 @@ build/uart.o:      common.h uart.h
 build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
 build/bluetooth.o: common.h bluetooth.h
+
 
 ###############################
 ##  Internal Implementation  ##
