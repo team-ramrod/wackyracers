@@ -33,7 +33,7 @@ typedef enum {
     CMD_LEFT      = 4,
     CMD_RIGHT     = 8,
     CMD_STOP      = 16,
-    CMD_TOGGGLE   = 32,
+    CMD_TOGGLE    = 32,
     CMD_GET_IMAGE = 64,
 } cmd_t;
 
