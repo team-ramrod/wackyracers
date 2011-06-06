@@ -19,55 +19,39 @@ static struct {
 
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
-        case LEFT + FORWARD:
-            MOTOR_ENABLE_PORT.OUTCLR = LEFT_FORWARD_EN;
-            break;
-        case LEFT + REVERSE:
-            MOTOR_ENABLE_PORT.OUTCLR = LEFT_REVERSE_EN;
-            break;
-        case RIGHT + FORWARD:
-            MOTOR_ENABLE_PORT.OUTCLR = RIGHT_FORWARD_EN;
-            break;
-        case RIGHT + REVERSE:
-            MOTOR_ENABLE_PORT.OUTCLR = RIGHT_REVERSE_EN;
-            break;
+        case LEFT+FORWARD:  MOTOR_ENABLE_PORT.OUTCLR = LEFT_FORWARD_EN;  break;
+        case LEFT+REVERSE:  MOTOR_ENABLE_PORT.OUTCLR = LEFT_REVERSE_EN;  break;
+        case RIGHT+FORWARD: MOTOR_ENABLE_PORT.OUTCLR = RIGHT_FORWARD_EN; break;
+        case RIGHT+REVERSE: MOTOR_ENABLE_PORT.OUTCLR = RIGHT_REVERSE_EN; break;
     }
 }
 
 static inline void __enable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
-        case LEFT + FORWARD:
-            MOTOR_ENABLE_PORT.OUTSET = LEFT_FORWARD_EN;
-            break;
-        case LEFT + REVERSE:
-            MOTOR_ENABLE_PORT.OUTSET = LEFT_REVERSE_EN;
-            break;
-        case RIGHT + FORWARD:
-            MOTOR_ENABLE_PORT.OUTSET = RIGHT_FORWARD_EN;
-            break;
-        case RIGHT + REVERSE:
-            MOTOR_ENABLE_PORT.OUTSET = RIGHT_REVERSE_EN;
-            break;
+        case LEFT+FORWARD:  MOTOR_ENABLE_PORT.OUTSET = LEFT_FORWARD_EN;  break;
+        case LEFT+REVERSE:  MOTOR_ENABLE_PORT.OUTSET = LEFT_REVERSE_EN;  break;
+        case RIGHT+FORWARD: MOTOR_ENABLE_PORT.OUTSET = RIGHT_FORWARD_EN; break;
+        case RIGHT+REVERSE: MOTOR_ENABLE_PORT.OUTSET = RIGHT_REVERSE_EN; break;
     }
 }
 
-// Lets say speed = 0x5A
-// The timer has to be set to 0x1000 * 0x5A / 0xFF
-// Which (with a little rounding error) results in 0x05A5
-// or:
-//   0x5A << 4 + 0x5A >> 4
 static void __set_speed(
     motor_t motor,
     motor_direction_t direction,
     motor_speed_t speed
 ) {
+    // Lets say speed = 0x5A
+    // The timer has to be set to 0x1000 * 0x5A / 0xFF
+    // Which (with a little rounding error) results in 0x05A5
+    // or:
+    //   0x5A << 4 + 0x5A >> 4
     uint8_t value = (speed << 4) + (speed >> 4);
 
     switch (motor + direction) {
-        case LEFT + FORWARD:  LEFT_FORWARD_PWM  = value; break;
-        case LEFT + REVERSE:  LEFT_REVERSE_PWM  = value; break;
-        case RIGHT + FORWARD: RIGHT_FORWARD_PWM = value; break;
-        case RIGHT + REVERSE: RIGHT_REVERSE_PWM = value; break;
+        case LEFT+FORWARD:  LEFT_FORWARD_PWM  = value; break;
+        case LEFT+REVERSE:  LEFT_REVERSE_PWM  = value; break;
+        case RIGHT+FORWARD: RIGHT_FORWARD_PWM = value; break;
+        case RIGHT+REVERSE: RIGHT_REVERSE_PWM = value; break;
     }
 }
 
@@ -108,7 +92,10 @@ void motor_init() {
 
     // Set the default values for the structs.
     __motors[LEFT].direction = FORWARD;
+    __motors[LEFT].speed = 0x0;
+
     __motors[RIGHT].direction = FORWARD;
+    __motors[RIGHT].speed = 0x0;
 }
 
 void motor_set_speed(motor_t motor, motor_speed_t speed) {
@@ -144,6 +131,8 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
 
     // Pause to let mosfet turn off.  From data sheet max off time is 36 ns,
     // giving it a safety factor of 20x this comes to 0.72 us of dead time.
+    // After some quick testing this actually results in a delay of ~26.1 us,
+    // or a safety factor of over 700.
     _delay_us(0.72);
 
     // Enable the new enable pin.
