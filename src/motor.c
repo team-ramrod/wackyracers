@@ -17,8 +17,6 @@ static struct {
     motor_direction_t direction;
 } __motors[2];
 
-static bool __currently_executing = false;
-
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
     switch (motor + direction) {
         case LEFT + FORWARD:
@@ -118,6 +116,7 @@ void motor_set_speed(motor_t motor, motor_speed_t speed) {
 }
 
 bool motor_set_direction(motor_t motor, motor_direction_t direction) {
+    static bool __currently_executing = false;
     bool temp;
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
