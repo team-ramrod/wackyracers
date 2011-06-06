@@ -6,25 +6,44 @@
  *  Status: Untested
 */
 #include "common.h"
+#include "uart.h"
 #define BUFFER_LENGTH 10
 
-typedef enum {
-    C0,
-    C1,
-    D0,
-    D1,
-    E0,
-    E1
-} usart_id_t;
-    
-
-typedef struct {
+/**
+ * This structure
+ */
+struct uart_struct{
     char data_in;
     char data_out;
+    void (*data_in_callback)(char *, int);
     char buffer[BUFFER_LENGTH];
-} usart_t;
+};
 
-void usart_init() {
+/**
+ * Anonymous data structure; this is only known to the implementation
+ *  to keep the fields of the structure private.  
+ */
+
+static uart_struct[NUM_UARTS];
+static USART_t uarts[NUM_UARTS] = {
+    USARTC0,
+    USARTC1,
+    USARTD0,
+    USARTD1,
+    USARTE0
+}
+
+/*
+
+    uint8_t channel;
+    uint16_t baud;
+    uint8_t bits;
+    uart_parity_t parity;
+    */
+/** 
+ * Initialise UART for desired channel, baud rate, etc.  
+ */
+uart_t uart_init (uart_cfg_t *uart_cfg) {
     USARTC1.DATA = 0x00;
     USARTC1.CTRLA = 0x2A;
     USARTC1.CTRLB = 0x18;
@@ -34,75 +53,38 @@ void usart_init() {
 }
 
 
-void usartc1_rx_isr()
-{
- //USART1 RX complete
- char ch;
- static signed char k;
- static char msg[21];
- 
- //uart has received a character in UDR
- ch = USARTC1.DATA;
- 
- if (k< 21)
-  k++;
- 
- switch (ch) {
-  case ':' :
-   k= 0;
-   msg[k]= ch;
-   break;
-  
-  case '\r' :
-   msg[k]= ch;
-   msg[k+1]= null;
-   strcpy(rx1_msg, msg);
-   interrupts[u1].flag = bit_true;
-   break;
-  
-  case '\n' :
-   k= -1;
-   break;
-   
-  default :
-   msg[k]= ch;
-   break;
- }
+
+void uartc1_rx_isr() {
 }
 
-void usartc1_tx_isr()
-{
-    //USART1, Tx Complete
-    if (*tx1_ptr!= 0x00) {
-        USARTC1.DATA = (*tx1_ptr);
-        tx1_ptr++;
-    } else {
-        tx1_fifo= false;
-        //set_rx1_mode;
-    }
+/**
+ * Set the callback function for incoming data
+ * @param callback The callback function for incoming data
+ */
+void uart_set_callback(uart_t uart, void (*callback)(char *, int)) {
+    uart.data_in_callback = callback;
 }
 
-void usartc1_write(char *ptr) //feed string into serial port
+
+void uartc1_tx_isr() //ISR(LED_TC_OVF_vect) {
 {
-    static char tx1_msg[21];
-    //set_tx1_mode;
-
-    if (tx1_fifo) { //append if already transmitting
-        strcat(tx1_msg, ptr);
-    } else {
-        strcpy(tx1_msg, ptr);
-        tx1_ptr= tx1_msg;
-
-        //send first char
-        USARTC1.DATA = (*tx1_ptr);
-        tx1_ptr++;
-
-        tx1_fifo= true;
-    }
 }
 
-void usartc1_putch(char byte)
-{
+void uartc1_write(char *ptr) {
+}
+
+
+/**
+ * Write character.  This blocks until character written to transmit buffer.  
+ */
+void uart_putc (uart_t *uart, char ch) {
+
+}
+
+/**
+ * Write string.  This blocks until last character written to transmit buffer.  
+ */
+void uart_puts (uart_t *uart, char *string) {
     //set_tx1_mode;
     while (usartc1_busy);
         USARTC1.DATA = byte;
