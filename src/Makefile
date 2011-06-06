@@ -10,6 +10,7 @@ TARGET = ATXMega16
 ##  Toolchain Config  ##
 ########################
 CC = avr-gcc
+OBJCOPY = avr-objcopy
 LIB = 
 CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 LDFLAGS = -mmcu=$(MCU)
@@ -24,8 +25,8 @@ rebuild: clean all
 CAM_FILES =   main-cam    uart  led  camera  bluetooth
 MOTOR_FILES = main-motor  uart  led  motor   ir
 
-build/camera.hex: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
-build/motor.hex:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
+build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
+build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
 
 build/main-camera.o: common.h uart.h led.h camera.h  bluetooth.h
 build/main-motor.o:  common.h uart.h led.h motor.h   ir.h
@@ -37,7 +38,7 @@ build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
 build/bluetooth.o: common.h bluetooth.h
 
-build/test.hex:   build/test.o
+build/test.out:   build/test.o
 build/test.o:     test.c
 
 ###############################
@@ -46,8 +47,11 @@ build/test.o:     test.c
 build/%.o: %.c build
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-build/%.hex:
-	$(CC) $(LDFLAGS) -o build/$*.hex $^
+build/%.hex: build/%.out
+	$(OBJCOPY) -O ihex $< $@
+
+build/%.out:
+	$(CC) $(LDFLAGS) -o $@ $^
 
 build:
 	mkdir -p build
