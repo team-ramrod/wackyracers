@@ -50,6 +50,7 @@ void led_init() {
     __left_display.value     = 0x00;
     __left_display.enabled   = 0x00;
     __left_display.selected  = LED_SELECT_LEFT;
+
     __right_display.value    = 0x00;
     __right_display.enabled  = 0x00;
     __right_display.selected = LED_SELECT_RIGHT;
