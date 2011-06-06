@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     while (1) {
         led_display(num = (num + 1) % 100);
         PORTB.OUTTGL = 0x01;
-        _delay_ms(500.0);
+        _delay_ms(2000.0);
     }
 
     return 0;
