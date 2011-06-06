@@ -10,14 +10,14 @@
 #include "common.h"
 
 typedef enum {
-    FORWARD = 2,
-    REVERSE = 4
-} motor_direction_t;
-
-typedef enum {
     LEFT  = 0,
     RIGHT = 1
 } motor_t;
+
+typedef enum {
+    FORWARD = 2,
+    REVERSE = 4
+} motor_direction_t;
 
 typedef uint8_t motor_speed_t;
 
