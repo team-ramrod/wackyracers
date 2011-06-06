@@ -49,8 +49,7 @@ uart_t uart_init (uart_cfg_t *uart_cfg);
  * Set the callback function for incoming data
  * @param callback The callback function for incoming data
  */
-void uart_set_callback( void (*callback)(char *, int));
-
+void uart_set_callback(uart_t uart, void (*callback)(char *, int));
 
 /**
  * Write character.  This blocks until character written to transmit buffer.  

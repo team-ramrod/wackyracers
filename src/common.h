@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <avr/io.h>
 
 
 #define MOTOR_TC TCE0
