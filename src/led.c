@@ -13,9 +13,9 @@ static struct {
     uint8_t selected;
 } __left_display, __right_display;
 
-static enum { __L_D, __R_D } __current;
-
 ISR(LED_TC_OVF_vect, ISR_NOBLOCK) {
+    static enum { __L_D, __R_D } __current = __L_D;
+
     switch (__current) {
         case __L_D:
             __current = __R_D;
