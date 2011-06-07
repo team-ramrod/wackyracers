@@ -15,6 +15,7 @@
 
 static struct {
     motor_direction_t direction;
+    motor_speed_t speed;
 } __motors[2];
 
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
