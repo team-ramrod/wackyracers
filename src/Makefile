@@ -22,19 +22,22 @@ rebuild: clean all
 #############
 ##  Files  ##
 #############
-CAM_FILES   = main-cam    uart  led  camera  bluetooth
-MOTOR_FILES = main-motor  uart  led  motor   ir
-TEST_FILES  = test              led  
-UART_TEST_FILES = uart uart_test
+CAM_FILES        = main-cam    uart  led  camera  bluetooth
+MOTOR_FILES      = main-motor  uart  led  motor   ir
+TEST_FILES       = test              led  
+MOTOR_TEST_FILES = motor_test        led  motor
+UART_TEST_FILES  = uart_test   uart
 
 build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
 build/test.out:   $(addprefix build/, $(addsuffix .o, $(TEST_FILES)))
+build/motor_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
 build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 
 build/main-camera.o: common.h uart.h led.h clock.h camera.h  bluetooth.h
 build/main-motor.o:  common.h uart.h led.h clock.h motor.h   ir.h
 build/test.o:                        led.h clock.h
+build/motor_test.o:                  led.h clock.h motor.h
 build/uart_test.o: common.h uart.h
 
 build/uart.o:      common.h uart.h
@@ -55,6 +58,7 @@ build/%.o: %.c
 build/%.hex: build/%.out
 	$(OBJCOPY) -O ihex $< $@
 
+#build/%.out: $(addprefix build/, $(addsuffix .o, $(?????????)))
 build/%.out:
 	$(CC) $(LDFLAGS) -o $@ $^
 
