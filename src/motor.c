@@ -46,7 +46,7 @@ static void __set_speed(
     // Which (with a little rounding error) results in 0x05A5
     // or:
     //   0x5A << 4 + 0x5A >> 4
-    uint8_t value = (speed << 4) + (speed >> 4);
+    uint16_t value = (speed << 4) + (speed >> 4);
 
     switch (motor + direction) {
         case LEFT+FORWARD:  LEFT_FORWARD_PWM  = value; break;
