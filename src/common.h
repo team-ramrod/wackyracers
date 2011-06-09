@@ -28,6 +28,7 @@
 #define next(i,n) i = (i < n) ? i+1 : 0
 
 typedef enum {
+    CMD_NONE      = 0,
     CMD_FORWARD   = 1,
     CMD_BACK      = 2,
     CMD_LEFT      = 4,

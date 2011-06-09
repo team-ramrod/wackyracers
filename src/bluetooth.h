@@ -7,7 +7,7 @@
 void blue_init(void);
 
 //reads the bluetooth and outputs the drive command to the motor board
-inline void blue_read_bluetooth (char *string, int length);
+void blue_read_bluetooth (void);
 
 bool blue_send_byte(uint8_t byte);
 
