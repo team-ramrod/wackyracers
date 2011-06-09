@@ -46,6 +46,7 @@ build/led.o:       common.h led.h
 build/uart.o:      common.h uart.h
 build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
+build/charger.o:   common.h charger.h
 build/bluetooth.o: common.h bluetooth.h
 
 
