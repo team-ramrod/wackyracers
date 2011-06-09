@@ -58,7 +58,7 @@ static void __set_speed(
 
 void motor_init() {
     // Set the pre-scaler to 1
-    MOTOR_TC.CTRLA = 0x01;
+    MOTOR_TC.CTRLA = 0x04;
 
     // Set the pins required for PWM to be outputs.
     PORTE.DIRSET = 0x0F;
