@@ -87,6 +87,9 @@ void motor_init() {
     __disable_path(LEFT,  REVERSE);
     __disable_path(RIGHT, REVERSE);
 
+    //added pause in here to prevent shorting if reverses were on
+    _delay_us(0.72);
+
     // Set the forward enables on.
     __enable_path(LEFT,  FORWARD);
     __enable_path(RIGHT, FORWARD);

@@ -54,7 +54,7 @@
 /*! Number of bytes to send in test example. */
 #define NUM_BYTES  3
 /*! Define that selects the Usart used in example. */
-#define USART USARTC0
+#define USART USARTE0
 
 /*! USART data struct used in example. */
 USART_data_t USART_data;
@@ -87,9 +87,9 @@ int main(void)
 	/* This PORT setting is only valid to USARTC0 if other USARTs is used a
 	 * different PORT and/or pins are used. */
   	/* PC3 (TXD0) as output. */
-	PORTC.DIRSET   = PIN3_bm;
+	PORTE.DIRSET   = PIN3_bm;
 	/* PC2 (RXD0) as input. */
-	PORTC.DIRCLR   = PIN2_bm;
+	PORTE.DIRCLR   = PIN2_bm;
 
 	/* Use USARTC0 and initialize buffers. */
 	USART_InterruptDriver_Initialize(&USART_data, &USART, USART_DREINTLVL_LO_gc);
@@ -120,6 +120,7 @@ int main(void)
 	/* Enable global interrupts. */
 	sei();
 
+        while(1){
 	/* Send sendArray. */
 	i = 0;
 	while (i < NUM_BYTES) {
@@ -129,6 +130,7 @@ int main(void)
 			i++;
 		}
 	}
+        }
 
 	/* Fetch received data as it is received. */
 	i = 0;
