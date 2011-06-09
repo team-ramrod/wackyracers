@@ -9,6 +9,7 @@
 
 #include "common.h"
 
+typedef void (*charger_callback) (bool);
 /**
  * Initializes the charger module.
  */
@@ -22,8 +23,8 @@ bool charger_read();
 /**
  * Sets the callback to trigger when the charger is plugged in.
  *
- * @param callback The callback to trigger
+ * @param callback The callback to trigger, the param is whether the pin just went high or low.
  */
-void charger_set_callback(void (*)(void));
+void charger_set_callback(charger_callback);
 
 #endif
