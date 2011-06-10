@@ -1,18 +1,20 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <avr/io.h>
 #include "clock.h"
 #include "led.h"
 #include <util/delay.h>
 
 static int uart_putchar(char c, FILE *stream);
-static char uart_getchar(void);
+static int uart_getchar(FILE *stream);
 static void uart_init (void);
 
 static FILE mystdio = FDEV_SETUP_STREAM (uart_putchar, uart_getchar, _FDEV_SETUP_RW);
  
 
 int main(int argc, char *argv[]) {
-    uint8_t num = 0;
+    char string[5];
+    int num;
 
     clock_init();
     led_init();
@@ -24,15 +26,13 @@ int main(int argc, char *argv[]) {
 
     while (1) {
 
-        num = 0;
-        while(num == 0)
-        {
-            num = uart_getchar();
-        }
-        printf("%i\n", num);
+        fgets(string, 4, &mystdio);
+        num = atoi(string);
+
+        printf("%i\n",num);
 
 
-        led_display(num = (num + 1) % 100);
+        led_display(num);
         PORTB.OUTTGL = 0x01;
         _delay_ms(500.0);
     }
@@ -54,7 +54,7 @@ static int uart_putchar (char c, FILE *stream)
     return 0;
 }
 
-static char uart_getchar (void)//FILE *stream)
+static int uart_getchar (FILE *stream)
 {
     unsigned char ret;
 
@@ -67,7 +67,7 @@ static char uart_getchar (void)//FILE *stream)
 }
  
  
-// Init USART.  Transmit only (we're not receiving anything)
+// Init USART.
 // We use USARTC0, transmit pin on PC3.
 // Want 9600 baud. Have a 32 MHz clock. BSCALE = 0
 // BSEL = ( 32000000 / (2^0 * 16*9600)) -1 = 12
