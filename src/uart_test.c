@@ -5,10 +5,8 @@
 #include <util/delay.h>
 
 static int uart_putchar(char c, FILE *stream);
-static int uart_getchar(FILE *stream);
+static char uart_getchar(void);
 static void uart_init (void);
- 
-//static FILE mystdout = FDEV_SETUP_STREAM (uart_putchar, NULL, _FDEV_SETUP_WRITE);
 
 static FILE mystdio = FDEV_SETUP_STREAM (uart_putchar, uart_getchar, _FDEV_SETUP_RW);
  
@@ -29,7 +27,7 @@ int main(int argc, char *argv[]) {
         num = 0;
         while(num == 0)
         {
-        fgetc(num);
+            num = uart_getchar();
         }
         printf("%i\n", num);
 
@@ -56,11 +54,11 @@ static int uart_putchar (char c, FILE *stream)
     return 0;
 }
 
-static int uart_getchar (FILE *stream)
+static char uart_getchar (void)//FILE *stream)
 {
-    char ret;
+    unsigned char ret;
 
-    while ( !( USARTE0.STATUS & ~USART_DREIF_bm) );
+    while ( !( USARTE0.STATUS & USART_RXCIF_bm) );
 
     // Put our character into the transmit buffer
     ret = USARTE0.DATA;
