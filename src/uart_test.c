@@ -4,6 +4,7 @@
 #include "clock.h"
 #include "led.h"
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
 static int uart_putchar(char c, FILE *stream);
 static int uart_getchar(FILE *stream);
@@ -11,28 +12,30 @@ static void uart_init (void);
 
 static FILE mystdio = FDEV_SETUP_STREAM (uart_putchar, uart_getchar, _FDEV_SETUP_RW);
  
-
+int num = 0;
 int main(int argc, char *argv[]) {
     char string[5];
-    int num;
 
     clock_init();
     led_init();
     uart_init();
 
+    sei();
+    
     stdout = &mystdio;
 
     PORTB.DIRSET = 0x01;
 
     while (1) {
 
-        fgets(string, 4, &mystdio);
-        num = atoi(string);
+        //fgets(string, 4, &mystdio);
+        //num = atoi(string);
 
-        printf("%i\n",num);
+        //printf("%i\n",num);
 
 
         led_display(num);
+        num++;
         PORTB.OUTTGL = 0x01;
         _delay_ms(500.0);
     }
@@ -87,9 +90,20 @@ static void uart_init (void)
     USARTE0.BAUDCTRLA = 0xCF;
  
     // Set mode of operation
-    USARTE0.CTRLA = 0;                          // no interrupts please
+    USARTE0.CTRLA = 0x10;                       // enable low level interrupts
     USARTE0.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
  
     // Enable transmitter and receiver
     USARTE0.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
+}
+
+ISR(USARTE0_RXC_vect)
+{
+    num = 1;
+    USARTE0.STATUS &= ~0x80;
+}
+
+ISR(USARTE0_DRE_vect)
+{
+    num = 2;
 }
