@@ -26,7 +26,7 @@ CAM_FILES        = main-cam    uart  led  button camera  bluetooth
 MOTOR_FILES      = main-motor  uart  led  button motor   ir
 TEST_FILES       = test              led  button
 MOTOR_TEST_FILES = motor_test        led  motor
-UART_TEST_FILES  = uart_test   uart
+UART_TEST_FILES  = uart_test   uart  led
 
 build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))

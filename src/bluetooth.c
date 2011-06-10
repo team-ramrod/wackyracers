@@ -101,12 +101,15 @@ void blue_init(){
  * Based on the UART command line process by Micheal Hayes on ECE wiki
  *
  */
-inline void blue_read_bluetooth(void) {
+void blue_read_bluetooth(void) {
     char command;
+    int num = 0;
     char input[BLUE_RECEIVE_SIZE];
     char error[] = "invalid input\n";
     bool byteToBuffer;
     int i;
+
+    led_display(num++);
 
     /* Fetch received data as it is received. */
     i = 0;

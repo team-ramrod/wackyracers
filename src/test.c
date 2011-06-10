@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
     PORTB.DIRSET = 0x01;
     
-    while (!button_read(button_1)) {
+    while (button_read(button_1)) {
         // Do nothing
     }
 

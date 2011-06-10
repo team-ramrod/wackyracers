@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
     uint8_t num = 0;
 
     while(1) {
+        blue_read_bluetooth();
         led_display(num++);
     }
 
