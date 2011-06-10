@@ -1,6 +1,6 @@
 #include "button.h"
 
-#define PULLUP _BV(4)
+#define PULLDOWN _BV(4)
 #define NUM_BUTTONS 3
 
 static struct button {
@@ -25,16 +25,16 @@ button_t button_init(button_config config) {
 
     // Set the output side low.
     (*button->port).DIRSET = _BV(button->out_pin);
-    (*button->port).OUTCLR = _BV(button->out_pin);
+    (*button->port).OUTSET = _BV(button->out_pin);
 
     // Set the input side on pullup.
-    (&(*button->port).PIN0CTRL)[button->out_pin] |= PULLUP;
+    (&(*button->port).PIN0CTRL)[button->out_pin] |= PULLDOWN;
 
     return button;
 }
 
 bool button_read(button_t button) {
-    return !((*button->port).IN & _BV(button->in_pin));
+    return ((*button->port).IN & _BV(button->in_pin));
 }
 
 void button_set_callback(button_t button, button_callback callback) {
