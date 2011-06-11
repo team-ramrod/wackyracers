@@ -51,6 +51,11 @@ With six people, it is more than likely that there will be six individual coding
 
 The norm for (embedded) C seems to be \texttt{underscore\_separators} rather than \texttt{camelCase}. If anyone does want to use camelCase (and they own the module), it is important to call variable/function names the same as they would be had they been written with underscores. E.g. \texttt{pio\_config\_set(...)} becomes \texttt{pioConfigSet(...)} et cetera.
 
+To allow for text editors like vim to easily open multiple file at once, all
+code should not exceed the 80th character column. However there are situations
+where this rule should not be abided by. If wrapping the code will make it
+dramatically harder to read, ignore this rule.
+
 Other things like the position of the opening brace for loops and finicky white-space issues, for example: ``\texttt{my\_way()}" versus ``\texttt{their\_way ()}" are probably best dealt with by following the golden rule of sticking with the existing style, decided on by whoever owns the module.
 
 \subsection{Environments and Layouts}
