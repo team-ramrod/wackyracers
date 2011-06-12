@@ -22,7 +22,7 @@ rebuild: clean all
 #############
 ##  Files  ##
 #############
-CAM_FILES        = main-cam    uart  led  button camera  bluetooth
+CAM_FILES        = main-cam    uart_cam_board  led  button camera  bluetooth
 MOTOR_FILES      = main-motor  uart  led  button motor   ir
 TEST_FILES       = test              led  button
 MOTOR_TEST_FILES = motor_test        led  motor
@@ -34,13 +34,14 @@ build/test.out:   $(addprefix build/, $(addsuffix .o, $(TEST_FILES)))
 build/motor_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
 build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 
-build/main-camera.o: common.h uart.h led.h button.h clock.h camera.h  bluetooth.h
+build/main-camera.o: common.h uart_cam_board.h led.h button.h clock.h camera.h  bluetooth.h
 build/main-motor.o:  common.h uart.h led.h button.h clock.h motor.h   ir.h
 build/test.o:                        led.h button.h clock.h
 build/motor_test.o:                  led.h button.h clock.h motor.h
-build/uart_test.o: common.h uart.h
+build/uart_test.o: common.h uart_cam_board.h
 
 build/uart.o:      common.h uart.h
+build/uart_cam_board.o:      common.h uart_cam_board.h
 build/ir.o:        common.h ir.h
 build/led.o:       common.h led.h
 build/uart.o:      common.h uart.h
