@@ -20,16 +20,18 @@ int main(int argc, char *argv[]) {
     while (1) {
         cmd = uart_getchar_debug(&stdio_to_cam_board);
         switch (cmd) {
-            case 0x73:
+            case 's':
+            case '5':
                 motor_set_movement(VERTICAL_STOPPED, HORIZONTAL_STOPPED);
                 led_display(0);
                 break;
-            case 0x77:
+            case 'w':
+            case '8':
                 motor_set_movement(VERTICAL_FORWARD, HORIZONTAL_STOPPED);
                 led_display(1);
                 break;
             default:
-                led_display(3);
+                led_display(cmd);
                 break;
         }
     }
