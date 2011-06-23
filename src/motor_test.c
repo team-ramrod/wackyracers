@@ -4,29 +4,34 @@
  * @date   20110608
  */
 
+#include "uart.h"
 #include "clock.h"
 #include "led.h"
-#include "motor.h"
-
-#include <avr/io.h>
-#include <util/delay.h>
+#include "motor_controller.h"
 
 int main(int argc, char *argv[]) {
-    uint8_t num = 0;
-
     clock_init();
     led_init();
-    motor_init();
+    motor_controller_init();
+    uart_init_motor_board();
 
+    uint8_t cmd = 0;
 
     while (1) {
-        led_display(num = (num + 1) % 100);
-        //motor_set_speed(LEFT, ((num - 1) % 2) * 20);
-        motor_set_speed(RIGHT, num * 5);
-        //motor_set_speed(LEFT,  left * 28);
-        //motor_set_speed(RIGHT, right * 28);
-
-        _delay_ms(12000.0);
+        cmd = uart_getchar_debug(&stdio_to_cam_board);
+        switch (cmd) {
+            case 0x73:
+                motor_set_movement(VERTICAL_STOPPED, HORIZONTAL_STOPPED);
+                led_display(0);
+                break;
+            case 0x77:
+                motor_set_movement(VERTICAL_FORWARD, HORIZONTAL_STOPPED);
+                led_display(1);
+                break;
+            default:
+                led_display(3);
+                break;
+        }
     }
 
     return 0;

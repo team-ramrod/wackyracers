@@ -22,6 +22,20 @@ FILE stdio_to_motor_board;
 FILE stdio_to_cam_board;
 FILE stdio_cam;
 
+/******************************************************************************
+ * Documentation required to be added to this header file:                    *
+ *                                                                            *
+ *  * Blocking?  Do any of these functions block, or are they asynchronous.   *
+ *                                                                            *
+ *  * stream?    What stream does it want, I want to run uart_getchar_debug   *
+ *               but I have no idea what stream to pass it.                   *
+ *                                                                            *
+ *  * int?       Are the values returned signed or unsigned?  Shouldn't this  *
+ *               be a uint8_t.
+ *                                                                            *
+ ******************************************************************************/
+
+
 //initilizes uart on camera board
 void uart_init_cam_board (void);
 

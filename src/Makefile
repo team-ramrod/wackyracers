@@ -16,16 +16,16 @@ CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 LDFLAGS = -mmcu=$(MCU)
 
 all: build/camera.hex build/motor.hex
-rebuild: clean all
+rebuild: cleanall all
 
 
 #############
 ##  Files  ##
 #############
 CAM_FILES        = main-cam    uart  led  button camera            bluetooth
-MOTOR_FILES      = main-motor  uart  led  button motor_controller  ir   charger
+MOTOR_FILES      = main-motor  uart  led  button motor motor_controller  ir   charger
 TEST_FILES       = test              led  button
-MOTOR_TEST_FILES = motor_test        led  motor
+MOTOR_TEST_FILES = motor_test  uart  led  motor motor_controller
 UART_TEST_FILES  = uart_test   uart  led
 
 build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
@@ -37,7 +37,7 @@ build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 build/main-camera.o: common.h uart_cam_board.h led.h button.h clock.h camera.h  bluetooth.h
 build/main-motor.o:  common.h uart.h led.h button.h clock.h motor_controller.h   ir.h      charger.h
 build/test.o:                        led.h button.h clock.h
-build/motor_test.o:                  led.h button.h clock.h motor.h
+build/motor_test.o:           uart.h led.h button.h clock.h motor_controller.h
 build/uart_test.o: common.h uart_cam_board.h
 
 build/uart.o:      common.h uart.h
@@ -66,12 +66,6 @@ build/%.out:
 build:
 	mkdir -p build
 
-program-camera-stk:
-	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifcamera.hex
-
-program-motor-stk:
-	stk600 -cUSB$(SN) -d$(TARGET) -ms -e -pf -ifmotor.hex
-
 dude-%: build/%.hex
 	avrdude -p x16a4 -c avrispmkII -P usb -U $< -qq
 
@@ -82,7 +76,7 @@ clean:
 	rm -f build/*.o build/*.ls build/*.lis build/*.dbg build/*.mp build/*.s build/*.lst build/*.out
 
 cleanall:
-	rm -rf build
+	rm -f build/*
 
 .PHONY: all rebuild
 .PHONY: clean cleanall
