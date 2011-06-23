@@ -15,6 +15,38 @@ FILE stdio_cam = FDEV_SETUP_STREAM (uart_putchar_cam, uart_getchar_cam, _FDEV_SE
 /* File stream for debuggin. */
 FILE DEBUG = FDEV_SETUP_STREAM (uart_putchar_debug, uart_getchar_debug, _FDEV_SETUP_RW);
 
+int uart_putchar_debug(char c, FILE *stream);
+
+//sends data to bluetooth
+int uart_putchar_blue(char c, FILE *stream);
+
+//sends data to motor board
+int uart_putchar_motor(char c, FILE *stream);
+
+//sends data to computer
+int uart_putchar_debug(char c, FILE *stream);
+
+//sends data to camera
+int uart_putchar_cam(char c, FILE *stream);
+
+//sends data to camera board
+int uart_putchar_cam_board(char c, FILE *stream);
+
+//gets data from bluetooth
+int uart_getchar_blue(FILE *stream);
+
+//gets data from motor
+int uart_getchar_motor(FILE *stream);
+
+//gets data from computer
+int uart_getchar_debug(FILE *stream);
+
+//gets data from camera
+int uart_getchar_cam(FILE *stream);
+
+//gets data from camera
+int uart_getchar_cam_board(FILE *stream);
+
 /* Send characters to PC */
 int uart_putchar_debug (char c, FILE *stream)
 {
@@ -116,7 +148,7 @@ int uart_getchar_motor (FILE *stream)
     return ret;
 }
 
-//get data from camer
+//get data from camera
 int uart_getchar_cam (FILE *stream)
 {
     unsigned char ret;
