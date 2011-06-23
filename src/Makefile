@@ -22,23 +22,26 @@ rebuild: cleanall all
 #############
 ##  Files  ##
 #############
-CAM_FILES        = main-cam    uart  led  button camera            bluetooth
-MOTOR_FILES      = main-motor  uart  led  button motor motor_controller  ir   charger
-TEST_FILES       = test              led  button
-MOTOR_TEST_FILES = motor_test  uart  led  motor motor_controller
-UART_TEST_FILES  = uart_test   uart  led
+CAM_FILES              = main-cam          uart  led  button camera            bluetooth
+MOTOR_FILES            = main-motor        uart  led  button motor motor_controller  ir   charger
+LED_TEST_FILES         = test                    led  button
+MOTOR_TEST_FILES       = motor_test        uart  led                 motor motor_controller
+MOTOR_UART_TEST_FILES  = motor_uart_test   uart  led         charger motor motor_controller
+UART_TEST_FILES        = uart_test         uart  led
 
 build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
-build/test.out:   $(addprefix build/, $(addsuffix .o, $(TEST_FILES)))
+build/test.out:   $(addprefix build/, $(addsuffix .o, $(LED_TEST_FILES)))
 build/motor_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
+build/motor_uart_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_UART_TEST_FILES)))
 build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 
-build/main-camera.o: common.h uart_cam_board.h led.h button.h clock.h camera.h  bluetooth.h
-build/main-motor.o:  common.h uart.h led.h button.h clock.h motor_controller.h   ir.h      charger.h
-build/test.o:                        led.h button.h clock.h
-build/motor_test.o:           uart.h led.h button.h clock.h motor_controller.h
-build/uart_test.o: common.h uart_cam_board.h
+build/main-camera.o:     common.h        led.h button.h uart_cam_board.h clock.h camera.h  
+build/main-motor.o:      common.h uart.h led.h button.h clock.h motor_controller.h   ir.h      charger.h
+build/test.o:                            led.h button.h clock.h
+build/motor_test.o:               uart.h led.h button.h clock.h motor_controller.h
+build/motor_uart_test.o: common.h uart.h led.h charger.h motor.h motor_controller.h
+build/uart_test.o:       common.h uart_cam_board.h
 
 build/uart.o:      common.h uart.h
 build/ir.o:        common.h ir.h

@@ -269,12 +269,12 @@ void uart_init_motor_board (void)
     //set up D for camera board communication
 
     // Set the TxD pin high - set PORTC DIR register bit 3 to 1
-    PORTD.OUTSET = PIN7_bm;
+    PORTD.OUTSET = PIN3_bm;
 
     // Set the TxD pin as an output - set PORTC OUT register bit 3 to 1
-    PORTD.DIRSET = PIN7_bm;
+    PORTD.DIRSET = PIN3_bm;
     /* Set the RxD pin as an input*/
-    PORTD.DIRCLR = PIN6_bm;
+    PORTD.DIRCLR = PIN2_bm;
 
     // Set baud rate & frame format
     USARTD0.BAUDCTRLB = 0x00;
