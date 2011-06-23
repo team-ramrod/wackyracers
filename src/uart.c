@@ -1,20 +1,5 @@
 #include "uart.h"
 
-//sets up stdio for bluetooth
-FILE stdio_blue = FDEV_SETUP_STREAM (uart_putchar_blue, uart_getchar_blue, _FDEV_SETUP_RW);
-
-//sets up stdio for communicating with motor board
-FILE stdio_to_motor_board = FDEV_SETUP_STREAM (uart_putchar_motor, uart_getchar_motor, _FDEV_SETUP_RW);
-
-//sets up stdio for communicating with camera board
-FILE stdio_to_cam_board = FDEV_SETUP_STREAM (uart_putchar_cam_board, uart_getchar_cam_board, _FDEV_SETUP_RW);
-
-//sets up stdio for camera
-FILE stdio_cam = FDEV_SETUP_STREAM (uart_putchar_cam, uart_getchar_cam, _FDEV_SETUP_RW);
-
-/* File stream for debuggin. */
-FILE DEBUG = FDEV_SETUP_STREAM (uart_putchar_debug, uart_getchar_debug, _FDEV_SETUP_RW);
-
 int uart_putchar_debug(char c, FILE *stream);
 
 //sends data to bluetooth
@@ -46,6 +31,21 @@ int uart_getchar_cam(FILE *stream);
 
 //gets data from camera
 int uart_getchar_cam_board(FILE *stream);
+
+//sets up stdio for bluetooth
+FILE stdio_blue = FDEV_SETUP_STREAM (uart_putchar_blue, uart_getchar_blue, _FDEV_SETUP_RW);
+
+//sets up stdio for communicating with motor board
+FILE stdio_to_motor_board = FDEV_SETUP_STREAM (uart_putchar_motor, uart_getchar_motor, _FDEV_SETUP_RW);
+
+//sets up stdio for communicating with camera board
+FILE stdio_to_cam_board = FDEV_SETUP_STREAM (uart_putchar_cam_board, uart_getchar_cam_board, _FDEV_SETUP_RW);
+
+//sets up stdio for camera
+FILE stdio_cam = FDEV_SETUP_STREAM (uart_putchar_cam, uart_getchar_cam, _FDEV_SETUP_RW);
+
+/* File stream for debuggin. */
+FILE DEBUG = FDEV_SETUP_STREAM (uart_putchar_debug, uart_getchar_debug, _FDEV_SETUP_RW);
 
 /* Send characters to PC */
 int uart_putchar_debug (char c, FILE *stream)
