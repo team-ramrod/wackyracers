@@ -59,5 +59,10 @@ void motor_set_movement(motor_vertical_t vert, motor_horizontal_t horiz) {
             motor_set_speed(LEFT, 10);
             motor_set_speed(RIGHT, 1);
             break;
+        case VERTICAL_STOPPED + HORIZONTAL_STOPPED:
+        default:
+            motor_set_speed(LEFT, 0);
+            motor_set_speed(RIGHT, 0);
+            break;
     }
 }
