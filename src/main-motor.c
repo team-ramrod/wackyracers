@@ -7,8 +7,8 @@
  *
  *  Status: Untested
 */
-#include "charger.h"
 #include "common.h"
+#include "commander.h"
 #include "ir.h"
 #include "led.h"
 #include "motor_controller.h"
@@ -23,7 +23,6 @@ ISR(BADISR_vect) {
 typedef enum {BT, IR} controller_t;
 
 int main(int argc, char *argv[]) {
-    charger_init();
     uart_init_motor_board();
     motor_controller_init();
     led_init();
@@ -33,27 +32,12 @@ int main(int argc, char *argv[]) {
     controller_t controller = IR;
 
     while(1) {
-        cmd_t latest_cmd, ir_cmd, bt_cmd;
-        ir_cmd = ir_get_cmd();
-        bt_cmd = CMD_NONE;// cam_get_cmd(); // TODO
-        if (controller == BT) {
-            if (ir_cmd == CMD_ASSUME_CTRL) {
-                controller = IR;
-                latest_cmd = CMD_NONE;
-            } else {
-                latest_cmd = bt_cmd;
-            }
-        } else {
-            if (bt_cmd == CMD_ASSUME_CTRL) {
-                controller = BT;
-                latest_cmd = CMD_NONE;
-            } else {
-                latest_cmd = ir_cmd;
-            }
-        }
+        cmd_t cmd;
+
+        cmd = get_cmd();
 
         // take latest command and change state
-        switch (latest_cmd) {
+        switch (cmd) {
             case CMD_FORWARD:
                 if (motor_vertical == VERTICAL_BACKWARD) {
                     motor_vertical = VERTICAL_STOPPED;
