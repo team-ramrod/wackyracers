@@ -33,18 +33,22 @@ void charger_callback_function(bool plugged_in) {
 void uart_motor_board_callback_function(cmd_t command) {
     if (command == CMD_ASSUME_CTRL) {
         controller = BT;
+        current_cmd = CMD_NONE;
     } else if (!charger_state && controller == BT) {
         current_cmd = command;
+    } else {
+        current_cmd = CMD_NONE;
     }
-    current_cmd = CMD_NONE;
 }
 void ir_callback_function(cmd_t command) {
     if (command == CMD_ASSUME_CTRL) {
         controller = IR;
+        current_cmd = CMD_NONE;
     } else if (!charger_state && controller == IR) {
         current_cmd = command;
+    } else {
+        current_cmd = CMD_NONE;
     }
-    current_cmd = CMD_NONE;
 }
 
 void commander_init() {
