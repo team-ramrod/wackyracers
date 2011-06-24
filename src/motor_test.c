@@ -4,11 +4,12 @@
  * @date   20110608
  */
 
-#include "uart.h"
+#include "commander.h"
 #include "clock.h"
 #include "led.h"
 #include "button.h"
 #include "motor_controller.h"
+#include <avr/interrupt.h>
 
 ISR(BADISR_vect) {
     led_display_left(0x00);
@@ -20,51 +21,46 @@ int main(int argc, char *argv[]) {
     led_init();
     button_init();
     motor_controller_init();
-    uart_init_motor_board();
+    commander_init();
+    interrupt_init();
 
     button_wait_power();
 
-    uint8_t cmd = 0;
+    cmd_t cmd = 0;
 
     while (1) {
-        cmd = fgetc(&stdio_to_cam_board);
-        fprintf(&stdio_to_cam_board, "%c", cmd);
+        cmd = get_cmd();
+        //cmd = fgetc(&stream_board);
+        //fprintf(&stream_board, "%i ", cmd);
         switch (cmd) {
-            case 's':
-            case '5':
+            case CMD_STOP:
                 motor_set_movement(VERT_STOPPED, HORIZ_STOPPED);
                 led_display(0);
                 break;
-            case 'w':
-            case '8':
+            case CMD_FORWARD:
                 motor_set_movement(VERT_FORWARD, HORIZ_STOPPED);
                 led_display(1);
                 break;
-            case 'x':
-            case '2':
+            case CMD_BACK:
                 motor_set_movement(VERT_BACKWARD, HORIZ_STOPPED);
                 led_display(2);
                 break;
-            case 'a':
-            case '4':
+            case CMD_LEFT:
                 motor_set_movement(VERT_STOPPED, HORIZ_LEFT);
                 led_display(3);
                 break;
-            case 'd':
-            case '6':
+            case CMD_RIGHT:
                 motor_set_movement(VERT_STOPPED, HORIZ_RIGHT);
                 led_display(4);
                 break;
+            case CMD_NONE:
+                // Ignore it
+                break;
             default:
-                led_display(cmd-60);
+                led_display(cmd);
                 break;
         }
     }
 
     return 0;
-}
-
-ISR(INTERRUPT_CAM)
-{
-    // Do nothing
 }

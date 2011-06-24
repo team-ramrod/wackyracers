@@ -27,6 +27,9 @@ void uart_init(void);
  * translation unit or bad things will occur.
  */
 #ifdef ENABLE_UART_MOTOR_CALLBACK
+
+#include "common.h"
+
 typedef void (*uart_cmd_callback) (cmd_t);
 uart_cmd_callback __motor_board_callback = NULL;
 
@@ -42,11 +45,24 @@ static void uart_set_motor_board_callback(uart_cmd_callback callback) {
 }
 
 ISR(INTERRUPT_CAM) {
+    // Hacky testing code for using keyboard to control it:
+    uint8_t value = getc(&stream_board);
+    cmd_t ret = CMD_GET_IMAGE;
+    switch (value) {
+        case 'w': ret = CMD_FORWARD; break;
+        case 's': ret = CMD_STOP; break;
+        case '`': ret = CMD_ASSUME_CTRL; break;
+    }
+    if (__motor_board_callback != NULL) {
+        __motor_board_callback(ret);
+    }
+
+    // Actual code:
+    /*
     if (__motor_board_callback != NULL) {
         __motor_board_callback(getc(&stream_board));
-    } else {
-        getc(&stream_board);
     }
+    */
 }
 #endif
 
