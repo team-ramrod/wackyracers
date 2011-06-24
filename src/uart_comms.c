@@ -24,55 +24,55 @@ FILE stream_debug = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW
 
 int uart_putchar(char c, FILE * stream)
 {
-    volatile USART_t uart;
+    volatile USART_t * uart;
     
     if (stream == &stream_debug) {
-        uart = USARTC1;
+        uart = &USARTC1;
     }
     else if (stream == &stream_cam) {
-        uart = USARTD1;
+        uart = &USARTD1;
     }
     else if (stream == &stream_bt) {
-        uart = USARTC0;
+        uart = &USARTC0;
     }
     else if (stream == &stream_board) {
-        uart = USARTE0;
+        uart = &USARTE0;
     }
     
     if (c == '\n')
         uart_putchar('\r', stream);
     
     /* Wait for the transmit buffer to be empty */
-    while (!(uart.STATUS & USART_DREIF_bm));
+    while (!(uart->STATUS & USART_DREIF_bm));
     
     /* Put our character into the transmit buffer. */
-    uart.DATA = c;
+    uart->DATA = c;
 
     return 0;
 }
 
 int uart_getchar(FILE * stream)
 {
-    volatile USART_t uart;
+    volatile USART_t * uart;
     
     if (stream == &stream_debug) {
-        uart = USARTC1;
+        uart = &USARTC1;
     }
     else if (stream == &stream_cam) {
-        uart = USARTD1;
+        uart = &USARTD1;
     }
     else if (stream == &stream_bt) {
-        uart = USARTC0;
+        uart = &USARTC0;
     }
     else if (stream == &stream_board) {
-        uart = USARTE0;
+        uart = &USARTE0;
     }
 
     unsigned char ret;
     
-    while (!(uart.STATUS & USART_RXCIF_bm));
+    while (!(uart->STATUS & USART_RXCIF_bm));
     
-    ret = uart.DATA;
+    ret = uart->DATA;
     
     return ret;
 }
