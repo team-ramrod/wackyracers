@@ -9,10 +9,8 @@
 */
 #include "common.h"
 #include "commander.h"
-#include "ir.h"
 #include "led.h"
 #include "motor_controller.h"
-#include "uart.h"
 
 #include <avr/interrupt.h>
 
@@ -20,16 +18,12 @@ ISR(BADISR_vect) {
     led_display(0xEB);
 }
 
-typedef enum {BT, IR} controller_t;
-
 int main(int argc, char *argv[]) {
-    uart_init_motor_board();
     motor_controller_init();
     led_init();
 
     motor_horiz_t motor_horiz = HORIZ_STOPPED;
     motor_vert_t motor_vert = VERT_STOPPED;
-    controller_t controller = IR;
 
     while(1) {
         cmd_t cmd;
@@ -76,6 +70,7 @@ int main(int argc, char *argv[]) {
                 led_display_left(1);
                 led_display_right(1);
                 break;
+            case CMD_NONE:
             default:
                 //do nothing as the state does not need changing
                 break;

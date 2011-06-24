@@ -19,3 +19,7 @@ cmd_t ir_get_cmd(void) {
 uint16_t get_time(void){
 	return IR_TC.CNT;
 }
+
+void ir_set_callback(ir_callback callback) {
+    //TODO: Implement this
+}

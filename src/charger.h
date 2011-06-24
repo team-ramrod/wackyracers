@@ -17,6 +17,8 @@ void charger_init();
 
 /**
  * Reads whether the charger is plugged in.
+ *
+ * @return true for charger plugged in, other wise false
  */
 bool charger_read();
 
