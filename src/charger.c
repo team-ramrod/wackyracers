@@ -29,7 +29,7 @@ void charger_init(){
 }
 
 bool charger_read() {
-    return !(CHARGER_PORT.IN & CHARGER_STATUS_PIN);
+    return (CHARGER_PORT.IN & CHARGER_STATUS_PIN);
 }
 
 void charger_set_callback(charger_callback callback) {
