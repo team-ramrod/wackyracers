@@ -39,7 +39,7 @@ bool button_read(button_t);
  */
 void button_set_callback(button_t, button_callback);
 
-static void button_wait_power() {
+static inline void button_wait_power() {
     do {
     } while (button_read(BUTTON_POWER));
 }
