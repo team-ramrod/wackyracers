@@ -57,10 +57,6 @@ void led_init() {
 
     // Enable the interrupt at a low level.
     LED_TC.INTCTRLA = 0x01;
-
-    // Enable the global interrupt register
-    sei();
-    PMIC.CTRL |= 0x01;
 }
 
 void led_display_left(uint8_t number) {
