@@ -8,9 +8,12 @@
 #define clock_h
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 /**
  * Sets the clock to use the 32Mhz internal oscillator.
+ *
+ * Main must call this before any other inits.
  */
 static inline void clock_init() {
     // Enable the 32Mhz internal oscillator.
@@ -27,5 +30,16 @@ static inline void clock_init() {
     // Change to the 32Mhz internal oscillator.
     CLK.CTRL = 0x01;
 }
+
+/**
+ * Enables all the interrupts.
+ *
+ * Main must call this after all other inits.
+ */
+static inline void interrupt_init() {
+    sei();
+    PMIC.CTRL |= 0x07;
+}
+
 
 #endif
