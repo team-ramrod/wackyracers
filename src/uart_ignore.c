@@ -9,7 +9,7 @@ int uart_getchar(FILE *stream);
 /* Communication stream FROM motor board TO comms board. */
 /* NOTE Currently unused. */
 FILE stream_m2c = FDEV_SETUP_STREAM (uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-
+//FILE * stream_m2c = { FDEV
 /* Communication stream FROM comms board TO motor board. */
 FILE stream_c2m = FDEV_SETUP_STREAM (uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
