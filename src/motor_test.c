@@ -7,6 +7,7 @@
 #include "uart.h"
 #include "clock.h"
 #include "led.h"
+#include "button.h"
 #include "motor_controller.h"
 
 ISR(BADISR_vect) {
@@ -17,8 +18,11 @@ ISR(BADISR_vect) {
 int main(int argc, char *argv[]) {
     clock_init();
     led_init();
+    button_init();
     motor_controller_init();
     uart_init_motor_board();
+
+    button_wait_power();
 
     uint8_t cmd = 0;
 

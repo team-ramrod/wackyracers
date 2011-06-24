@@ -25,7 +25,7 @@ rebuild: cleanall all
 CAM_FILES              = main-cam          uart  led  button camera            bluetooth
 MOTOR_FILES            = main-motor        uart  led  button commander motor motor_controller  ir   charger
 LED_TEST_FILES         = test                    led  button
-MOTOR_TEST_FILES       = motor_test        uart  led                 motor motor_controller
+MOTOR_TEST_FILES       = motor_test        uart  led  button         motor motor_controller
 MOTOR_UART_TEST_FILES  = motor_uart_test   uart  led         charger motor motor_controller
 CAM_UART_TEST_FILES    =   cam_uart_test   uart  led 
 UART_TEST_FILES        = uart_test         uart  led
