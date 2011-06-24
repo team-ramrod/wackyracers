@@ -1,42 +1,27 @@
 #include "button.h"
 
 #define PULLDOWN _BV(4)
-#define NUM_BUTTONS 3
 
-static struct button {
-    button_callback  callback;
-    PORT_t          *port;
-    uint8_t          out_pin;
-    uint8_t          in_pin;
-} __buttons[NUM_BUTTONS];
+static button_callback __power_callback = NULL;
 
-static uint8_t __current = 0;
+void button_init() {
+    // Set the output side high.
+    PORTB.DIRSET = _BV(1);
+    PORTB.OUTSET = _BV(1);
 
-button_t button_init(button_config config) {
-    if (__current >= NUM_BUTTONS) {
-        return NULL;
-    }
-
-    button_t button = &__buttons[__current++];
-
-    button->port    = config.port;
-    button->out_pin = config.out_pin;
-    button->in_pin  = config.in_pin;
-
-    // Set the output side low.
-    (*button->port).DIRSET = _BV(button->out_pin);
-    (*button->port).OUTSET = _BV(button->out_pin);
-
-    // Set the input side on pullup.
-    (&(*button->port).PIN0CTRL)[button->out_pin] |= PULLDOWN;
-
-    return button;
+    // Set the input side on pulldown.
+    PORTB.PIN3CTRL |= PULLDOWN;
 }
 
 bool button_read(button_t button) {
-    return ((*button->port).IN & _BV(button->in_pin));
+    switch (button) {
+        case BUTTON_POWER: return !(PORTB.IN & _BV(3));
+        default: return false;
+    }
 }
 
 void button_set_callback(button_t button, button_callback callback) {
-    button->callback = callback;
+    switch (button) {
+        case BUTTON_POWER: __power_callback = callback;
+    }
 }
