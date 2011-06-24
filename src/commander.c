@@ -7,6 +7,7 @@
  *  Status: Untested
 */
 #include "charger.h"
+#define ENABLE_UART_MOTOR_CALLBACK
 #include "uart.h"
 #include "common.h"
 

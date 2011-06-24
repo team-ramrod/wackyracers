@@ -42,6 +42,32 @@ FILE stdio_cam;
  *                                                                            *
  ******************************************************************************/
 
+/**
+ * The callback for the motor board. Define ENABLE_UART_MOTOR_CALLBACK if you 
+ * wish to have this callback available.  Can only be defined in one
+ * translation unit or bad things will occur.
+ */
+#ifdef ENABLE_UART_MOTOR_CALLBACK
+typedef void (*uart_cmd_callback) (cmd_t);
+uart_cmd_callback __motor_board_callback = NULL;
+
+/**
+ * Sets the callback to be run when a command is recieved from the camera board
+ * by the motor board.  Handles reading the input and decoding the requested
+ * command.
+ *
+ * @parm callback The callback to be run, takes in the command as a paramenter.
+ */
+static void uart_set_motor_board_callback(uart_cmd_callback callback) {
+    __motor_board_callback = callback;
+}
+
+ISR(INTERRUPT_CAM) {
+    if (__motor_board_callback != NULL) {
+        __motor_board_callback(getc(&stdio_to_cam_board));
+    }
+}
+#endif
 
 //initilizes uart on camera board
 void uart_init_cam_board (void);
