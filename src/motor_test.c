@@ -28,27 +28,27 @@ int main(int argc, char *argv[]) {
         switch (cmd) {
             case 's':
             case '5':
-                motor_set_movement(VERTICAL_STOPPED, HORIZONTAL_STOPPED);
+                motor_set_movement(VERT_STOPPED, HORIZ_STOPPED);
                 led_display(0);
                 break;
             case 'w':
             case '8':
-                motor_set_movement(VERTICAL_FORWARD, HORIZONTAL_STOPPED);
+                motor_set_movement(VERT_FORWARD, HORIZ_STOPPED);
                 led_display(1);
                 break;
             case 'x':
             case '2':
-                motor_set_movement(VERTICAL_BACKWARD, HORIZONTAL_STOPPED);
+                motor_set_movement(VERT_BACKWARD, HORIZ_STOPPED);
                 led_display(2);
                 break;
             case 'a':
             case '4':
-                motor_set_movement(VERTICAL_STOPPED, HORIZONTAL_LEFT);
+                motor_set_movement(VERT_STOPPED, HORIZ_LEFT);
                 led_display(3);
                 break;
             case 'd':
             case '6':
-                motor_set_movement(VERTICAL_STOPPED, HORIZONTAL_RIGHT);
+                motor_set_movement(VERT_STOPPED, HORIZ_RIGHT);
                 led_display(4);
                 break;
             default:
