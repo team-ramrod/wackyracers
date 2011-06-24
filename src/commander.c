@@ -11,7 +11,7 @@
 #include "charger.h"
 #include "common.h"
 #include "ir.h"
-#include "uart.h"
+#include "uart_motor.h"
 
 typedef enum {BT, IR} controller_t;
 
@@ -54,7 +54,7 @@ void commander_init() {
     charger_state = charger_read();
 
     //uart init
-    uart_init_motor_board();
+    uart_init();
     uart_set_motor_board_callback(&uart_motor_board_callback_function);
 
     //ir init
