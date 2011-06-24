@@ -44,6 +44,8 @@ static void uart_set_motor_board_callback(uart_cmd_callback callback) {
 ISR(INTERRUPT_CAM) {
     if (__motor_board_callback != NULL) {
         __motor_board_callback(getc(&stream_board));
+    } else {
+        getc(&stream_board);
     }
 }
 #endif
