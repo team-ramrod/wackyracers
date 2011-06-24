@@ -8,6 +8,13 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+//Use this for interupts from the bluetooth module
+#define INTERRUPT_BLUE USARTC0_RXC_vect
+//Use this for when a signal is coming from motor board to cam board's UART
+#define INTERRUPT_MOTOR USARTE0_RXC_vect
+// ummm... fuck... signl from the image sensor OR from cam_board to motor board
+#define INTERRUPT_CAM USARTD0_RXC_vect
+
 FILE stream_debug;
 FILE stream_board;
 
