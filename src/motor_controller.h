@@ -5,16 +5,16 @@
  */
 
 typedef enum {
-    VERTICAL_FORWARD   = 1,
-    VERTICAL_BACKWARD  = 2,
-    VERTICAL_STOPPED   = 4,
-} motor_vertical_t;
+    VERT_STOPPED   = 0,
+    VERT_FORWARD   = 3,
+    VERT_BACKWARD  = 6,
+} motor_vert_t;
 
 typedef enum {
-    HORIZONTAL_LEFT    = 8,
-    HORIZONTAL_RIGHT   = 16,
-    HORIZONTAL_STOPPED = 32
-} motor_horizontal_t;
+    HORIZ_STOPPED = 0,
+    HORIZ_LEFT    = 1,
+    HORIZ_RIGHT   = 2,
+} motor_horiz_t;
 
 /**
  * Initialises this module.
@@ -24,4 +24,4 @@ void motor_controller_init();
 /**
  * Sets the current movement.
  */
-void motor_set_movement(motor_vertical_t, motor_horizontal_t);
+void motor_set_movement(motor_vert_t, motor_horiz_t);

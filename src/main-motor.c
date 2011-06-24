@@ -27,8 +27,8 @@ int main(int argc, char *argv[]) {
     motor_controller_init();
     led_init();
 
-    motor_horizontal_t motor_horizontal = HORIZONTAL_STOPPED;
-    motor_vertical_t motor_vertical = VERTICAL_STOPPED;
+    motor_horiz_t motor_horiz = HORIZ_STOPPED;
+    motor_vert_t motor_vert = VERT_STOPPED;
     controller_t controller = IR;
 
     while(1) {
@@ -39,40 +39,40 @@ int main(int argc, char *argv[]) {
         // take latest command and change state
         switch (cmd) {
             case CMD_FORWARD:
-                if (motor_vertical == VERTICAL_BACKWARD) {
-                    motor_vertical = VERTICAL_STOPPED;
+                if (motor_vert == VERT_BACKWARD) {
+                    motor_vert = VERT_STOPPED;
                 } else {
-                    motor_vertical = VERTICAL_FORWARD;
+                    motor_vert = VERT_FORWARD;
                 }
                 led_display_left(0);
                 break;
             case CMD_BACK:
-                if (motor_vertical == VERTICAL_FORWARD) {
-                    motor_vertical = VERTICAL_STOPPED;
+                if (motor_vert == VERT_FORWARD) {
+                    motor_vert = VERT_STOPPED;
                 } else {
-                    motor_vertical = VERTICAL_BACKWARD;
+                    motor_vert = VERT_BACKWARD;
                 }
                 led_display_left(2);
                 break;
             case CMD_LEFT:
-                if (motor_horizontal == HORIZONTAL_RIGHT) {
-                    motor_horizontal = HORIZONTAL_STOPPED;
+                if (motor_horiz == HORIZ_RIGHT) {
+                    motor_horiz = HORIZ_STOPPED;
                 } else {
-                    motor_horizontal = HORIZONTAL_LEFT;
+                    motor_horiz = HORIZ_LEFT;
                 }
                 led_display_right(0);
                 break;
             case CMD_RIGHT:
-                if (motor_horizontal == HORIZONTAL_LEFT) {
-                    motor_horizontal = HORIZONTAL_STOPPED;
+                if (motor_horiz == HORIZ_LEFT) {
+                    motor_horiz = HORIZ_STOPPED;
                 } else {
-                    motor_horizontal = HORIZONTAL_RIGHT;
+                    motor_horiz = HORIZ_RIGHT;
                 }
                 led_display_right(2);
                 break;
             case CMD_STOP:
-                motor_horizontal = HORIZONTAL_STOPPED;
-                motor_vertical = VERTICAL_STOPPED;
+                motor_horiz = HORIZ_STOPPED;
+                motor_vert = VERT_STOPPED;
                 led_display_left(1);
                 led_display_right(1);
                 break;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
         }
 
         // Now actually set the motors to the new state
-        motor_set_movement(motor_vertical, motor_horizontal);
+        motor_set_movement(motor_vert, motor_horiz);
     }
     return 0;
 }
