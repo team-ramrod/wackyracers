@@ -8,7 +8,7 @@ FILE stream_debug = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW
 
 int uart_putchar(char c, FILE * stream)
 {
-    volatile USART_t * uart;
+    volatile USART_t * uart = NULL;
     
     if (stream == &stream_debug) {
         uart = &USARTC1;
@@ -31,7 +31,7 @@ int uart_putchar(char c, FILE * stream)
 
 int uart_getchar(FILE * stream)
 {
-    volatile USART_t * uart;
+    volatile USART_t * uart = NULL;
     
     if (stream == &stream_debug) {
         uart = &USARTC1;
