@@ -10,6 +10,14 @@
 #include "led.h"
 #include "clock.h"
 
+#include "debug.h"
+
+ISR(BADISR_vect) {
+    ERROR("main-motor", "Bad vector encountered");
+    led_display_left(0);
+    led_display_right(0);
+}
+
 char input;
 uint8_t num = 0;
 int main(int argc, char *argv[]) {

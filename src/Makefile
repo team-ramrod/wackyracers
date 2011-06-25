@@ -33,8 +33,8 @@ rebuild: cleanall all
 #############
 ##  Files  ##
 #############
-CAM_FILES              = main-cam          uart_comms  led  button camera            bluetooth
-MOTOR_FILES            = main-motor        uart_motor  led  button commander motor motor_controller  ir   charger keyboard
+CAM_FILES              = main-cam          uart_comms  led  button camera            bluetooth debug
+MOTOR_FILES            = main-motor        uart_motor  led  button commander motor motor_controller  ir   charger keyboard debug
 
 build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
 build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
@@ -46,13 +46,14 @@ build/ir.o:        common.h ir.h
 build/led.o:       common.h led.h
 build/key.o:       common.h keyboard.h uart_common.h
 build/motor.o:     common.h motor.h
+build/debug.o:     common.h uart_common.h debug.h
 build/camera.o:    common.h camera.h
 build/charger.o:   common.h charger.h
 build/commander.o: common.h commander.h uart_motor.h charger.h ir.h keyboard.h uart_common.h
 build/bluetooth.o: common.h bluetooth.h
-build/motor_controller.o: common.h motor_controller.h motor.h
 build/uart_motor.o: common.h uart_motor.h uart_common.h
 build/uart_comms.o: common.h uart_comms.h uart_common.h
+build/motor_controller.o: common.h motor_controller.h motor.h
 
 ## Testing files
 

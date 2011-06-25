@@ -18,23 +18,26 @@
 #define debug_h
 
 #include "uart_common.h"
+#include <stdarg.h>
 
 #if defined VERBOSE_ENABLE
-#define VERBOSE(module, msg, ...) fprintf(stream_debug, "[" module "] => VERBOSE: " msg "\n", __VA_ARGS__)
+#define VERBOSE(...) debug("VERBOSE", __VA_ARGS__)
 #else
-#define VERBOSE(module, msg, ...)
+#define VERBOSE(...)
 #endif
 
 #if defined VERBOSE_ENABLE || defined DEBUG_ENABLE
-#define DEBUG(module, msg, ...)   fprintf(stream_debug, "[" module "] => DEBUG: " msg "\n", __VA_ARGS__)
+#define DEBUG(...) debug("DEBUG", __VA_ARGS__)
 #else
-#define DEBUG(module, msg, ...)
+#define DEBUG(...)
 #endif
 
 #if defined VERBOSE_ENABLE || defined DEBUG_ENABLE || defined ERROR_ENABLE
-#define ERROR(module, msg, ...)   fprintf(stream_debug, "[" module "] => ERROR: " msg "\n", __VA_ARGS__)
+#define ERROR(...) debug("ERROR", __VA_ARGS__)
 #else
-#define ERROR(module, msg, ...)
+#define ERROR(...)
 #endif
+
+void debug(char* verbosity, char* module, char* msg, ...);
 
 #endif /* debug_h */

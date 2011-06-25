@@ -18,7 +18,7 @@
 #include <avr/interrupt.h>
 
 ISR(BADISR_vect) {
-    ERROR("main-motor", "Bad vector encountere%c", 'd'); // Stupid macro expansion requires a third argument.
+    ERROR("main-motor", "Bad vector encountered");
     led_display_left(0);
     led_display_right(0);
 }
