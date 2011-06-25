@@ -4,8 +4,8 @@
  *
  */
 #include "common.h"
-#include "uart.h"
-//#include "bluetooth.h"
+#include "uart_comms.h"
+#include "bluetooth.h"
 #include "camera.h"
 #include "led.h"
 #include "clock.h"
@@ -13,17 +13,19 @@
 char input;
 uint8_t num = 0;
 int main(int argc, char *argv[]) {
+    clock_init();
+
 //    camera_init();
     led_init();
-    clock_init();
-    uart_init_cam_board();
-    sei(); //enable interupts macro
+    uart_init();
 
-    uint32_t i = 0;
+    interrupt_init();
+
+    uint16_t i = 0;
     while(1) {
         if (i < 12 ) {
             led_display(i);
-            fprintf(&stdio_to_motor_board, "%d\n", i);
+            fprintf(stream_board, "%d\n", i);
             i++;
         }
     } //main while loop
@@ -31,7 +33,7 @@ int main(int argc, char *argv[]) {
 }
 
 //sends bluetooth command to motor board
-ISR(INTERRUPT_BLUE)
+ISR(INTERRUPT_BT)
 {
     //blue_read_bluetooth(&stdio_blue, &stdio_to_motor_board, &stdio_cam);
 }
@@ -39,13 +41,13 @@ ISR(INTERRUPT_BLUE)
 //sends camera data to bluetooth
 ISR(INTERRUPT_CAM)
 {
-    uint8_t input = fgetc(&stdio_cam);
-    fprintf(&stdio_blue, "%i", input);
+    uint8_t input = fgetc(stream_cam);
+    fprintf(stream_bt, "%i", input);
 }
 
-ISR(INTERRUPT_MOTOR)
+ISR(INTERRUPT_BOARD)
 {
-    uint8_t input = fgetc(&stdio_to_motor_board);
-    fprintf(&stdio_to_motor_board, "%i", input);
+    uint8_t input = fgetc(stream_board);
+    fprintf(stream_board, "%i", input);
     led_display(input);
 }

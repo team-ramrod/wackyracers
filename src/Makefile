@@ -33,42 +33,46 @@ rebuild: cleanall all
 #############
 ##  Files  ##
 #############
-CAM_FILES              = main-cam          uart  led  button camera            bluetooth
-MOTOR_FILES            = main-motor        uart  led  button commander motor motor_controller  ir   charger
+CAM_FILES              = main-cam          uart_comms  led  button camera            bluetooth
+MOTOR_FILES            = main-motor        uart_motor  led  button commander motor motor_controller  ir   charger keyboard
+
+build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
+build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
+
+build/main-camera.o:     common.h        led.h button.h uart_cam_board.h clock.h camera.h  
+build/main-motor.o:      common.h        led.h button.h clock.h commander.h motor_controller.h  
+
+build/ir.o:        common.h ir.h
+build/led.o:       common.h led.h
+build/key.o:       common.h keyboard.h uart_common.h
+build/motor.o:     common.h motor.h
+build/camera.o:    common.h camera.h
+build/charger.o:   common.h charger.h
+build/commander.o: common.h commander.h uart_motor.h charger.h ir.h keyboard.h uart_common.h
+build/bluetooth.o: common.h bluetooth.h
+build/motor_controller.o: common.h motor_controller.h motor.h
+build/uart_motor.o: common.h uart_motor.h uart_common.h
+build/uart_comms.o: common.h uart_comms.h uart_common.h
+
+## Testing files
+
 LED_TEST_FILES         = test                    led  button
 MOTOR_TEST_FILES       = motor_test        uart_motor  led  button         motor motor_controller charger ir commander keyboard
 MOTOR_UART_TEST_FILES  = motor_uart_test   uart  led         charger motor motor_controller
 CAM_UART_TEST_FILES    =   cam_uart_test   uart  led 
 UART_TEST_FILES        = uart_test         uart  led
 
-build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
-build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
 build/test.out:   $(addprefix build/, $(addsuffix .o, $(LED_TEST_FILES)))
 build/motor_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
 build/motor_uart_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_UART_TEST_FILES)))
 build/cam_uart_test.out: $(addprefix build/, $(addsuffix .o, $(CAM_UART_TEST_FILES)))
 build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 
-build/main-camera.o:     common.h        led.h button.h uart_cam_board.h clock.h camera.h  
-build/main-motor.o:      common.h        led.h button.h clock.h commander.h motor_controller.h   
 build/test.o:                            led.h button.h clock.h
 build/motor_test.o:               uart_motor.h led.h button.h clock.h motor_controller.h
 build/motor_uart_test.o: common.h uart.h led.h charger.h motor.h motor_controller.h commander.h
 build/cam_uart_test.o:   common.h uart.h led.h
 build/uart_test.o:       common.h uart_cam_board.h
-
-build/uart.o:      common.h uart.h
-build/ir.o:        common.h ir.h
-build/led.o:       common.h led.h
-build/key.o:       common.h keyboard.h uart_common.h
-build/uart.o:      common.h uart.h
-build/motor.o:     common.h motor.h
-build/camera.o:    common.h camera.h
-build/charger.o:   common.h charger.h
-build/commander.o: common.h commander.h uart_motor.h charger.h ir.h keyboard.h
-build/bluetooth.o: common.h bluetooth.h
-build/motor_controller.o: common.h motor_controller.h motor.h
-
 
 ###############################
 ##  Internal Implementation  ##

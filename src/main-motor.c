@@ -11,24 +11,32 @@
 #include "commander.h"
 #include "led.h"
 #include "motor_controller.h"
+#include "clock.h"
+
+#include "debug.h"
 
 #include <avr/interrupt.h>
 
 ISR(BADISR_vect) {
-    led_display(0xEB);
+    ERROR("main-motor", "Bad vector encountere%c", 'd'); // Stupid macro expansion requires a third argument.
+    led_display_left(0);
+    led_display_right(0);
 }
 
 int main(int argc, char *argv[]) {
+    clock_init();
+
     motor_controller_init();
     led_init();
+    commander_init();
+
+    interrupt_init();
 
     motor_horiz_t motor_horiz = HORIZ_STOPPED;
     motor_vert_t motor_vert = VERT_STOPPED;
 
     while(1) {
-        cmd_t cmd;
-
-        cmd = get_cmd();
+        cmd_t cmd = get_cmd();
 
         // take latest command and change state
         switch (cmd) {
