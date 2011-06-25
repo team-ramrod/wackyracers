@@ -13,7 +13,7 @@
 #include "debug.h"
 
 ISR(BADISR_vect) {
-    ERROR("main-motor", "Bad vector encountered");
+    ERROR("main-cam", "Bad vector encountered, PMIC.STATUS = [%x]", PMIC.STATUS);
     led_display_left(0);
     led_display_right(0);
 }

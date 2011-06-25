@@ -18,7 +18,7 @@
 #include <avr/interrupt.h>
 
 ISR(BADISR_vect) {
-    ERROR("main-motor", "Bad vector encountered");
+    ERROR("main-motor", "Bad vector encountered, PMIC.STATUS = [%x]", PMIC.STATUS);
     led_display_left(0);
     led_display_right(0);
 }
