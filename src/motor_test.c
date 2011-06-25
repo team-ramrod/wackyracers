@@ -4,6 +4,7 @@
  * @date   20110608
  */
 
+#include "debug.h"
 #include "commander.h"
 #include "clock.h"
 #include "led.h"
@@ -30,8 +31,7 @@ int main(int argc, char *argv[]) {
 
     while (1) {
         cmd = get_cmd();
-        //cmd = fgetc(&stream_board);
-        //fprintf(&stream_board, "%i ", cmd);
+        VERBOSE("motor_test", "Command recieved: [%i]", cmd);
         switch (cmd) {
             case CMD_STOP:
                 motor_set_movement(VERT_STOPPED, HORIZ_STOPPED);
