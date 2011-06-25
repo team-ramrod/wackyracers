@@ -36,7 +36,7 @@ rebuild: cleanall all
 CAM_FILES              = main-cam          uart  led  button camera            bluetooth
 MOTOR_FILES            = main-motor        uart  led  button commander motor motor_controller  ir   charger
 LED_TEST_FILES         = test                    led  button
-MOTOR_TEST_FILES       = motor_test        uart_motor  led  button         motor motor_controller charger ir commander
+MOTOR_TEST_FILES       = motor_test        uart_motor  led  button         motor motor_controller charger ir commander keyboard
 MOTOR_UART_TEST_FILES  = motor_uart_test   uart  led         charger motor motor_controller
 CAM_UART_TEST_FILES    =   cam_uart_test   uart  led 
 UART_TEST_FILES        = uart_test         uart  led
@@ -60,11 +60,12 @@ build/uart_test.o:       common.h uart_cam_board.h
 build/uart.o:      common.h uart.h
 build/ir.o:        common.h ir.h
 build/led.o:       common.h led.h
+build/key.o:       common.h keyboard.h uart_common.h
 build/uart.o:      common.h uart.h
 build/motor.o:     common.h motor.h
 build/camera.o:    common.h camera.h
 build/charger.o:   common.h charger.h
-build/commander.o: common.h commander.h uart_motor.h charger.h ir.h
+build/commander.o: common.h commander.h uart_motor.h charger.h ir.h keyboard.h
 build/bluetooth.o: common.h bluetooth.h
 build/motor_controller.o: common.h motor_controller.h motor.h
 

@@ -11,9 +11,10 @@
 #include "charger.h"
 #include "common.h"
 #include "ir.h"
+#include "keyboard.h"
 #include "uart_motor.h"
 
-typedef enum {BT, IR} controller_t;
+typedef enum {BT, IR, KEY} controller_t;
 
 
 static volatile cmd_t current_cmd = CMD_NONE;
@@ -50,6 +51,16 @@ void ir_callback_function(cmd_t command) {
         current_cmd = CMD_NONE;
     }
 }
+void key_callback_function(cmd_t command) {
+    if (command == CMD_ASSUME_CTRL) {
+        controller = KEY;
+        current_cmd = CMD_NONE;
+    } else if (!charger_state && controller == KEY) {
+        current_cmd = command;
+    } else {
+        current_cmd = CMD_NONE;
+    }
+}
 
 void commander_init() {
     //charger init
@@ -64,6 +75,10 @@ void commander_init() {
     //ir init
     ir_init();
     ir_set_callback(&ir_callback_function);
+
+    //key init
+    key_init();
+    key_set_callback(&key_callback_function);
 }
 
 cmd_t get_cmd() {
