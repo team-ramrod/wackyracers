@@ -12,8 +12,19 @@ TARGET = ATXMega16
 CC = avr-gcc
 OBJCOPY = avr-objcopy
 LIB = 
-CFLAGS = -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
-LDFLAGS = -mmcu=$(MCU)
+CFLAGS += -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
+
+ifeq      "$(strip $(DEBUG_LEVEL))" "VERBOSE"
+	CFLAGS += -DVERBOSE_ENABLE
+else ifeq "$(strip $(DEBUG_LEVEL))" "DEBUG"
+	CFLAGS += -DDEBUG_ENABLE
+else ifeq "$(strip $(DEBUG_LEVEL))" "ERROR"
+	CFLAGS += -DERROR_ENABLE
+else ifndef DEBUG_LEVEL
+	CFLAGS += -DERROR_ENABLE
+endif
+
+LDFLAGS += -mmcu=$(MCU)
 
 all: build/camera.hex build/motor.hex
 rebuild: cleanall all

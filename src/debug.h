@@ -14,26 +14,27 @@
  * to set the debug level and build all.  Defaults to a level of ERROR.
  */
 
+#ifndef debug_h
+#define debug_h
+
+#include "uart_common.h"
+
 #if defined VERBOSE_ENABLE
-#define VERBOSE(module, msg)          fprintf(&stream_debug, "[" + module + "] => VERBOSE: " + msg + "\n")
-#define VERBOSE(module, msg, objs...) fprintf(&stream_debug, "[" + module + "] => VERBOSE: " + msg + "\n", objs)
+#define VERBOSE(module, msg, ...) fprintf(stream_debug, "[" module "] => VERBOSE: " msg "\n", __VA_ARGS__)
 #else
-#define VERBOSE(module, msg)
-#define VERBOSE(module, msg, objs...)
+#define VERBOSE(module, msg, ...)
 #endif
 
 #if defined VERBOSE_ENABLE || defined DEBUG_ENABLE
-#define DEBUG(module, msg)            fprintf(&stream_debug, "[" + module + "] => DEBUG: " + msg + "\n")
-#define DEBUG(module, msg, objs...)   fprintf(&stream_debug, "[" + module + "] => DEBUG: " + msg + "\n", objs)
+#define DEBUG(module, msg, ...)   fprintf(stream_debug, "[" module "] => DEBUG: " msg "\n", __VA_ARGS__)
 #else
-#define DEBUG(module, msg)
-#define DEBUG(module, msg, objs...)
+#define DEBUG(module, msg, ...)
 #endif
 
 #if defined VERBOSE_ENABLE || defined DEBUG_ENABLE || defined ERROR_ENABLE
-#define ERROR(module, msg)            fprintf(&stream_debug, "[" + module + "] => ERROR: " + msg + "\n")
-#define ERROR(module, msg, objs...)   fprintf(&stream_debug, "[" + module + "] => ERROR: " + msg + "\n", objs)
+#define ERROR(module, msg, ...)   fprintf(stream_debug, "[" module "] => ERROR: " msg "\n", __VA_ARGS__)
 #else
-#define ERROR(module, msg)
-#define ERROR(module, msg, objs...)
+#define ERROR(module, msg, ...)
 #endif
+
+#endif /* debug_h */
