@@ -43,4 +43,9 @@ cmd_t key_get_cmd( void );
  */
 void key_set_callback( keyboard_callback );
 
+/**
+ * Clears the callback to allow polling again
+ */
+void key_clear_callback( void );
+
 #endif /* KEYBOARD_H */
