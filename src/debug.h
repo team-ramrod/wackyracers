@@ -2,8 +2,15 @@
  * Macros for debugging, sprinkle these everywhere through your code.
  * Use VERBOSE everywhere, DEBUG most places and ERROR sparingly.
  *
- * Example:
+ * All these macros should be used
  *
+ *     MACRO_NAME(module, format, objs)
+ *
+ * similar to normal printf with just the module name prepended.  Eventually I
+ * may add the possibility of only showing debug from specific modules, so you
+ * should ensure the module name used is unique and consistent.
+ *
+ * Example:
  *     VERBOSE("commander", "I was commanded to do [%i]", cmd)
  *
  * To compile these into your code run `make cleanall` first then use a
