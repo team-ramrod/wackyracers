@@ -3,22 +3,22 @@
 int uart_putchar(char, FILE*);
 int uart_getchar(FILE*);
 
-FILE stream_board = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-FILE stream_cam = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-FILE stream_bt = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-FILE stream_debug = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+FILE stream_board[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
+FILE stream_cam[1]   = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
+FILE stream_bt[1]    = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
+FILE stream_debug[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 
 //#define get_stream() \
-    if (stream == &stream_debug) {      \
+    if (stream == stream_debug) {      \
         uart = USARTC1;                 \
     }                                   \
-    else if (stream == &stream_cam) {   \
+    else if (stream == stream_cam) {   \
         uart = USARTD1;                 \
     }                                   \
-    else if (stream == &stream_bt) {    \
+    else if (stream == stream_bt) {    \
         uart = USARTC0;                 \
     }                                   \
-    else if (stream == &stream_board) { \
+    else if (stream == stream_board) { \
         uart = USARTE0;                 \
     }
 
@@ -26,16 +26,16 @@ int uart_putchar(char c, FILE * stream)
 {
     volatile USART_t * uart = NULL;
     
-    if (stream == &stream_debug) {
+    if (stream == stream_debug) {
         uart = &USARTC1;
     }
-    else if (stream == &stream_cam) {
+    else if (stream == stream_cam) {
         uart = &USARTD1;
     }
-    else if (stream == &stream_bt) {
+    else if (stream == stream_bt) {
         uart = &USARTC0;
     }
-    else if (stream == &stream_board) {
+    else if (stream == stream_board) {
         uart = &USARTE0;
     }
     
@@ -55,16 +55,16 @@ int uart_getchar(FILE * stream)
 {
     volatile USART_t * uart = NULL;
     
-    if (stream == &stream_debug) {
+    if (stream == stream_debug) {
         uart = &USARTC1;
     }
-    else if (stream == &stream_cam) {
+    else if (stream == stream_cam) {
         uart = &USARTD1;
     }
-    else if (stream == &stream_bt) {
+    else if (stream == stream_bt) {
         uart = &USARTC0;
     }
-    else if (stream == &stream_board) {
+    else if (stream == stream_board) {
         uart = &USARTE0;
     }
 

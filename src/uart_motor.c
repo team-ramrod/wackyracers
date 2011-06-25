@@ -3,17 +3,17 @@
 int uart_putchar(char, FILE*);
 int uart_getchar(FILE*);
 
-FILE stream_board = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-FILE stream_debug = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+FILE stream_board[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
+FILE stream_debug[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 
 int uart_putchar(char c, FILE * stream)
 {
     volatile USART_t * uart = NULL;
     
-    if (stream == &stream_debug) {
+    if (stream == stream_debug) {
         uart = &USARTC1;
     }
-    else if (stream == &stream_board) {
+    else if (stream == stream_board) {
         uart = &USARTD0;
     }
     
@@ -33,10 +33,10 @@ int uart_getchar(FILE * stream)
 {
     volatile USART_t * uart = NULL;
     
-    if (stream == &stream_debug) {
+    if (stream == stream_debug) {
         uart = &USARTC1;
     }
-    else if (stream == &stream_board) {
+    else if (stream == stream_board) {
         uart = &USARTD0;
     }
 

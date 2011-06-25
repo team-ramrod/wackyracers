@@ -15,8 +15,8 @@
 // ummm... fuck... signl from the image sensor OR from cam_board to motor board
 #define INTERRUPT_CAM USARTD0_RXC_vect
 
-FILE stream_debug;
-FILE stream_board;
+FILE stream_debug[1];
+FILE stream_board[1];
 
 /* Initialize UART */
 void uart_init(void);
@@ -46,7 +46,7 @@ static void uart_set_motor_board_callback(uart_cmd_callback callback) {
 
 ISR(INTERRUPT_CAM) {
     // Hacky testing code for using keyboard to control it:
-    uint8_t value = getc(&stream_board);
+    uint8_t value = getc(stream_board);
     cmd_t ret = CMD_GET_IMAGE;
     switch (value) {
         case 'w': ret = CMD_FORWARD; break;
@@ -60,7 +60,7 @@ ISR(INTERRUPT_CAM) {
     // Actual code:
     /*
     if (__motor_board_callback != NULL) {
-        __motor_board_callback(getc(&stream_board));
+        __motor_board_callback(getc(stream_board));
     }
     */
 }
