@@ -4,9 +4,7 @@
 #ifndef UART_MOTOR_H
 #define UART_MOTOR_H
 
-#include <stdio.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
+#include "uart_common.h"
 
 //Use this for interupts from the bluetooth module
 #define INTERRUPT_BLUE USARTC0_RXC_vect
@@ -15,7 +13,6 @@
 // ummm... fuck... signl from the image sensor OR from cam_board to motor board
 #define INTERRUPT_CAM USARTD0_RXC_vect
 
-FILE stream_debug[1];
 FILE stream_board[1];
 
 /* Initialize UART */
