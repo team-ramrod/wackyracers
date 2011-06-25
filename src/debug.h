@@ -2,6 +2,10 @@
  * Macros for debugging, sprinkle these everywhere through your code.
  * Use VERBOSE everywhere, DEBUG most places and ERROR sparingly.
  *
+ * Example:
+ *
+ *     VERBOSE("commander", "I was commanded to do [%i]", cmd)
+ *
  * To compile these into your code run `make cleanall` first then use a
  * command such as:
  *
