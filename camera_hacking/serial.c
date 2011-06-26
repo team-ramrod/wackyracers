@@ -6,11 +6,12 @@
 int
 serial_open(const char *device, int baud)
 {
+
+    struct termios options; /* Termios options */
+    
     int fd; /* File descriptor */
 
-    //fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-    fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY);
-    //fd = open(device, O_RDWR | O_NONBLOCK);
+    fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
 
     if (fd == -1) {
         perror("Unable to open port");
@@ -20,15 +21,39 @@ serial_open(const char *device, int baud)
     }
 
     /* Make the read calls non-blocking. */
+    /* WARNING Don't do this. */
     //fcntl(fd, F_SETFL, FNDELAY);
     
-    /* Set serial port baud. */
-    struct termios options;
     tcgetattr(fd, &options);
-    options.c_lflag &= ~ICANON; /* Non-canonical mode. */
-    options.c_cc[VTIME] = 10; /* Set timeout of 10.0 seconds. */
-    //options.c_cflag = CS8 | CLOCAL | CREAD;
-    cfsetspeed(&options, baud);
+    options.c_cflag |= CLOCAL | CREAD;
+    
+     // Raw mode.
+    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
+    options.c_oflag &= ~OPOST;
+    options.c_iflag &= ~(INLCR | IGNCR | ICRNL | IGNBRK);
+
+    /* Set baud */
+    options.c_ispeed = B38400;
+    options.c_ospeed = B38400;
+
+    /* Setup char len */
+    //options.c_cflag &= ~(CSIZE);
+    options.c_cflag |= CS8;
+
+    /* Setup stopbits (1)*/
+    //options.c_cflag &= ~(CSTOPB);
+
+    /* No parity */
+    //options.c_iflag &= ~(INPCK | ISTRIP);
+   // options.c_cflag &= ~(PARENB | PARODD);
+
+    /* No flow control */
+    //options.c_iflag &= ~(IXON | IXOFF | IXANY);
+    //options.c_cflag &= ~(CRTSCTS);
+
+    /* timeout */
+    //options.c_cc[VTIME] = 20; // ???
+
     tcflush(fd, TCIFLUSH);
     tcsetattr(fd, TCSANOW, &options);
     

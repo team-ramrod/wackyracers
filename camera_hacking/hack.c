@@ -191,8 +191,7 @@ int camera_get_image(int serial_fd, unsigned char *buffer, uint16_t filesize)
 {
     unsigned char data[16];
     uint16_t m = 0; // Starting address.
-    //uint16_t k = 0xf8; // Chunk size.
-    uint16_t k = sizeof(data);
+    uint16_t k = sizeof(data); /* Chunk size */
 
     while (m < filesize) {
         camera_get_block(serial_fd, m, k, data);
@@ -236,10 +235,12 @@ int camera_get_block(int serial_fd, unsigned int address,
     //serial_read(serial_fd, cmd, sizeof(cmd));
 
     /* Read the full response. */
-    uint8_t response[26];
+    /* WARNING coupled to above function. */
+    uint8_t response[16 + 10];
     serial_read(serial_fd, response, sizeof(response));
 
     /* Copy data (from between headers) into global image buffer. */
+    /* WARNING last argument is coupled to camera_get_image */
     bcopy((response + 5), &global_image_buffer[address], 16);
     
     dump_contents(response, sizeof(response));
@@ -270,7 +271,7 @@ int main(int argc, char *argv[])
     usleep(3000000);
     
     /* set cam baud */
-    camera_set_baud(serial_fd, 38400);
+    //camera_set_baud(serial_fd, 38400);
 
     /* Take picture */
     camera_start_image(serial_fd);
@@ -279,7 +280,7 @@ int main(int argc, char *argv[])
     filesize = camera_get_filesize(serial_fd);
     fprintf(stderr, "DEBUG: filesize = %d\n", filesize);
 
-    camera_get_image(serial_fd, global_image_buffer, 25000);
+    camera_get_image(serial_fd, global_image_buffer, filesize);
 
     fprintf(stderr, "RXed data:\n");
     int i;
