@@ -3,6 +3,8 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 
+#include "debug.h"
+
 #define LEFT_FORWARD_PWM  MOTOR_TC.CCD
 #define LEFT_REVERSE_PWM  MOTOR_TC.CCC
 #define RIGHT_FORWARD_PWM MOTOR_TC.CCA
@@ -19,6 +21,13 @@ static struct {
 } __motors[2];
 
 static inline void __disable_path(motor_t motor, motor_direction_t direction) {
+    VERBOSE(
+        "motor",
+        "Disabling drain [%s %s].",
+        motor == LEFT ? "LEFT" : "RIGHT",
+        direction == FORWARD ? "FORWARD" : "REVERSE"
+    );
+
     switch (motor + direction) {
         case LEFT+FORWARD:  MOTOR_ENABLE_PORT.OUTCLR = LEFT_FORWARD_EN;  break;
         case LEFT+REVERSE:  MOTOR_ENABLE_PORT.OUTCLR = LEFT_REVERSE_EN;  break;
@@ -28,6 +37,13 @@ static inline void __disable_path(motor_t motor, motor_direction_t direction) {
 }
 
 static inline void __enable_path(motor_t motor, motor_direction_t direction) {
+    VERBOSE(
+        "motor",
+        "Enabling drain [%s %s].",
+        motor == LEFT ? "LEFT" : "RIGHT",
+        direction == FORWARD ? "FORWARD" : "REVERSE"
+    );
+
     switch (motor + direction) {
         case LEFT+FORWARD:  MOTOR_ENABLE_PORT.OUTSET = LEFT_FORWARD_EN;  break;
         case LEFT+REVERSE:  MOTOR_ENABLE_PORT.OUTSET = LEFT_REVERSE_EN;  break;
@@ -48,6 +64,14 @@ static void __set_speed(
     //   0x5A << 4 + 0x5A >> 4
     uint16_t value = (speed << 4) + (speed >> 4);
 
+    VERBOSE(
+        "motor",
+        "Changing speed of PWM [%s %s] to [%i].",
+        motor == LEFT ? "LEFT" : "REVERSE",
+        direction == FORWARD ? "FORWARD" : "RIGHT",
+        speed
+    );
+
     switch (motor + direction) {
         case LEFT+FORWARD:  LEFT_FORWARD_PWM  = value; break;
         case LEFT+REVERSE:  LEFT_REVERSE_PWM  = value; break;
@@ -57,6 +81,7 @@ static void __set_speed(
 }
 
 void motor_init() {
+    DEBUG("motor", "Started initialization");
     // Set the pre-scaler to 1
     MOTOR_TC.CTRLA = 0x04;
 
@@ -100,13 +125,28 @@ void motor_init() {
 
     __motors[RIGHT].direction = FORWARD;
     __motors[RIGHT].speed = 0x0;
+    DEBUG("motor", "Finished initialization.");
 }
 
 void motor_set_speed(motor_t motor, motor_speed_t speed) {
+    DEBUG(
+        "motor",
+        "Changing speed of motor [%s] to [%i].",
+        motor == LEFT ? "LEFT" : "RIGHT",
+        speed
+    );
+
     __set_speed(motor, __motors[motor].direction, speed);
 }
 
 bool motor_set_direction(motor_t motor, motor_direction_t direction) {
+    DEBUG(
+        "motor",
+        "Changing direction of motor [%s] to [%s].",
+        motor == LEFT ? "LEFT" : "RIGHT",
+        direction == FORWARD ? "FORWARD" : "REVERSE"
+    );
+
     static bool __currently_executing = false;
     bool temp;
 
@@ -116,6 +156,7 @@ bool motor_set_direction(motor_t motor, motor_direction_t direction) {
     }
 
     if (temp) {
+        DEBUG("motor", "Canceling direction change.");
         return false;
     }
 
