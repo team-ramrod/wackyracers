@@ -1,5 +1,7 @@
 #include "ir.h"
 
+#include <avr/interrupt.h>
+
 static cmd_t last_cmd = CMD_NONE;
 
 void ir_init(void) {
@@ -23,3 +25,5 @@ uint16_t get_time(void){
 void ir_set_callback(ir_callback callback) {
     //TODO: Implement this
 }
+
+EMPTY_INTERRUPT( IR_TC_OVF_vect )

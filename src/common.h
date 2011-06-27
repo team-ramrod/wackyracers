@@ -15,6 +15,7 @@
 #define IR_TC    TCD0
 
 #define LED_TC_OVF_vect TCD1_OVF_vect
+#define IR_TC_OVF_vect  TCD0_OVF_vect
 
 #define LED_PORT          PORTA
 #define MOTOR_ENABLE_PORT PORTD
