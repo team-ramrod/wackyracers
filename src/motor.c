@@ -81,7 +81,7 @@ static void __set_speed(
 }
 
 void motor_init() {
-    DEBUG("motor", "Started initialization");
+    DEBUG("motor", "Started initialization.");
     // Set the pre-scaler to 1
     MOTOR_TC.CTRLA = 0x04;
 
