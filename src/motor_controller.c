@@ -1,6 +1,8 @@
 #include "motor_controller.h"
 #include "motor.h"
 
+#include "debug.h"
+
 #define FAST 30
 #define SLOW 10
 #define STOP 0
@@ -62,6 +64,13 @@ void motor_set_movement(motor_vert_t vert, motor_horiz_t horiz) {
                              __current_right_direction = FORWARD;
     static motor_speed_t __current_left_speed = 0,
                          __current_right_speed = 0;
+
+    DEBUG(
+        "motor_controller",
+        "Setting movement to [%s %s].",
+        horiz == HORIZ_LEFT ? "LEFT" : horiz == HORIZ_STOPPED ? "STOPPED" : "RIGHT",
+        vert == VERT_FORWARD ? "FORWARD" : vert == VERT_STOPPED ? "STOPPED" : "REVERSE"
+    );
 
     if ((vert + horiz) < 9) {
         if (__left_direction(vert, horiz) != __current_left_direction) {
