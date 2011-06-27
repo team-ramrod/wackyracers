@@ -58,22 +58,28 @@ build/motor_controller.o: common.h motor_controller.h motor.h
 ## Testing files
 
 LED_TEST_FILES         = test                    led  button
-MOTOR_TEST_FILES       = motor_test        uart_motor  led  button         motor motor_controller charger ir commander keyboard
+MOTOR_TEST_FILES       = motor_test        uart_motor  led  button         motor motor_controller charger ir commander keyboard debug
 MOTOR_UART_TEST_FILES  = motor_uart_test   uart  led         charger motor motor_controller
 CAM_UART_TEST_FILES    =   cam_uart_test   uart  led 
 UART_TEST_FILES        = uart_test         uart  led
+CAM_TEST_FILES         = cam_test led uart_comms debug
+MOTOR_TEST2_FILES         = motor_test2 led uart_motor debug
 
 build/test.out:   $(addprefix build/, $(addsuffix .o, $(LED_TEST_FILES)))
 build/motor_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
 build/motor_uart_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_UART_TEST_FILES)))
 build/cam_uart_test.out: $(addprefix build/, $(addsuffix .o, $(CAM_UART_TEST_FILES)))
 build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
+build/cam_test.out: $(addprefix build/, $(addsuffix .o, $(CAM_TEST_FILES)))
+build/motor_test2.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST2_FILES)))
 
 build/test.o:                            led.h button.h clock.h
 build/motor_test.o:               uart_motor.h led.h button.h clock.h motor_controller.h
 build/motor_uart_test.o: common.h uart.h led.h charger.h motor.h motor_controller.h commander.h
 build/cam_uart_test.o:   common.h uart.h led.h
 build/uart_test.o:       common.h uart_cam_board.h
+build/cam_test.o: common.h cam_test.c uart_comms.h led.h clock.h debug.h
+build/motor_test2.o: common.h motor_test2.c uart_motor.h led.h clock.h debug.h
 
 ###############################
 ##  Internal Implementation  ##
