@@ -2,6 +2,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "debug.h"
+
 #define LED_VALUE_PINS ( _BV(0) | _BV(1) | _BV(2) | _BV(3) )
 #define LED_ENABLE_PIN   _BV(6)
 #define LED_SELECT_LEFT  _BV(5)
@@ -33,6 +35,7 @@ ISR(LED_TC_OVF_vect, ISR_NOBLOCK) {
 }
 
 void led_init() {
+    DEBUG("led", "Starting initialization.");
     // Set the pre-scaler to 1024.
     // CLK freq is now 32 MHz / 1024 = 31250 Hz.
     LED_TC.CTRLA = 0x07;
@@ -57,6 +60,7 @@ void led_init() {
 
     // Enable the interrupt at a low level.
     LED_TC.INTCTRLA = 0x01;
+    DEBUG("led", "Finished initialization.");
 }
 
 void led_display_left(uint8_t number) {
