@@ -61,6 +61,8 @@ void uart_init(void)
     PORTC.OUTSET = PIN7_bm;
     PORTC.DIRSET = PIN7_bm;
     PORTC.DIRCLR = PIN6_bm;
+    /* Enable pulldown on recieve pin. */
+    PORTC.PIN6CTRL = 0x10;
     
     /* Set baud rate & frame format. */
     USARTC1.BAUDCTRLB = 0x00;
@@ -82,6 +84,8 @@ void uart_init(void)
     PORTD.DIRSET = PIN3_bm;
     /* Set the RxD pin as an input*/
     PORTD.DIRCLR = PIN2_bm;
+    /* Enable pulldown on recieve pin. */
+    PORTD.PIN2CTRL = 0x10;
 
     // Set baud rate & frame format
     USARTD0.BAUDCTRLB = 0x00;
