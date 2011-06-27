@@ -24,6 +24,10 @@ else ifndef DEBUG_LEVEL
 	CFLAGS += -DERROR_ENABLE
 endif
 
+ifdef DEBUG_MODULE
+	CFLAGS += -D'DEBUG_ONLY="$(DEBUG_MODULE)"'
+endif
+
 LDFLAGS += -mmcu=$(MCU)
 
 all: build/camera.hex build/motor.hex

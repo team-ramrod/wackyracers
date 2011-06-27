@@ -6,9 +6,7 @@
  *
  *     MACRO_NAME(module, format, objs)
  *
- * similar to normal printf with just the module name prepended.  Eventually I
- * may add the possibility of only showing debug from specific modules, so you
- * should ensure the module name used is unique and consistent.
+ * similar to normal printf with just the module name prepended.
  *
  * Example:
  *     VERBOSE("commander", "I was commanded to do [%i]", cmd)
@@ -19,12 +17,22 @@
  *     DEBUG_LEVEL=VERBOSE make all
  *
  * to set the debug level and build all.  Defaults to a level of ERROR.
+ *
+ * To limit the debug output to just one interesting module again you must
+ * clean your build with `make cleanall` then run a command such as:
+ * 
+ *      DEBUG_MODULE=led make all
+ *
+ * to set the output to only come from the `led` module.  This can be combined
+ * with the debug level, e.g.:
+ *
+ *     DEBUG_LEVEL=VERBOSE DEBUG_MODULE=led make all
+ *
  */
 
 #ifndef debug_h
 #define debug_h
 
-#include "uart_common.h"
 #include <stdarg.h>
 
 #if defined VERBOSE_ENABLE
