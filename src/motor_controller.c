@@ -58,11 +58,30 @@ motor_speed_t __right_speed(motor_vert_t vert, motor_horiz_t horiz) {
 }
 
 void motor_set_movement(motor_vert_t vert, motor_horiz_t horiz) {
+    static motor_direction_t __current_left_direction = FORWARD,
+                             __current_right_direction = FORWARD;
+    static motor_speed_t __current_left_speed = 0,
+                         __current_right_speed = 0;
+
     if ((vert + horiz) < 9) {
-        motor_set_direction(LEFT,  __left_direction(vert, horiz));
-        motor_set_direction(RIGHT, __right_direction(vert, horiz));
-        motor_set_speed(LEFT,  __left_speed(vert, horiz));
-        motor_set_speed(RIGHT, __right_speed(vert, horiz));
+        if (__left_direction(vert, horiz) != __current_left_direction) {
+            __current_left_direction = __left_direction(vert, horiz);
+            motor_set_direction(LEFT,  __left_direction(vert, horiz));
+            __current_left_speed = __left_speed(vert, horiz);
+            motor_set_speed(LEFT,  __left_speed(vert, horiz));
+        } else if (__left_speed(vert, horiz) != __current_left_speed) {
+            __current_left_speed = __left_speed(vert, horiz);
+            motor_set_speed(LEFT,  __left_speed(vert, horiz));
+        }
+        if (__right_direction(vert, horiz) != __current_right_direction) {
+            __current_right_direction = __right_direction(vert, horiz);
+            motor_set_direction(RIGHT, __right_direction(vert, horiz));
+            __current_right_speed = __right_speed(vert, horiz);
+            motor_set_speed(RIGHT, __right_speed(vert, horiz));
+        } else if (__right_speed(vert, horiz) != __current_right_speed) {
+            __current_right_speed = __right_speed(vert, horiz);
+            motor_set_speed(RIGHT, __right_speed(vert, horiz));
+        }
     } else {
         motor_set_direction(LEFT, FORWARD);
         motor_set_direction(RIGHT, FORWARD);
