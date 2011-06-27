@@ -1,4 +1,5 @@
 #include "uart_motor.h"
+#include <stdbool.h>
 
 int uart_putchar(char, FILE*);
 int uart_getchar(FILE*);
@@ -51,6 +52,27 @@ int uart_getchar(FILE * stream)
 
 void uart_init(void)
 {
+    static bool __initialized = false;
+
+    if (__initialized) {
+        return;
+    }
+    /* Configure USARTC1 for debugging. */
+    PORTC.OUTSET = PIN7_bm;
+    PORTC.DIRSET = PIN7_bm;
+    PORTC.DIRCLR = PIN6_bm;
+    
+    /* Set baud rate & frame format. */
+    USARTC1.BAUDCTRLB = 0x00;
+    USARTC1.BAUDCTRLA = 0xCF;
+
+    /* Set mode of operation. */
+    USARTC1.CTRLA = 0x10;       // enable low level interrupts
+    USARTC1.CTRLC = 0x03;       // async, no parity, 8 bit data, 1 stop bit
+
+    /* Enable transmitter and receiver. */
+    USARTC1.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
+
     //set up D for camera board communication
 
     // Set the TxD pin high - set PORTC DIR register bit 3 to 1
@@ -71,4 +93,6 @@ void uart_init(void)
 
     // Enable transmitter and receiver
     USARTD0.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
+
+    __initialized = true;
 }
