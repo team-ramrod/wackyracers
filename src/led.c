@@ -65,9 +65,11 @@ void led_init() {
 
 void led_display_left(uint8_t number) {
     if (number < 0x10) {
+        VERBOSE("led", "Displaying [%i] on the left display.", number);
         __left_display.value   = number;
         __left_display.enabled = LED_ENABLE_PIN;
     } else {
+        VERBOSE("led", "Turning left display off.");
         __left_display.value   = 0x00;
         __left_display.enabled = 0x00;
     }
@@ -75,9 +77,11 @@ void led_display_left(uint8_t number) {
 
 void led_display_right(uint8_t number) {
     if (number < 0x10) {
+        VERBOSE("led", "Displaying [%i] on the right display.", number);
         __right_display.value   = number;
         __right_display.enabled = LED_ENABLE_PIN;
     } else {
+        VERBOSE("led", "Turning right display off.");
         __right_display.value   = 0x00;
         __right_display.enabled = 0x00;
     }
