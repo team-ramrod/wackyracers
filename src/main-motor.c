@@ -12,6 +12,7 @@
 #include "led.h"
 #include "motor_controller.h"
 #include "clock.h"
+#include "uart_motor.h"
 
 #include "debug.h"
 
@@ -25,6 +26,8 @@ ISR(BADISR_vect) {
 
 int main(int argc, char *argv[]) {
     clock_init();
+
+    uart_init();
 
     motor_controller_init();
     led_init();
@@ -47,6 +50,7 @@ int main(int argc, char *argv[]) {
                     motor_vert = VERT_FORWARD;
                 }
                 led_display_left(0);
+                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_BACK:
                 if (motor_vert == VERT_FORWARD) {
@@ -55,6 +59,7 @@ int main(int argc, char *argv[]) {
                     motor_vert = VERT_BACKWARD;
                 }
                 led_display_left(2);
+                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_LEFT:
                 if (motor_horiz == HORIZ_RIGHT) {
@@ -63,6 +68,7 @@ int main(int argc, char *argv[]) {
                     motor_horiz = HORIZ_LEFT;
                 }
                 led_display_right(0);
+                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_RIGHT:
                 if (motor_horiz == HORIZ_LEFT) {
@@ -71,21 +77,20 @@ int main(int argc, char *argv[]) {
                     motor_horiz = HORIZ_RIGHT;
                 }
                 led_display_right(2);
+                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_STOP:
                 motor_horiz = HORIZ_STOPPED;
                 motor_vert = VERT_STOPPED;
                 led_display_left(1);
                 led_display_right(1);
+                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_NONE:
             default:
                 //do nothing as the state does not need changing
                 break;
         }
-
-        // Now actually set the motors to the new state
-        motor_set_movement(motor_vert, motor_horiz);
     }
     return 0;
 }
