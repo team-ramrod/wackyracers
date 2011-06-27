@@ -14,6 +14,10 @@
 #include "keyboard.h"
 #include "uart_motor.h"
 
+#include <util/atomic.h>
+
+#include "debug.h"
+
 typedef enum {BT, IR, KEY} controller_t;
 
 
@@ -26,12 +30,14 @@ static bool charger_state;
  * back CMD_NONE when charger is plugged in.
  */
 void charger_callback_function(bool plugged_in) {
+    DEBUG("commander", "Received [%i] from the charger.", plugged_in);
     charger_state = plugged_in;
     if (plugged_in) {
         current_cmd = CMD_STOP;
     }
 }
 void uart_motor_board_callback_function(cmd_t command) {
+    DEBUG("commander", "Recieved [%i] from the uart.", command);
     if (command == CMD_ASSUME_CTRL) {
         controller = BT;
         current_cmd = CMD_NONE;
@@ -42,6 +48,7 @@ void uart_motor_board_callback_function(cmd_t command) {
     }
 }
 void ir_callback_function(cmd_t command) {
+    DEBUG("commander", "Recieved [%i] from the ir.", command);
     if (command == CMD_ASSUME_CTRL) {
         controller = IR;
         current_cmd = CMD_NONE;
@@ -52,6 +59,7 @@ void ir_callback_function(cmd_t command) {
     }
 }
 void key_callback_function(cmd_t command) {
+    DEBUG("commander", "Recieved [%i] from the keyboard.", command);
     if (command == CMD_ASSUME_CTRL) {
         controller = KEY;
         current_cmd = CMD_NONE;
@@ -63,6 +71,7 @@ void key_callback_function(cmd_t command) {
 }
 
 void commander_init() {
+    DEBUG("commander", "Starting initialization.");
     //charger init
     charger_init();
     charger_set_callback(&charger_callback_function);
@@ -79,11 +88,15 @@ void commander_init() {
     //key init
     key_init();
     key_set_callback(&key_callback_function);
+    DEBUG("commander", "Finished initialization.");
 }
 
 cmd_t get_cmd() {
-    cmd_t cmd_tmp = current_cmd;
-    current_cmd = CMD_NONE;
+    cmd_t cmd_tmp;
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
+        cmd_tmp = current_cmd;
+        current_cmd = CMD_NONE;
+    }
     return cmd_tmp;
 }
 
