@@ -14,6 +14,9 @@ OBJCOPY = avr-objcopy
 LIB = 
 CFLAGS += -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 
+# Generate dependency information
+CFLAGS += -MMD -MP -MF .dep/$(@F).d
+
 ifeq      "$(strip $(DEBUG_LEVEL))" "VERBOSE"
 	CFLAGS += -DVERBOSE_ENABLE
 else ifeq "$(strip $(DEBUG_LEVEL))" "DEBUG"
@@ -37,53 +40,29 @@ rebuild: cleanall all
 #############
 ##  Files  ##
 #############
-CAM_FILES              = main-cam          uart_comms  led  button camera            bluetooth debug
-MOTOR_FILES            = main-motor        uart_motor  led  button commander motor motor_controller  ir   charger keyboard debug
+CAM_FILES              = main-cam   uart_comms led button camera bluetooth debug
+MOTOR_FILES            = main-motor uart_motor led button commander motor motor_controller ir charger keyboard debug
 
-build/camera.out: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
-build/motor.out:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
-
-build/main-camera.o:     common.h        led.h button.h uart_cam_board.h clock.h camera.h  
-build/main-motor.o:      common.h        led.h button.h clock.h commander.h motor_controller.h  
-
-build/ir.o:        common.h ir.h
-build/led.o:       common.h led.h
-build/key.o:       common.h keyboard.h uart_common.h
-build/motor.o:     common.h motor.h
-build/debug.o:     common.h uart_common.h debug.h
-build/camera.o:    common.h camera.h
-build/charger.o:   common.h charger.h
-build/commander.o: common.h commander.h uart_motor.h charger.h ir.h keyboard.h uart_common.h
-build/bluetooth.o: common.h bluetooth.h
-build/uart_motor.o: common.h uart_motor.h uart_common.h
-build/uart_comms.o: common.h uart_comms.h uart_common.h
-build/motor_controller.o: common.h motor_controller.h motor.h
+build/camera.elf: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
+build/motor.elf:  $(addprefix build/, $(addsuffix .o, $(MOTOR_FILES)))
 
 ## Testing files
 
-LED_TEST_FILES         = test                    led  button
-MOTOR_TEST_FILES       = motor_test        uart_motor  led  button         motor motor_controller charger ir commander keyboard debug
-MOTOR_UART_TEST_FILES  = motor_uart_test   uart  led         charger motor motor_controller
-CAM_UART_TEST_FILES    =   cam_uart_test   uart  led 
-UART_TEST_FILES        = uart_test         uart  led
+LED_TEST_FILES         = test led button
+MOTOR_TEST_FILES       = motor_test uart_motor led button motor motor_controller charger ir commander keyboard debug
+MOTOR_UART_TEST_FILES  = motor_uart_test uart led charger motor motor_controller
+CAM_UART_TEST_FILES    = cam_uart_test uart led 
+UART_TEST_FILES        = uart_test uart led
 CAM_TEST_FILES         = cam_test led uart_comms debug
-MOTOR_TEST2_FILES         = motor_test2 led uart_motor debug
+MOTOR_TEST2_FILES      = motor_test2 led uart_motor debug
 
-build/test.out:   $(addprefix build/, $(addsuffix .o, $(LED_TEST_FILES)))
-build/motor_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
-build/motor_uart_test.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_UART_TEST_FILES)))
-build/cam_uart_test.out: $(addprefix build/, $(addsuffix .o, $(CAM_UART_TEST_FILES)))
-build/uart_test.out: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
-build/cam_test.out: $(addprefix build/, $(addsuffix .o, $(CAM_TEST_FILES)))
-build/motor_test2.out: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST2_FILES)))
-
-build/test.o:                            led.h button.h clock.h
-build/motor_test.o:               uart_motor.h led.h button.h clock.h motor_controller.h
-build/motor_uart_test.o: common.h uart.h led.h charger.h motor.h motor_controller.h commander.h
-build/cam_uart_test.o:   common.h uart.h led.h
-build/uart_test.o:       common.h uart_cam_board.h
-build/cam_test.o: common.h cam_test.c uart_comms.h led.h clock.h debug.h
-build/motor_test2.o: common.h motor_test2.c uart_motor.h led.h clock.h debug.h
+build/test.elf:   $(addprefix build/, $(addsuffix .o, $(LED_TEST_FILES)))
+build/motor_test.elf: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
+build/motor_uart_test.elf: $(addprefix build/, $(addsuffix .o, $(MOTOR_UART_TEST_FILES)))
+build/cam_uart_test.elf: $(addprefix build/, $(addsuffix .o, $(CAM_UART_TEST_FILES)))
+build/uart_test.elf: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
+build/cam_test.elf: $(addprefix build/, $(addsuffix .o, $(CAM_TEST_FILES)))
+build/motor_test2.elf: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST2_FILES)))
 
 ###############################
 ##  Internal Implementation  ##
@@ -91,14 +70,11 @@ build/motor_test2.o: common.h motor_test2.c uart_motor.h led.h clock.h debug.h
 build/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-build/%.hex: build/%.out
+build/%.hex: build/%.elf
 	$(OBJCOPY) -O ihex $< $@
 
-build/%.out:
+build/%.elf:
 	$(CC) $(LDFLAGS) -o $@ $^
-
-build:
-	mkdir -p build
 
 dude-%: build/%.hex
 	avrdude -p x16a4 -c avrispmkII -P usb -U $< -qq
@@ -107,10 +83,14 @@ v-dude-%: build/%.hex
 	avrdude -p x16a4 -c avrispmkII -P usb -U $< -v
 
 clean:
-	rm -f build/*.o build/*.ls build/*.lis build/*.dbg build/*.mp build/*.s build/*.lst build/*.out
+	rm -f build/*.o build/*.ls build/*.lis build/*.dbg build/*.mp build/*.s build/*.lst build/*.elf
 
 cleanall:
 	rm -f build/*
+	rm -f .dep/*
 
 .PHONY: all rebuild
 .PHONY: clean cleanall
+
+# Include the dependency files, should be the last of the makefile
+-include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
