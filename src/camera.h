@@ -1,8 +1,49 @@
-#ifndef camera_h
-#define camera_h
+#ifndef CAMERA_H
+#define CAMERA_H
+
+#include <util/delay.h>
 
 #include "common.h"
+#include "uart_comms.h"
+#include "uart_common.h"
 
-void camera_init();
+/** Write to camera. 
+    @param buffer Byte array to send.
+    @param length Length of byte array.
+    @return Always zero. */
+int camera_write(unsigned char *buffer, unsigned int len);
 
-#endif
+/** Read from camera. 
+    @param buffer Read buffer with sufficient space.
+    @param length Length of expected read string.
+    @return Always zero. */
+int camera_read(unsigned char *buffer, unsigned int len);
+
+/** Dump rxed message to screen. */
+void dump_contents(unsigned char *rxed, int len);
+
+/** Take picture. Must be called BEFORE camera_get_filesize().
+    @return Always zero. */
+int camera_snap(void);
+
+int camera_close(void);
+
+/** Get a data chunk from the camera. */
+int camera_get_block(unsigned int address,
+                     unsigned int blocksize, unsigned char *buff);
+
+/** Get image from camera.
+    NOTE imcomplete, returns nothing (0) currently. */
+int camera_get_image(unsigned int filesize);
+
+/** Get filesize of image. Must be called AFTER camera_start_image().
+    @return File size in bytes. */
+unsigned int camera_get_filesize(void);
+
+int camera_stop_image(void);
+
+/** Reset camera. */
+int camera_reset(void);
+
+
+#endif /* CAMERA_H */
