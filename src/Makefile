@@ -12,7 +12,7 @@ TARGET = ATXMega16
 CC = avr-gcc
 OBJCOPY = avr-objcopy
 LIB = 
-CFLAGS += -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic -Werror
+CFLAGS += -Wall -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -std=gnu99 -pedantic
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF .dep/$(@F).d
