@@ -4,7 +4,7 @@
 #include "debug.h"
 
 #define FAST 30
-#define SLOW 10
+#define SLOW 20
 #define STOP 0
 
 void motor_controller_init() {

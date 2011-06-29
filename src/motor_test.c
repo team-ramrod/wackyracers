@@ -10,6 +10,7 @@
 #include "led.h"
 #include "button.h"
 #include "motor_controller.h"
+#include "uart_motor.h"
 #include <avr/interrupt.h>
 
 ISR(BADISR_vect) {
