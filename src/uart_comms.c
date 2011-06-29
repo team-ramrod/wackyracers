@@ -8,7 +8,7 @@ FILE stream_cam[1]   = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SET
 FILE stream_bt[1]    = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 FILE stream_debug[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 
-//#define get_stream() \
+/*//#define get_stream() \
     if (stream == stream_debug) {      \
         uart = USARTC1;                 \
     }                                   \
@@ -20,7 +20,7 @@ FILE stream_debug[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SET
     }                                   \
     else if (stream == stream_board) { \
         uart = USARTE0;                 \
-    }
+    }*/
 
 int uart_putchar(char c, FILE * stream)
 {
