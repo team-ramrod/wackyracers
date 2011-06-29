@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
                 } else {
                     motor_vert = VERT_FORWARD;
                 }
-                led_display_left(0);
+                led_display_left(motor_vert);
                 motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_BACK:
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
                 } else {
                     motor_vert = VERT_BACKWARD;
                 }
-                led_display_left(2);
+                led_display_left(motor_vert);
                 motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_LEFT:
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
                 } else {
                     motor_horiz = HORIZ_LEFT;
                 }
-                led_display_right(0);
+                led_display_right(motor_horiz);
                 motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_RIGHT:
@@ -76,14 +76,14 @@ int main(int argc, char *argv[]) {
                 } else {
                     motor_horiz = HORIZ_RIGHT;
                 }
-                led_display_right(2);
+                led_display_right(motor_horiz);
                 motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_STOP:
                 motor_horiz = HORIZ_STOPPED;
                 motor_vert = VERT_STOPPED;
-                led_display_left(1);
-                led_display_right(1);
+                led_display_left(motor_vert);
+                led_display_right(motor_horiz);
                 motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_NONE:
