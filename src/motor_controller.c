@@ -7,6 +7,12 @@
 #define SLOW 20
 #define STOP 0
 
+static motor_direction_t __current_left_direction = FORWARD,
+                         __current_right_direction = FORWARD;
+static motor_speed_t __current_left_speed = 0,
+                     __current_right_speed = 0;
+
+
 void motor_controller_init() {
     motor_init();
 }
@@ -19,8 +25,9 @@ motor_direction_t __left_direction(motor_vert_t vert, motor_horiz_t horiz) {
     }
 
     switch (horiz) {
-        case HORIZ_LEFT: return REVERSE;
-        default:         return FORWARD;
+        case HORIZ_LEFT:  return REVERSE;
+        case HORIZ_RIGHT: return FORWARD;
+        default:          return __current_left_direction;
     }
 }
 
@@ -32,8 +39,9 @@ motor_direction_t __right_direction(motor_vert_t vert, motor_horiz_t horiz) {
     }
 
     switch (horiz) {
+        case HORIZ_LEFT:  return FORWARD;
         case HORIZ_RIGHT: return REVERSE;
-        default:          return FORWARD;
+        default:          return __current_right_direction;
     }
 }
 
@@ -60,11 +68,6 @@ motor_speed_t __right_speed(motor_vert_t vert, motor_horiz_t horiz) {
 }
 
 void motor_set_movement(motor_vert_t vert, motor_horiz_t horiz) {
-    static motor_direction_t __current_left_direction = FORWARD,
-                             __current_right_direction = FORWARD;
-    static motor_speed_t __current_left_speed = 0,
-                         __current_right_speed = 0;
-
     DEBUG(
         "motor_controller",
         "Setting movement to [%s %s].",

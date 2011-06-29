@@ -5,15 +5,15 @@
 
 #include "debug.h"
 
-#define LEFT_FORWARD_PWM  MOTOR_TC.CCD
-#define LEFT_REVERSE_PWM  MOTOR_TC.CCC
-#define RIGHT_FORWARD_PWM MOTOR_TC.CCA
-#define RIGHT_REVERSE_PWM MOTOR_TC.CCB
+#define LEFT_FORWARD_PWM  MOTOR_TC.CCC
+#define LEFT_REVERSE_PWM  MOTOR_TC.CCD
+#define RIGHT_FORWARD_PWM MOTOR_TC.CCB
+#define RIGHT_REVERSE_PWM MOTOR_TC.CCA
 
-#define LEFT_FORWARD_EN  _BV(6)
-#define LEFT_REVERSE_EN  _BV(7)
-#define RIGHT_FORWARD_EN _BV(5)
-#define RIGHT_REVERSE_EN _BV(4)
+#define LEFT_FORWARD_EN  _BV(7)
+#define LEFT_REVERSE_EN  _BV(6)
+#define RIGHT_FORWARD_EN _BV(4)
+#define RIGHT_REVERSE_EN _BV(5)
 
 static struct {
     motor_direction_t direction;
