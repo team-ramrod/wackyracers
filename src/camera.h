@@ -38,7 +38,7 @@ int camera_get_image(unsigned int filesize);
 
 /** Get filesize of image. Must be called AFTER camera_start_image().
     @return File size in bytes. */
-unsigned int camera_get_filesize(void);
+uint32_t camera_get_filesize(void);
 
 int camera_stop_image(void);
 

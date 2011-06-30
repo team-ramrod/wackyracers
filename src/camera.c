@@ -8,6 +8,7 @@ int camera_write(unsigned char *buffer, unsigned int len)
 {
     int i = 0;
     for (i = 0; i < len; i++) {
+        //fprintf(stream_board, "writing: 0x%x to camera.\n", buffer[i]);
         fputc(buffer[i], stream_cam);
     }
 
@@ -20,12 +21,13 @@ int camera_write(unsigned char *buffer, unsigned int len)
     @return Always zero. */
 int camera_read(unsigned char *buffer, unsigned int len)
 {
-    //int nbytes = read(fd, buffer, len);
+    //fprintf(stream_board, "inside camera_read\n\n");
     int i;
     for (i = 0; i < len; i++) {
+        //fprintf(stream_board, "MR0\n");
         buffer[i] = fgetc(stream_cam);
     }
-        
+
     return 0;
 }
 
@@ -39,7 +41,7 @@ void dump_contents(unsigned char *rxed, int len)
 {
     int i = 0;
     while (i < len) {
-        fprintf(stream_debug, "%d = 0x%X\n", i, rxed[i]);
+        fprintf(stream_board, "%d = 0x%X\n", i, rxed[i]);
         i++;
     }
 }
@@ -48,6 +50,7 @@ void dump_contents(unsigned char *rxed, int len)
     @return Always zero. */
 int camera_snap(void)
 {
+    fprintf(stream_board, "calling camera_snap\n");
     uint8_t cmd[] = {0x56, 0x00, 0x36, 0x01, 0x00};
     camera_write(cmd, 5);
 
@@ -55,7 +58,7 @@ int camera_snap(void)
     camera_read(response, 5);
 
     /* DEBUG */
-    fprintf(stream_debug, "camera_snap: camera returned:\n");
+    fprintf(stream_board, "camera_snap: camera returned:\n");
     dump_contents(response, 5);
 
     return 0;
@@ -65,10 +68,11 @@ int camera_snap(void)
 int camera_get_block(unsigned int address,
                      unsigned int blocksize, unsigned char *buff)
 {
+    
     // Interval time. XX XX * 0.01m[sec]
     unsigned char interval = 0x0A; /* Put here out of reach intentionally. */
 
-    unsigned char cmd[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
+    uint8_t cmd[] = {0x56, 0x00, 0x32, 0x0C, 0x00, 0x0A, 0x00, 0x00,
                            0x00, // MH
                            0x00, // ML
                            0x00, 0x00,
@@ -84,7 +88,9 @@ int camera_get_block(unsigned int address,
     cmd[13] = (blocksize >> 0) & 0xFF;
     cmd[14] = (interval >> 8) & 0xFF;
     cmd[15] = (interval >> 0) & 0xFF;
-
+    
+    camera_write(cmd, 16);
+    
     /* Get header. */
     unsigned char header[5];
     camera_read(header, 5);
@@ -99,8 +105,8 @@ int camera_get_block(unsigned int address,
  
     /* TODO save the data block! */
     
-    fprintf(stream_debug, "DEBUG: data block is: \n");
-    dump_contents(datablock, 16);
+//     fprintf(stream_board, "DEBUG: data block is: \n");
+//     dump_contents(full_response, 10+16);
 
     return 0;
 }
@@ -116,6 +122,7 @@ int camera_get_image(unsigned int filesize)
     while (address < filesize) {
         camera_get_block(address, blocksize, NULL);
         address += blocksize;
+        fprintf(stream_board, "address = %d\n", address);
     }
     
     return 0;
@@ -123,7 +130,7 @@ int camera_get_image(unsigned int filesize)
 
 /** Get filesize of image. Must be called AFTER camera_start_image().
     @return File size in bytes. */
-unsigned int camera_get_filesize(void)
+uint32_t camera_get_filesize(void)
 {
     unsigned char cmd[] = {0x56, 0x00, 0x34, 0x01, 0x00};
     camera_write(cmd, 5);
@@ -132,11 +139,12 @@ unsigned int camera_get_filesize(void)
     camera_read(response, 9);
 
     /* DEBUG */
-    fprintf(stream_debug, "camera_get_filesize: camera returned:\n");
+    fprintf(stream_board, "camera_get_filesize: camera returned:\n");
     dump_contents(response, 9);
 
     int filesize = (*(response + 7) << 8) + *(response + 8);
     
+    fprintf(stream_board, "i.e., filesize = %d\n", filesize);
     return filesize;
 }
 
@@ -149,7 +157,7 @@ int camera_stop_image(void)
     camera_read(response, 5);
 
     /* DEBUG */
-    fprintf(stream_debug, "camera_stop: camera returned:\n");
+    fprintf(stream_board, "camera_stop: camera returned:\n");
     dump_contents(response, 5);
 
     return 0;
@@ -160,12 +168,12 @@ int camera_reset(void)
 {   
     unsigned char cmd[] = {0x56, 0x00, 0x26, 0x00};
     camera_write(cmd, 4);
-    
+
     unsigned char response[4];
     camera_read(response, 4);
 
     /* DEBUG */
-    fprintf(stream_debug, "camera_reset: camera returned:\n");
+    fprintf(stream_board, "camera_reset: camera returned:\n");
     dump_contents(response, 4);
 
     /* HACK flush line */
@@ -173,12 +181,12 @@ int camera_reset(void)
     while (i < 67) {
         unsigned char c;
         camera_read(&c, 1);
-        //printf("DEBUG: c = %c\n", c);
         i++;
     }
+    fprintf(stream_board, "Init string seen\n\n");
 
-    printf("sleeping for 3 seconds after reset...\n");
-    _delay_ms(3000);
+    fprintf(stream_board, "sleeping for 3 seconds after reset...\n\n");
+    _delay_ms(8000);
     
     return 0;
 }
