@@ -162,13 +162,14 @@ void uart_init(void)
     PORTD.PIN6CTRL = 0x10;
 
     // Set baud rate & frame format
-    USARTD0.BAUDCTRLB = 0x00;
-    USARTD0.BAUDCTRLA = 0xCF;
+    USARTD1.BAUDCTRLB = 0x00;
+    //USARTD1.BAUDCTRLA = 0xCF;
+    USARTD1.BAUDCTRLA = 0x33;
 
     // Set mode of operation
-    USARTD0.CTRLA = 0x10;                       // enable low level interrupts
-    USARTD0.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
+    USARTD1.CTRLA = 0x10;                       // enable low level interrupts
+    USARTD1.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
 
     // Enable transmitter and receiver
-    USARTD0.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
+    USARTD1.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
 }
