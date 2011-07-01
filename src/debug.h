@@ -28,6 +28,10 @@
  *
  *     DEBUG_LEVEL=VERBOSE DEBUG_MODULE=led make all
  *
+ * To use the board-to-board UART for debugging instead of the debug UART use:
+ *
+ *     DEBUG_UART=board
+ *
  */
 
 #ifndef debug_h
