@@ -9,5 +9,6 @@
 #define INTERRUPT_DEBUG USARTC1_RXC_vect
 
 FILE stream_debug[1];
+FILE stream_board[1];
 
 #endif /* UART_COMMON_H */

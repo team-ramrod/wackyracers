@@ -9,8 +9,6 @@
 // Interrupt for data from the other board.
 #define INTERRUPT_BOARD USARTD0_RXC_vect
 
-FILE stream_board[1];
-
 /* Initialize UART */
 void uart_init(void);
 

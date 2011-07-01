@@ -31,6 +31,10 @@ ifdef DEBUG_MODULE
 	CFLAGS += -D'DEBUG_ONLY="$(DEBUG_MODULE)"'
 endif
 
+ifdef DEBUG_UART
+	CFLAGS += -D'DEBUG_UART=stream_$(DEBUG_UART)'
+endif
+
 LDFLAGS += -mmcu=$(MCU)
 
 all: build/camera.hex build/motor.hex

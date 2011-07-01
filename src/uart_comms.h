@@ -17,7 +17,6 @@
 
 FILE stream_cam[1];
 FILE stream_bt[1];
-FILE stream_board[1];
 
 /* Initialize UART */
 void uart_init(void);
