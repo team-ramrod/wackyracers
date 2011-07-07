@@ -6,6 +6,7 @@ int uart_getchar(FILE*);
 FILE stream_cam[1]   = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 FILE stream_bt[1]    = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 FILE stream_debug[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
+FILE stream_board[1] = { FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW) };
 
 /*//#define get_stream() \
     if (stream == stream_debug) {      \

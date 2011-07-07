@@ -7,7 +7,7 @@
 #include "uart_common.h"
 
 // Interrupt for data from the image sensor.
-#define INTERRUPT_CAM USARTD0_RXC_vect
+#define INTERRUPT_CAM USARTD1_RXC_vect
 
 // Interrupt for data from the bluetooth.
 #define INTERRUPT_BT USARTC0_RXC_vect
