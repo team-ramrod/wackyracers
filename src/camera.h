@@ -7,6 +7,13 @@
 #include "uart_comms.h"
 #include "uart_common.h"
 
+#define DEBUG_RESET
+#define DEBUG_SNAP
+#define DEBUG_FILESIZE
+#define DEBUG_GETBLOCK
+
+void camera_set_baudrate(uint32_t baudrate);
+
 /** Write to camera. 
     @param buffer Byte array to send.
     @param length Length of byte array.
@@ -30,7 +37,7 @@ int camera_close(void);
 
 /** Get a data chunk from the camera. */
 int camera_get_block(unsigned int address,
-                     unsigned int blocksize, unsigned char *buff);
+                     unsigned int blocksize);
 
 /** Get image from camera.
     NOTE imcomplete, returns nothing (0) currently. */
