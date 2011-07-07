@@ -21,4 +21,6 @@ FILE stream_bt[1];
 /* Initialize UART */
 void uart_init(void);
 
+void uart_set_baudrate(FILE * stream, uint32_t baudrate);
+
 #endif /* UART_COMMS_H */

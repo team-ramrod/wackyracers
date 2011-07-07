@@ -77,6 +77,32 @@ int uart_getchar(FILE * stream)
     return ret;
 }
 
+void
+uart_set_baudrate(FILE * stream, uint32_t baudrate)
+{
+    uint8_t bscale = 0;
+    uint16_t bsel = (F_CPU / (1 * 16 * baudrate) ) - 1;
+    
+    volatile USART_t * uart = NULL;
+    
+    if (stream == stream_debug) {
+        uart = &USARTC1;
+    }
+    else if (stream == stream_cam) {
+        uart = &USARTD1;
+    }
+    else if (stream == stream_bt) {
+        uart = &USARTC0;
+    }
+    else if (stream == stream_board) {
+        uart = &USARTE0;
+    }
+ 
+    uart->BAUDCTRLB = 0;
+    uart->BAUDCTRLA = bsel;
+ 
+}
+
 // Init USART for camera board.
 // Want 9600 baud. Have a 32 MHz clock. BSCALE = 0
 // BSEL = ( 32000000 / (2^0 * 16*9600)) -1 = 207
@@ -115,7 +141,8 @@ void uart_init(void)
 
     // Set baud rate & frame format
     USARTE0.BAUDCTRLB = 0x00;
-    USARTE0.BAUDCTRLA = 0xCF;
+    USARTE0.BAUDCTRLA = 0xCF; // 9600
+    //USARTD1.BAUDCTRLA = 0x33; // 38400
 
     // Set mode of operation
     USARTE0.CTRLA = 0x10;                       // enable low level interrupts
@@ -160,15 +187,14 @@ void uart_init(void)
     PORTD.DIRCLR = PIN6_bm;
     /* Enable pulldown on recieve pin. */
     PORTD.PIN6CTRL = 0x10;
-
+    
     // Set baud rate & frame format
     USARTD1.BAUDCTRLB = 0x00;
-    //USARTD1.BAUDCTRLA = 0xCF;
     USARTD1.BAUDCTRLA = 0x33;
 
-    // Set mode of operation
-    USARTD1.CTRLA = 0x10;                       // enable low level interrupts
-    USARTD1.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
+    /* Set mode of operation */
+    //USARTD1.CTRLA = 0x10;                       // enable low level interrupts
+    //USARTD1.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
 
     // Enable transmitter and receiver
     USARTD1.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
