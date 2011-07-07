@@ -1,5 +1,6 @@
 #include "common.h"
 #include "uart_comms.h"
+#include "uart_common.h"
 #include "camera.h"
 #include "led.h"
 #include "clock.h"
@@ -22,38 +23,27 @@ int main(int argc, char *argv[]) {
 
     //interrupt_init();
 
-    led_display(17);
-    
+    led_display(64);
+    fprintf(stream_board, "Welcome to camera test.\n\n");
     camera_reset();
+    fprintf(stream_board, "Camera has reset.\n\n");
+    //camera_set_baudrate(9600);
+    //uart_set_baudrate(stream_cam, 9600);
     camera_snap();
-    uint32_t filesize = camera_get_filesize();
-    camera_get_block(0, 16, NULL); 
+    fprintf(stream_board, "Camera has snapped.\n\n");
+    
+    uint16_t filesize = camera_get_filesize();
+    fprintf(stream_cam, "finished, filesize is %d\n", filesize);
+    /* Get a block */
+    camera_get_block(0, 16);
     camera_stop_image();
 
     while (1) {
 
-        _delay_ms(8000);
+        fprintf(stream_board, "HELLO\n");
+        
+        _delay_ms(3000);
         
     }
-    return 0;	
-}
-
-//sends bluetooth command to motor board
-ISR(INTERRUPT_BT)
-{
-    //blue_read_bluetooth(&stdio_blue, &stdio_to_motor_board, &stdio_cam);
-}
-
-//sends camera data to bluetooth
-// ISR(INTERRUPT_CAM)
-// {
-//     uint8_t input = fgetc(stream_cam);
-//     fprintf(stream_bt, "%i", input);
-// }
-
-ISR(INTERRUPT_BOARD)
-{
-    uint8_t input = fgetc(stream_board);
-    fprintf(stream_board, "%i", input);
-    led_display(input);
+    return 0;   
 }
