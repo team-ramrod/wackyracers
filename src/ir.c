@@ -126,7 +126,7 @@ ISR(IR_TC_OVF_vect) {
             counter_impulse_1++;
     }
 
-    //negitive front
+    //negative front
     if ((impulse_prev == 1) && (impulse == 0))
     {
         counter_impulse_0 = 0;

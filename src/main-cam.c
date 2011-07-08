@@ -26,16 +26,15 @@ int main(int argc, char *argv[]) {
 //    camera_init();
     led_init();
     uart_init();
+    blue_init();
 
     interrupt_init();
 
-    uint16_t i = 0;
+    volatile uint16_t i = 0;
+    led_display(67);
     while(1) {
-        if (i < 12 ) {
-            led_display(i);
-            fprintf(stream_board, "%d\n", i);
-            i++;
-        }
+    //    fprintf(stream_bt, "b");
+        while(++i );
     } //main while loop
     return 0;	
 }
@@ -43,16 +42,20 @@ int main(int argc, char *argv[]) {
 //sends bluetooth command to motor board
 ISR(INTERRUPT_BT)
 {
-    //blue_read_bluetooth(&stdio_blue, &stdio_to_motor_board, &stdio_cam);
+    volatile static int i = 0;
+    //blue_read_bluetooth(stream_bt, stream_board, stream_bt);
+    char c = fgetc(stream_bt);
+    fprintf(stream_board, "%c",c);
+    //led_display(i++);
 }
-
+/*
 //sends camera data to bluetooth
 ISR(INTERRUPT_CAM)
 {
     uint8_t input = fgetc(stream_cam);
     fprintf(stream_bt, "%i", input);
 }
-
+*/
 ISR(INTERRUPT_BOARD)
 {
     uint8_t input = fgetc(stream_board);

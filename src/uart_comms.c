@@ -162,11 +162,11 @@ void uart_init(void)
     /* Set the RxD pin as an input*/
     PORTC.DIRCLR = PIN2_bm;
     /* Enable pulldown on recieve pin. */
-    PORTC.PIN2CTRL = 0x10;
+    PORTC.PIN2CTRL = 0x18;
 
     // Set baud rate & frame format
-    USARTC0.BAUDCTRLB = 0x00;
-    USARTC0.BAUDCTRLA = 0xCF;
+    USARTC0.BAUDCTRLB = 0x00;// 0x00;
+    USARTC0.BAUDCTRLA = 0xcf;// 0x10;
 
     // Set mode of operation
     USARTC0.CTRLA = 0x10;                       // enable low level interrupts
