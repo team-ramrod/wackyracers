@@ -46,7 +46,7 @@ ISR(INTERRUPT_BT)
     //blue_read_bluetooth(stream_bt, stream_board, stream_bt);
     char c = fgetc(stream_bt);
     fprintf(stream_board, "%c",c);
-    //led_display(i++);
+    led_display(i++);
 }
 /*
 //sends camera data to bluetooth
