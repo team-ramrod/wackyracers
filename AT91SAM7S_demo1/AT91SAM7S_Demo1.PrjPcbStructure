@@ -1,5 +1,0 @@
-Record=SheetSymbol|SourceDocument=TopLevel.SchDoc|Designator=AT91|SchDesignator=AT91|FileName=AT91.SchDoc|SymbolType=Normal|RawFileName=AT91.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
-Record=SheetSymbol|SourceDocument=TopLevel.SchDoc|Designator=Communications|SchDesignator=Communications|FileName=Communications.SchDoc|SymbolType=Normal|RawFileName=Communications.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
-Record=SheetSymbol|SourceDocument=TopLevel.SchDoc|Designator=Power|SchDesignator=Power|FileName=Power.SchDoc|SymbolType=Normal|RawFileName=Power.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
-Record=SheetSymbol|SourceDocument=TopLevel.SchDoc|Designator=UserInterface|SchDesignator=UserInterface|FileName=UserInterface.SchDoc|SymbolType=Normal|RawFileName=UserInterface.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol
-Record=TopLevelDocument|FileName=TopLevel.SchDoc
