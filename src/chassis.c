@@ -15,14 +15,12 @@
 #define RIGHT_FORWARD_EN _BV(4)
 #define RIGHT_REVERSE_EN _BV(5)
 
-#define set_servo_low()     PORTD.OUTSET = bit(1)
-#define set_servo_high()    PORTD.OUTCLR = bit(1)
+#define set_servo_low()     PORTR.OUTCLR = bit(0)
+#define set_servo_high()    PORTR.OUTSET = bit(0)
 #define SERVO_LEFT_PERIOD   (2^16) - 16129
-#define SERVO_RIGHT_PERIOD  (2^16) - 32258
+#define SERVO_RIGHT_PERIOD  (2^16) - 30258
 #define SERVO_CENTRE_PERIOD (2^16) - 24193
 
-static bool strobe;
-static uint16_t servo_ticker;
 static uint16_t servo_period;
 
 static struct {
@@ -134,16 +132,16 @@ void chassis_init() {
     __motor.speed = 0x0;
 
     // Setup the servo 
-    strobe = false;
-    servo_ticker = 0;
-
+    chassis_set_direction(CENTRE);
     // Update Timer
     SERVO_UPDATE_TC.CTRLA = 0x07; // clk/1024
     SERVO_UPDATE_TC.PER   = 0x0280; // period of 640 ticks
-    SERVO_UPDATE_TC.INTCTRLA = 0x02;
+    SERVO_UPDATE_TC.INTCTRLA = 0x03;
     
     // Strobe Timer
-    SERVO_STROBE_TC.INTCTRLA = 0x02;
+    SERVO_STROBE_TC.INTCTRLA = 0x03;
+
+    PORTR.DIRSET = bit(0);
 
 
     DEBUG("motor", "Finished initialization.");

@@ -5,7 +5,7 @@
  *	Initiation calls and main loop.
  *
  *
- *  Status: Untested
+ *  Status: working
 */
 #include "common.h"
 #include "commander.h"
