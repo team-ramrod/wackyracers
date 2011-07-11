@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     interrupt_init();
 
     motor_speed_t speed = 0;
-    chassis_direction_t direction = CENTER;
+    chassis_direction_t direction = CENTRE;
 
     while(1) {
         cmd_t cmd = get_cmd();
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
                 break;
             case CMD_LEFT:
                 if (direction == RIGHT) {
-                    direction = CENTER;
+                    direction = CENTRE;
                 } else {
                     direction = LEFT;
                 }
@@ -81,14 +81,14 @@ int main(int argc, char *argv[]) {
                 break;
             case CMD_RIGHT:
                 if (direction == LEFT) {
-                    direction = CENTER;
+                    direction = CENTRE;
                 } else {
                     direction = RIGHT;
                 }
                 chassis_set_direction(direction);
                 break;
             case CMD_STOP:
-                direction = CENTER;
+                direction = CENTRE;
                 speed = 0;
                 chassis_set_speed(speed);
                 chassis_set_direction(direction);

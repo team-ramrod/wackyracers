@@ -15,6 +15,16 @@
 #define RIGHT_FORWARD_EN _BV(4)
 #define RIGHT_REVERSE_EN _BV(5)
 
+#define set_servo_low()
+#define set_servo_high()
+#define SERVO_LEFT_PERIOD   1
+#define SERVO_RIGHT_PERIOD  1
+#define SERVO_CENTRE_PERIOD 1
+
+static bool strobe;
+static uint16_t servo_ticker;
+static uint16_t servo_period;
+
 static struct {
     motor_direction_t direction;
     motor_speed_t speed;
@@ -122,16 +132,30 @@ void chassis_init() {
     // Set the default values for the structs.
     __motor.direction = FORWARD;
     __motor.speed = 0x0;
-    DEBUG("motor", "Finished initialization.");
+
+    // Setup the servo 
+    strobe = false;
+    servo_ticker = 0;
+
+    // Update Timer
+    SERVO_UPDATE_TC.CTRLA = 0x06; // clk/256
+    SERVO_UPDATE_TC.INTCTRLA = 0x02;
     
+    // Strobe Timer
+    SERVO_STROBE_TC.CTRLA = 0x06; // clk/256
+    SERVO_STROBE_TC.INTCTRLA = 0x02;
+
+
+    DEBUG("motor", "Finished initialization.");
+
 }
 
 bool __motor_set_direction(motor_direction_t direction) {
     DEBUG(
-        "motor",
-        "Changing direction of motor to [%s].",
-        direction == FORWARD ? "FORWARD" : "REVERSE"
-    );
+            "motor",
+            "Changing direction of motor to [%s].",
+            direction == FORWARD ? "FORWARD" : "REVERSE"
+         );
 
     static bool __currently_executing = false;
     bool temp;
@@ -181,10 +205,10 @@ bool __motor_set_direction(motor_direction_t direction) {
 
 void chassis_set_speed(motor_speed_t speed) {
     DEBUG(
-        "chassis",
-        "Changing speed to [%i].",
-        speed
-    );
+            "chassis",
+            "Changing speed to [%i].",
+            speed
+         );
 
     while (!__motor_set_direction(speed > 0 ? FORWARD : REVERSE)) {
         // Do nothing
@@ -193,4 +217,33 @@ void chassis_set_speed(motor_speed_t speed) {
 }
 
 void chassis_set_direction(chassis_direction_t direction) {
+    switch (direction) {
+        case LEFT:
+            servo_period = SERVO_LEFT_PERIOD;
+            break;
+        case RIGHT:
+            servo_period = SERVO_RIGHT_PERIOD;
+            break;
+        case CENTRE:
+            servo_period = SERVO_CENTRE_PERIOD;
+            break;
+        default:
+            break;
+    }
+}
+
+ISR(SERVO_UPDATE_TC_OVF_vect, ISR_NOBLOCK) {
+    strobe = true;
+}
+
+ISR(SERVO_STROBE_TC_OVF_vect, ISR_NOBLOCK) {
+    if (strobe) {     
+        set_servo_low();
+        servo_ticker++;
+    }
+    if (servo_ticker > servo_period) {
+        servo_ticker = 0;
+        set_servo_low();
+        strobe = false;
+    }
 }

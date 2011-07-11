@@ -15,7 +15,7 @@ typedef enum {
 
 typedef enum {
     LEFT,
-    CENTER,
+    CENTRE,
     RIGHT
 } chassis_direction_t;
 
