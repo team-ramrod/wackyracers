@@ -164,8 +164,6 @@ void uart_init(void)
     PORTC.PIN2CTRL = 0x10;
 
     // Set baud rate & frame format
-//#USARTC0.BAUDCTRLB = 0x00;// 0x00;
-  //  USARTC0.BAUDCTRLA = 0xcf;// 0x10;
     uart_set_baudrate(stream_bt, 57600);
 
     // Set mode of operation
