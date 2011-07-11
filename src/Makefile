@@ -60,6 +60,8 @@ UART_TEST_FILES        = uart_test uart led
 CAM_TEST_FILES         = cam_test led uart_comms debug camera
 MOTOR_TEST2_FILES      = motor_test2 led uart_motor debug
 
+CAMERA_BYPASS_FILES = camera_bypass uart_comms debug
+
 build/test.elf:   $(addprefix build/, $(addsuffix .o, $(LED_TEST_FILES)))
 build/motor_test.elf: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST_FILES)))
 build/motor_uart_test.elf: $(addprefix build/, $(addsuffix .o, $(MOTOR_UART_TEST_FILES)))
@@ -67,6 +69,8 @@ build/cam_uart_test.elf: $(addprefix build/, $(addsuffix .o, $(CAM_UART_TEST_FIL
 build/uart_test.elf: $(addprefix build/, $(addsuffix .o, $(UART_TEST_FILES)))
 build/cam_test.elf: $(addprefix build/, $(addsuffix .o, $(CAM_TEST_FILES)))
 build/motor_test2.elf: $(addprefix build/, $(addsuffix .o, $(MOTOR_TEST2_FILES)))
+
+build/camera_bypass.elf: $(addprefix build/, $(addsuffix .o, $(CAMERA_BYPASS_FILES)))
 
 ###############################
 ##  Internal Implementation  ##
