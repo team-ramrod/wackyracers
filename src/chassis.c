@@ -19,7 +19,7 @@
 #define set_servo_high()    PORTR.OUTSET = bit(0)
 #define SERVO_LEFT_PERIOD   (2^16) - 16129
 #define SERVO_RIGHT_PERIOD  (2^16) - 30258
-#define SERVO_CENTRE_PERIOD (2^16) - 24193
+#define SERVO_CENTRE_PERIOD (2^16) - 22693
 
 static uint16_t servo_period;
 
