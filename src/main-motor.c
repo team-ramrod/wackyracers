@@ -25,34 +25,20 @@ ISR(BADISR_vect) {
 }
 
 bool increment_speed(motor_speed_t *speed) {
-    switch (*speed) {
-        case -40:
-        case -20:
-        case 0:
-        case 20:
-            *speed = *speed + 20;
-            return true;
-        case 40:
-            return false;
-        default:
-            *speed = 0;
-            return true;
+    if (*speed < 60) {
+        *speed = *speed + 20;
+        return true;
+    } else {
+        return false;
     }
 }
 
 bool decrement_speed(motor_speed_t *speed) {
-    switch (*speed) {
-        case -20:
-        case 0:
-        case 20:
-        case 40:
-            *speed = *speed - 20;
-            return true;
-        case -40:
-            return false;
-        default:
-            *speed = 0;
-            return true;
+    if (*speed > -60) {
+        *speed = *speed - 20;
+        return true;
+    } else {
+        return false;
     }
 }
 
