@@ -189,7 +189,7 @@ void chassis_set_speed(motor_speed_t speed) {
     while (!__motor_set_direction(speed > 0 ? FORWARD : REVERSE)) {
         // Do nothing
     }
-    __set_speed(speed > 0 ? FORWARD : REVERSE, speed);
+    __set_speed(__motor.direction, abs(speed));
 }
 
 void chassis_set_direction(chassis_direction_t direction) {
