@@ -25,7 +25,7 @@ void debug(char* verbosity, char* module, char* msg, ...) {
         ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
             fprintf(STREAM_DEBUG, "[%s] => %s:", module, verbosity);
             vfprintf(STREAM_DEBUG, msg, ap);
-            fprintf(STREAM_DEBUG, "\n");
+            fprintf(STREAM_DEBUG, "\r\n");
         }
     }
 

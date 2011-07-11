@@ -13,7 +13,7 @@ ISR(INTERRUPT_CAM) {
 ISR(INTERRUPT_DEBUG) {
     char c = getc(stream_debug);
     //fprintf(stream_debug, "b%x\n", c);
-    putc(c, stream_debug);
+    putc(c, stream_cam);
 }
 
 EMPTY_INTERRUPT(INTERRUPT_BOARD)
