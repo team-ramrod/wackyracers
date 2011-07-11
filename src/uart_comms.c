@@ -39,7 +39,7 @@ int uart_putchar(char c, FILE * stream)
         uart = &USARTE0;
     }
     
-    if (c == '\n')
+    if (stream != stream_cam && c == '\n')
         uart_putchar('\r', stream);
     
     /* Wait for the transmit buffer to be empty */

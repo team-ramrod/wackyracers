@@ -133,24 +133,22 @@ int camera_get_block(unsigned int address,
     unsigned char header[5];
     camera_read(header, 5);
     
-#ifdef DEBUG_GETBLOCK
-    fprintf(stream_board, "DEBUG: header is: \n");
-    dump_contents(header, 5);
-#endif
-    
     /* Get data block. */
     unsigned char datablock[blocksize];
     camera_read(datablock, blocksize);
     
-#ifdef DEBUG_GETBLOCK
-    fprintf(stream_board, "DEBUG: data is: \n");
-    dump_contents(datablock, 16);
-#endif
-    
     /* Get footer. */
     unsigned char footer[5];
     camera_read(footer, 5);
-    
+
+#ifdef DEBUG_GETBLOCK
+    fprintf(stream_board, "DEBUG: header is: \n");
+    dump_contents(header, 5);
+#endif
+#ifdef DEBUG_GETBLOCK
+    fprintf(stream_board, "DEBUG: data is: \n");
+    dump_contents(datablock, 16);
+#endif    
 #ifdef DEBUG_GETBLOCK
     fprintf(stream_board, "DEBUG: footer is: \n");
     dump_contents(footer, 5);
@@ -265,7 +263,7 @@ int camera_reset(void)
 #ifdef DEBUG_RESET
     fprintf(stream_board, "sleeping for 3 seconds after reset...\n\n");
 #endif
-    _delay_ms(8000);
+    _delay_ms(3000);
     
     return 0;
 }
