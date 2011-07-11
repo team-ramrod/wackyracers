@@ -77,8 +77,8 @@ int uart_getchar(FILE * stream)
 void
 uart_set_baudrate(FILE * stream, uint32_t baudrate)
 {
-    uint8_t bscale = 0;
-    uint16_t bsel = (F_CPU / (1 * 16 * baudrate) ) - 1;
+    uint8_t bscale = 0xE;
+    uint16_t bsel = (F_CPU * 4 / (16 * baudrate) ) - 1;
     
     volatile USART_t * uart = NULL;
     
@@ -95,8 +95,8 @@ uart_set_baudrate(FILE * stream, uint32_t baudrate)
         uart = &USARTE0;
     }
  
-    uart->BAUDCTRLB = 0;
-    uart->BAUDCTRLA = bsel;
+    uart->BAUDCTRLB = (bscale << 4) + ((bsel >> 8) & 0x0F);
+    uart->BAUDCTRLA = bsel & 0xFF;
  
 }
 
@@ -114,8 +114,8 @@ void uart_init(void)
     PORTC.PIN6CTRL = 0x10;
     
     /* Set baud rate & frame format. */
-    USARTC1.BAUDCTRLB = 0x00;
-    USARTC1.BAUDCTRLA = 0xCF;
+    //USARTC1.BAUDCTRLB = 0x00;
+    //USARTC1.BAUDCTRLA = 0xCF;
 
     /* Set mode of operation. */
     USARTC1.CTRLA = 0x10;       // enable low level interrupts
@@ -123,6 +123,8 @@ void uart_init(void)
 
     /* Enable transmitter and receiver. */
     USARTC1.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
+
+    uart_set_baudrate(stream_debug, 230400);
     
     //set up E for interboard communication
 
