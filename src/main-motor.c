@@ -10,7 +10,7 @@
 #include "common.h"
 #include "commander.h"
 #include "led.h"
-#include "motor_controller.h"
+#include "chassis.h"
 #include "clock.h"
 #include "uart_motor.h"
 
@@ -24,19 +24,51 @@ ISR(BADISR_vect) {
     led_display_right(0);
 }
 
+bool increment_speed(motor_speed_t *speed) {
+    switch (*speed) {
+        case -40:
+        case -20:
+        case 0:
+        case 20:
+            *speed = *speed + 20;
+            return true;
+        case 40:
+            return false;
+        default:
+            *speed = 0;
+            return true;
+    }
+}
+
+bool decrement_speed(motor_speed_t *speed) {
+    switch (*speed) {
+        case -20:
+        case 0:
+        case 20:
+        case 40:
+            *speed = *speed - 20;
+            return true;
+        case -40:
+            return false;
+        default:
+            *speed = 0;
+            return true;
+    }
+}
+
 int main(int argc, char *argv[]) {
     clock_init();
 
     uart_init();
 
-    motor_controller_init();
+    chassis_init();
     led_init();
     commander_init();
 
     interrupt_init();
 
-    motor_horiz_t motor_horiz = HORIZ_STOPPED;
-    motor_vert_t motor_vert = VERT_STOPPED;
+    motor_speed_t speed = 0;
+    chassis_direction_t direction = CENTER;
 
     while(1) {
         cmd_t cmd = get_cmd();
@@ -44,47 +76,36 @@ int main(int argc, char *argv[]) {
         // take latest command and change state
         switch (cmd) {
             case CMD_FORWARD:
-                if (motor_vert == VERT_BACKWARD) {
-                    motor_vert = VERT_STOPPED;
-                } else {
-                    motor_vert = VERT_FORWARD;
+                if (increment_speed(&speed)) {
+                    chassis_set_speed(speed);
                 }
-                led_display_left(motor_vert);
-                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_BACK:
-                if (motor_vert == VERT_FORWARD) {
-                    motor_vert = VERT_STOPPED;
-                } else {
-                    motor_vert = VERT_BACKWARD;
+                if (decrement_speed(&speed)) {
+                    chassis_set_speed(speed);
                 }
-                led_display_left(motor_vert);
-                motor_set_movement(motor_vert, motor_horiz);
                 break;
             case CMD_LEFT:
-                if (motor_horiz == HORIZ_RIGHT) {
-                    motor_horiz = HORIZ_STOPPED;
+                if (direction == RIGHT) {
+                    direction = CENTER;
                 } else {
-                    motor_horiz = HORIZ_LEFT;
+                    direction = LEFT;
                 }
-                led_display_right(motor_horiz);
-                motor_set_movement(motor_vert, motor_horiz);
+                chassis_set_direction(direction);
                 break;
             case CMD_RIGHT:
-                if (motor_horiz == HORIZ_LEFT) {
-                    motor_horiz = HORIZ_STOPPED;
+                if (direction == LEFT) {
+                    direction = CENTER;
                 } else {
-                    motor_horiz = HORIZ_RIGHT;
+                    direction = RIGHT;
                 }
-                led_display_right(motor_horiz);
-                motor_set_movement(motor_vert, motor_horiz);
+                chassis_set_direction(direction);
                 break;
             case CMD_STOP:
-                motor_horiz = HORIZ_STOPPED;
-                motor_vert = VERT_STOPPED;
-                led_display_left(motor_vert);
-                led_display_right(motor_horiz);
-                motor_set_movement(motor_vert, motor_horiz);
+                direction = CENTER;
+                speed = 0;
+                chassis_set_speed(speed);
+                chassis_set_direction(direction);
                 break;
             case CMD_NONE:
             default:
