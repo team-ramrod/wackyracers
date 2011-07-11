@@ -15,11 +15,11 @@
 #define RIGHT_FORWARD_EN _BV(4)
 #define RIGHT_REVERSE_EN _BV(5)
 
-#define set_servo_low()
-#define set_servo_high()
-#define SERVO_LEFT_PERIOD   1
-#define SERVO_RIGHT_PERIOD  1
-#define SERVO_CENTRE_PERIOD 1
+#define set_servo_low()     PORTD.OUTSET = bit(1)
+#define set_servo_high()    PORTD.OUTCLR = bit(1)
+#define SERVO_LEFT_PERIOD   (2^16) - 16129
+#define SERVO_RIGHT_PERIOD  (2^16) - 32258
+#define SERVO_CENTRE_PERIOD (2^16) - 24193
 
 static bool strobe;
 static uint16_t servo_ticker;
@@ -138,11 +138,11 @@ void chassis_init() {
     servo_ticker = 0;
 
     // Update Timer
-    SERVO_UPDATE_TC.CTRLA = 0x06; // clk/256
+    SERVO_UPDATE_TC.CTRLA = 0x07; // clk/1024
+    SERVO_UPDATE_TC.PER   = 0x0280; // period of 640 ticks
     SERVO_UPDATE_TC.INTCTRLA = 0x02;
     
     // Strobe Timer
-    SERVO_STROBE_TC.CTRLA = 0x06; // clk/256
     SERVO_STROBE_TC.INTCTRLA = 0x02;
 
 
@@ -233,17 +233,12 @@ void chassis_set_direction(chassis_direction_t direction) {
 }
 
 ISR(SERVO_UPDATE_TC_OVF_vect, ISR_NOBLOCK) {
-    strobe = true;
+    SERVO_STROBE_TC.CTRLA = 0x02; // clk/2
+    SERVO_STROBE_TC.CNT   = servo_period; 
+    set_servo_high();
 }
 
 ISR(SERVO_STROBE_TC_OVF_vect, ISR_NOBLOCK) {
-    if (strobe) {     
-        set_servo_low();
-        servo_ticker++;
-    }
-    if (servo_ticker > servo_period) {
-        servo_ticker = 0;
-        set_servo_low();
-        strobe = false;
-    }
+    set_servo_low();
+    SERVO_STROBE_TC.CTRLA = 0x00;
 }
