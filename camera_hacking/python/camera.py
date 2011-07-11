@@ -22,9 +22,9 @@ class Camera(object):
     def __init__(self, port):
         self.ser = serial.Serial()
         self.ser.port = port
-        self.ser.baudrate = 38400
+        self.ser.baudrate = 57600
         self.ser.timeout = 1
-        self.DEBUG = False
+        self.DEBUG = True
 
         try:
             self.ser.open()
@@ -141,6 +141,11 @@ class Camera(object):
 
         # Get header
         header = self.ser.read(5)
+        #if header != [0x76, 0x00, 0x32, 0x00, 0x00]:
+        #  print 'incorrect header: '
+        #  print header
+          #print_response(header)
+        #  quit()
         if self.DEBUG:
             print 'header: '
             print_response(header)
@@ -156,6 +161,10 @@ class Camera(object):
         if self.DEBUG:
             print 'footer: '
             print_response(footer)
+        #if footer != [0x76, 0x00, 0x32, 0x00, 0x00]:
+        #  print 'incorrect footer: '
+        #  print_response(footer)
+        #  quit()
 
         return image_buffer + data
 

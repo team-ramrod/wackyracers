@@ -22,9 +22,9 @@ class Camera(object):
     def __init__(self, port):
         self.ser = serial.Serial()
         self.ser.port = port
-        self.ser.baudrate = 38400
+        self.ser.baudrate = 9600
         self.ser.timeout = 1
-        self.DEBUG = False
+        self.DEBUG = True
 
         try:
             self.ser.open()
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     outfile = open('out1.jpg', 'w') # Output file
 
     # Create a camera instance
-    mycam = Camera('/dev/ttyU1') 
+    mycam = Camera('/dev/cu.Group_2_are_shit-SPP') 
 
     # Reset the camera
     mycam.reset()

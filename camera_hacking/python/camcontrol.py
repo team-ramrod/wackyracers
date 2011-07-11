@@ -38,7 +38,7 @@ def main (argv = None):
         argv = sys.argv
 
     # Create a camera instance
-    mycam = Camera('/dev/ttyU1')
+    mycam = Camera('/dev/cu.Group_2_are_shit-SPP')
 
     #Reset the camera
     mycam.reset()
