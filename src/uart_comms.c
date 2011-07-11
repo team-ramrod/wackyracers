@@ -39,9 +39,6 @@ int uart_putchar(char c, FILE * stream)
         uart = &USARTE0;
     }
     
-    if (stream != stream_cam && c == '\n')
-        uart_putchar('\r', stream);
-    
     /* Wait for the transmit buffer to be empty */
     while (!(uart->STATUS & USART_DREIF_bm));
     
@@ -165,8 +162,9 @@ void uart_init(void)
     PORTC.PIN2CTRL = 0x10;
 
     // Set baud rate & frame format
-    USARTC0.BAUDCTRLB = 0x00;// 0x00;
-    USARTC0.BAUDCTRLA = 0xcf;// 0x10;
+//#USARTC0.BAUDCTRLB = 0x00;// 0x00;
+  //  USARTC0.BAUDCTRLA = 0xcf;// 0x10;
+    uart_set_baudrate(stream_bt, 115200);
 
     // Set mode of operation
     USARTC0.CTRLA = 0x10;                       // enable low level interrupts

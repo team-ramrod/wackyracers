@@ -18,9 +18,6 @@ int uart_putchar(char c, FILE * stream)
         uart = &USARTD0;
     }
     
-    if (c == '\n')
-        uart_putchar('\r', stream);
-    
     /* Wait for the transmit buffer to be empty */
     while (!(uart->STATUS & USART_DREIF_bm));
     
