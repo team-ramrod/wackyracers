@@ -193,8 +193,8 @@ void uart_init(void)
     USARTD1.BAUDCTRLA = 0x33;
 
     /* Set mode of operation */
-    //USARTD1.CTRLA = 0x10;                       // enable low level interrupts
-    //USARTD1.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
+    USARTD1.CTRLA = 0x10;                       // enable low level interrupts
+    USARTD1.CTRLC = 0x03;                       // async, no parity, 8 bit data, 1 stop bit
 
     // Enable transmitter and receiver
     USARTD1.CTRLB = (USART_TXEN_bm | USART_RXEN_bm);
