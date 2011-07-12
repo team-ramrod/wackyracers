@@ -22,8 +22,9 @@ class Camera(object):
             self.address += self.chunksize
             return 'running'
         else:
-            self.reset() # Erase last image
             self.outfile.write(self.image_buffer)
+            self.outfile.close()
+            self.reset() # Erase last image
             address = 0
             return 'idle'
         
