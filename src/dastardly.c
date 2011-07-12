@@ -28,7 +28,7 @@ void dastardly_init(){
     // 8 kHz at 32 MHz clock = period of 4096 - 1 = 0x0999.
     DASTARDLY_IR_TC.PER = 880;
 
-    dastardly_ir_start();
+    dastardly_ir_stop();
 
     DEBUG("dastardly", "Finished initialization.");
 }
