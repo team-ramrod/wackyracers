@@ -63,12 +63,12 @@ int main(int argc, char *argv[]) {
         switch (cmd) {
             case CMD_FORWARD:
                 if (increment_speed(&speed)) {
-                    chassis_set_speed(speed);
+                    changed = true;
                 }
                 break;
             case CMD_BACK:
-                if (decrement_speed(&speed)) {
-                    chassis_set_speed(speed);
+                if (decrement_speed(&speed) ) {
+                    changed = true;
                 }
                 break;
             case CMD_LEFT:
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
                 } else {
                     direction = LEFT;
                 }
-                chassis_set_direction(direction);
+                changed = true;
                 break;
             case CMD_RIGHT:
                 if (direction == LEFT) {
@@ -85,18 +85,22 @@ int main(int argc, char *argv[]) {
                 } else {
                     direction = RIGHT;
                 }
-                chassis_set_direction(direction);
+                changed = true;
                 break;
             case CMD_STOP:
                 direction = CENTRE;
                 speed = 0;
-                chassis_set_speed(speed);
-                chassis_set_direction(direction);
+                changed = true;
                 break;
             case CMD_NONE:
             default:
                 //do nothing as the state does not need changing
                 break;
+        }
+        if (changed) {
+            chassis_set_speed(speed);
+            chassis_set_direction(direction);
+            changed = false;
         }
     }
     return 0;
