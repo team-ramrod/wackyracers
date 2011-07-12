@@ -37,7 +37,7 @@ class Client:
         else:
           self.send_command(c)
       else:
-        self.camera_state = self.camera.next()
+        self.camera_state = self.camera.next_()
 
 if __name__ == '__main__':
   Client().run()
