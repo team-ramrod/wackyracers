@@ -41,7 +41,6 @@ static inline cmd_t __translate(uint8_t c) {
     switch (c) {
         case 'q': return CMD_ASSUME_CTRL;
         case 'w': return CMD_FORWARD;
-        case 'e': return CMD_GET_IMAGE;
         case 'a': return CMD_LEFT;
         case 's': return CMD_BACK;
         case 'd': return CMD_RIGHT;
