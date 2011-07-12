@@ -2,6 +2,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "ir.h"
 #include "debug.h"
 
 #define LED_VALUE_PINS ( _BV(0) | _BV(1) | _BV(2) | _BV(3) )

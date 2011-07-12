@@ -5,8 +5,6 @@
  */
 #include "common.h"
 #include "uart_comms.h"
-#include "bluetooth.h"
-#include "camera.h"
 #include "led.h"
 #include "clock.h"
 
@@ -23,10 +21,8 @@ uint8_t num = 0;
 int main(int argc, char *argv[]) {
     clock_init();
 
-//    camera_init();
     led_init();
     uart_init();
-    blue_init();
 
     interrupt_init();
 
@@ -43,7 +39,6 @@ int main(int argc, char *argv[]) {
 ISR(INTERRUPT_BT)
 {
     volatile static int i = 0;
-    //blue_read_bluetooth(stream_bt, stream_board, stream_bt);
     char c = fgetc(stream_bt);
     fprintf(stream_board, "%c",c);
     led_display(i++);

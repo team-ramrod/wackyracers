@@ -44,7 +44,7 @@ rebuild: cleanall all
 #############
 ##  Files  ##
 #############
-CAM_FILES              = main-cam   uart_comms led button debug
+CAM_FILES              = main-cam   uart_comms led button debug ir
 MOTOR_FILES            = main-motor uart_motor led button commander chassis ir charger keyboard debug
 
 build/camera.elf: $(addprefix build/, $(addsuffix .o, $(CAM_FILES)))
