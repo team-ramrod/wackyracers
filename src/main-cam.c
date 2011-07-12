@@ -11,6 +11,10 @@
 
 #include "debug.h"
 
+// Hack to get the leds working
+void ir_debounced() {
+}
+
 static int16_t buffer_read();
 static void buffer_write(uint8_t);
 static void send_to_board(uint8_t);
@@ -34,26 +38,28 @@ void main_loop() {
     static enum { FIRST, SECOND, THIRD } state = FIRST;
     static uint8_t count = 2,
                    full_count = 2;
+    int16_t c;
 
     while(1) {
-        char c = getc(stream_bt);
+        c = getc(stream_bt);
+        buffer_write(c);
 
         switch (state) {
             case FIRST:
-                buffer_write(c);
-                if (--count == 0 && c == 0) {
-                    state = SECOND;
-                    count = 2;
-                    full_count += 2;
-                } else {
-                    send_to_board(full_count);
-                    state = FIRST;
-                    count = 2;
-                    full_count = 2;
+                if (--count == 0) {
+                    if (c == 0) {
+                        state = SECOND;
+                        count = 2;
+                        full_count += 2;
+                    } else {
+                        send_to_board(full_count);
+                        state = FIRST;
+                        count = 2;
+                        full_count = 2;
+                    }
                 }
                 break;
             case SECOND:
-                buffer_write(c);
                 if (--count == 0) {
                     if (c == 0) {
                         send_to_cam(full_count);
@@ -67,7 +73,6 @@ void main_loop() {
                 }
                 break;
             case THIRD:
-                buffer_write(c);
                 if (--count == 0) {
                     send_to_cam(full_count);
                     state = FIRST;
@@ -110,7 +115,9 @@ static int16_t buffer_read() {
 
 static void send_to_board(uint8_t count) {
     while(count-- > 0) {
-        putc(buffer_read(), stream_board);
+        // Debug code
+        fprintf(stream_board, "%d\r\n", buffer_read());
+        //putc(buffer_read(), stream_board);
     }
 }
 
