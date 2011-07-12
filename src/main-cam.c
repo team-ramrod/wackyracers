@@ -18,7 +18,7 @@ void ir_debounced() {
 
 static int16_t buffer_read();
 static void buffer_write(uint8_t);
-static void send_to_board(uint8_t);
+static void send_to_board();
 static void send_to_cam(uint8_t);
 void main_loop();
 
@@ -30,6 +30,9 @@ int main(int argc, char *argv[]) {
     dastardly_init();
 
     interrupt_init();
+
+    PORTC.DIRSET = _BV(1);
+    PORTC.OUTSET = _BV(1);
 
     main_loop();
 
@@ -54,7 +57,7 @@ void main_loop() {
                         count = 2;
                         full_count += 2;
                     } else {
-                        send_to_board(full_count);
+                        send_to_board();
                         state = FIRST;
                         count = 2;
                         full_count = 2;
@@ -115,12 +118,15 @@ static int16_t buffer_read() {
     return tmp;
 }
 
-static void send_to_board(uint8_t count) {
-    while(count-- > 0) {
-        // Debug code
-        fprintf(stream_board, "%d\r\n", buffer_read());
-        //putc(buffer_read(), stream_board);
+static void send_to_board() {
+    uint8_t c = buffer_read();
+    if (c == CMD_CAM_OFF) {
+        PORTC.OUTCLR = _BV(1);
+    } else if (c == CMD_CAM_ON) {
+        PORTC.OUTSET = _BV(1);
     }
+    putc(buffer_read(), stream_board);
+    buffer_read();  // Discard a character
 }
 
 static void send_to_cam(uint8_t count) {

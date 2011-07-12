@@ -17,12 +17,14 @@ class Camera(object):
     def next_(self):
         
         if (self.address < self.filesize):
-            self.image_buffer =  get_block(self.address, self.chunksize, 
-                image_buffer)
-            address += self.chunksize
+            self.image_buffer = self.get_block(self.address, self.chunksize, 
+                self.image_buffer)
+            self.address += self.chunksize
             return 'running'
         else:
-            self.outfile.write(image_buffer)
+            self.reset() # Erase last image
+            self.outfile.write(self.image_buffer)
+            address = 0
             return 'idle'
         
     # Initialises everything and takes the picture.
@@ -31,7 +33,7 @@ class Camera(object):
         self.address = 0
         self.chunksize = 16
         self.image_buffer = ''
-        self.outfile = open('images/' + filename, 'w')
+        self.outfile = open(filename, 'w')
         
         self.start_image() # Picture snapped.
         
@@ -45,8 +47,8 @@ class Camera(object):
         self.ser.write(data)
 
         response = self.ser.read(4)
-        sys.stderr.write('DEBUG: reset returned:\n')
-        print_response(response)
+        #sys.stderr.write('DEBUG: reset returned:\n')
+        #print_response(response)
 
         # Read serial data until we see 'Init end', see LinkSprite manual, pg 7
         # TODO timeout
@@ -55,13 +57,13 @@ class Camera(object):
             for i in range(len(buffer)-1):
                 buffer[i] = buffer[i+1]
             buffer[7] = self.ser.read()
-        print 'DEBUG: %s seen' % ('Init end')
+        #print 'DEBUG: %s seen' % ('Init end')
         # grab the CR and LF tacked on the end so that they don't interface
         # with anything else. Could just have a flush fucntion.
         self.ser.read(2)
 
         # Manual says we must sleep for 2-3 seconds now
-        print "Sleeping for 3 seconds..."
+        #print "Sleeping for 3 seconds..."
         time.sleep(3)
         
     def start_image(self):
