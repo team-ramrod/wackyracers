@@ -85,11 +85,14 @@ class Client:
     while running or self.camera_state != 'idle':
       if key_pressed():
         c = getc()
-        if c == 'e' and self.camera_state == 'idle':
-          print 'Starting to take a picture, driving disabled...'
-          current_filename = self.get_filename()
-          self.camera_state = self.camera.start(current_filename)
-          print '...picture taken, driving enabled.  Transferring image...'
+        if c == 'e':
+          if self.camera_state == 'idle':
+            print 'Starting to take a picture, driving disabled...'
+            current_filename = self.get_filename()
+            self.camera_state = self.camera.start(current_filename)
+            print '...picture taken, driving enabled.  Transferring image...'
+          else:
+            print '... !!!! last picture is still transferring !!!! ...'
         elif ord(c) == 27: # Escape
           running = False
         elif c == '\\':
