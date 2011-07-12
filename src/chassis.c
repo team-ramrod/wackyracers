@@ -1,4 +1,5 @@
 #include "chassis.h"
+#include "led.h"
 
 #include <util/atomic.h>
 #include <util/delay.h>
