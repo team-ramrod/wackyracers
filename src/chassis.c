@@ -14,11 +14,14 @@
 #define LEFT_REVERSE_EN  _BV(6)
 #define RIGHT_FORWARD_EN _BV(4)
 #define RIGHT_REVERSE_EN _BV(5)
+#define HIGH_SPEED       20
 
 #define set_servo_low()     PORTR.OUTCLR = bit(0)
 #define set_servo_high()    PORTR.OUTSET = bit(0)
-#define SERVO_LEFT_PERIOD   (2^16) - 16129
-#define SERVO_RIGHT_PERIOD  (2^16) - 30258
+#define SERVO_LEFT_PERIOD   (2^16) - 18129
+#define SERVO_HARD_LEFT_PERIOD   (2^16) - 16129
+#define SERVO_RIGHT_PERIOD  (2^16) - 28258
+#define SERVO_HARD_RIGHT_PERIOD  (2^16) - 30258
 #define SERVO_CENTRE_PERIOD (2^16) - 22693
 
 static uint16_t servo_period;
@@ -211,16 +214,19 @@ void chassis_set_speed(motor_speed_t speed) {
     while (!__motor_set_direction(speed > 0 ? FORWARD : REVERSE)) {
         // Do nothing
     }
+    __motor.speed = abs(speed);
     __set_speed(__motor.direction, abs(speed));
 }
 
 void chassis_set_direction(chassis_direction_t direction) {
     switch (direction) {
         case LEFT:
-            servo_period = SERVO_LEFT_PERIOD;
+            servo_period = (__motor.speed > HIGH_SPEED) ?
+                SERVO_LEFT_PERIOD : SERVO_HARD_LEFT_PERIOD;
             break;
         case RIGHT:
-            servo_period = SERVO_RIGHT_PERIOD;
+            servo_period = (__motor.speed > HIGH_SPEED) ?
+                SERVO_RIGHT_PERIOD : SERVO_HARD_RIGHT_PERIOD;
             break;
         case CENTRE:
             servo_period = SERVO_CENTRE_PERIOD;
