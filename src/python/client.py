@@ -3,15 +3,17 @@ from camera import Camera
 from serial import Serial, SerialException
 from mutex import mutex
 
-CMD_NONE        = '\000'
-CMD_FORWARD     = '\001'
-CMD_BACK        = '\002'
-CMD_LEFT        = '\004'
-CMD_RIGHT       = '\010'
-CMD_STOP        = '\020'
-CMD_ASSUME_CTRL = '\040'
-CMD_CAM_OFF     = '\100'
-CMD_CAM_ON      = '\200'
+CMD_NONE             = '\000'
+CMD_FORWARD          = '\001'
+CMD_BACK             = '\002'
+CMD_DASTARDLY_IR_OFF = '\003'
+CMD_LEFT             = '\004'
+CMD_DASTARDLY_IR_ON  = '\005'
+CMD_RIGHT            = '\010'
+CMD_STOP             = '\020'
+CMD_ASSUME_CTRL      = '\040'
+CMD_CAM_OFF          = '\100'
+CMD_CAM_ON           = '\200'
 
 translation = {
   'q': CMD_ASSUME_CTRL,

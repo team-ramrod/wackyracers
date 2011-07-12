@@ -120,12 +120,23 @@ static int16_t buffer_read() {
 
 static void send_to_board() {
     uint8_t c = buffer_read();
-    if (c == CMD_CAM_OFF) {
-        PORTC.OUTCLR = _BV(1);
-    } else if (c == CMD_CAM_ON) {
-        PORTC.OUTSET = _BV(1);
+    switch(c) {
+        case CMD_CAM_OFF:
+            PORTC.OUTCLR = _BV(1);
+            break;
+        case CMD_CAM_ON:
+            PORTC.OUTSET = _BV(1);
+            break;
+        case CMD_DASTARDLY_IR_OFF:
+            dastardly_ir_stop();
+            break;
+        case CMD_DASTARDLY_IR_ON:
+            dastardly_ir_start();
+            break;
+        default:
+            putc(c, stream_board);
+            break;
     }
-    putc(buffer_read(), stream_board);
     buffer_read();  // Discard a character
 }
 
