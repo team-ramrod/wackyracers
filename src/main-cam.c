@@ -1,23 +1,22 @@
 /** @file   main-cam.c
  *  @author Simon Richards
- *  @date   Created: 19 April 2011
- *
  */
 #include "common.h"
 #include "uart_comms.h"
 #include "led.h"
 #include "clock.h"
 
+#include <avr/interrupt.h>
+#include <util/atomic.h>
+
 #include "debug.h"
 
-ISR(BADISR_vect) {
-    ERROR("main-cam", "Bad vector encountered, PMIC.STATUS = [%x]", PMIC.STATUS);
-    led_display_left(0);
-    led_display_right(0);
-}
+static int16_t buffer_read();
+static void buffer_write(uint8_t);
+static void send_to_board(uint8_t);
+static void send_to_cam(uint8_t);
+void main_loop();
 
-char input;
-uint8_t num = 0;
 int main(int argc, char *argv[]) {
     clock_init();
 
@@ -26,34 +25,103 @@ int main(int argc, char *argv[]) {
 
     interrupt_init();
 
-    volatile uint16_t i = 0;
-    led_display(67);
-    while(1) {
-    //    fprintf(stream_bt, "b");
-        while(++i );
-    } //main while loop
-    return 0;	
+    main_loop();
+
+    return 0;
 }
 
-//sends bluetooth command to motor board
-ISR(INTERRUPT_BT)
-{
-    volatile static int i = 0;
-    char c = fgetc(stream_bt);
-    fprintf(stream_board, "%c",c);
-    led_display(i++);
+void main_loop() {
+    static enum { FIRST, SECOND, THIRD } state = FIRST;
+    static uint8_t count = 2,
+                   full_count = 2;
+
+    while(1) {
+        char c = getc(stream_bt);
+
+        switch (state) {
+            case FIRST:
+                buffer_write(c);
+                if (--count == 0 && c == 0) {
+                    state = SECOND;
+                    count = 2;
+                    full_count += 2;
+                } else {
+                    send_to_board(full_count);
+                    state = FIRST;
+                    count = 2;
+                    full_count = 2;
+                }
+                break;
+            case SECOND:
+                buffer_write(c);
+                if (--count == 0) {
+                    if (c == 0) {
+                        send_to_cam(full_count);
+                        state = FIRST;
+                        full_count = count = 2;
+                    } else {
+                        state = THIRD;
+                        count = c;
+                        full_count += c;
+                    }
+                }
+                break;
+            case THIRD:
+                buffer_write(c);
+                if (--count == 0) {
+                    send_to_cam(full_count);
+                    state = FIRST;
+                    count = 2;
+                    full_count = 2;
+                }
+                break;
+        }
+    }
 }
-/*
-//sends camera data to bluetooth
-ISR(INTERRUPT_CAM)
-{
-    uint8_t input = fgetc(stream_cam);
-    fprintf(stream_bt, "%i", input);
+
+#define BUFFER_SIZE 30
+#define increment(pos) ((pos + 1) % BUFFER_SIZE)
+
+uint8_t buffer[BUFFER_SIZE];
+volatile uint8_t read_position = 0, write_position = 0;
+
+static void buffer_write(uint8_t val) {
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
+        if (read_position == increment(write_position)) {
+            read_position = increment(read_position);
+        }
+        buffer[write_position] = val;
+        write_position = increment(write_position);
+    }
 }
-*/
-ISR(INTERRUPT_BOARD)
-{
-    uint8_t input = fgetc(stream_board);
-    fprintf(stream_board, "%i", input);
-    led_display(input);
+
+static int16_t buffer_read() {
+    int16_t tmp = -1;
+
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
+        if (read_position != write_position) {
+            tmp = buffer[read_position];
+            read_position = increment(read_position);
+        }
+    }
+
+    return tmp;
 }
+
+static void send_to_board(uint8_t count) {
+    while(count-- > 0) {
+        putc(buffer_read(), stream_board);
+    }
+}
+
+static void send_to_cam(uint8_t count) {
+    while(count-- > 0) {
+        putc(buffer_read(), stream_cam);
+    }
+}
+
+ISR(BADISR_vect) { led_display(0x09); }
+ISR(INTERRUPT_CAM) { putc(getc(stream_cam), stream_bt); }
+EMPTY_INTERRUPT( INTERRUPT_BT )
+EMPTY_INTERRUPT( INTERRUPT_BOARD )
+EMPTY_INTERRUPT( INTERRUPT_DEBUG )
