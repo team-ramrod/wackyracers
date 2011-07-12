@@ -20,7 +20,7 @@ class Camera(object):
             self.image_buffer = self.get_block(self.address, self.chunksize, 
                 self.image_buffer)
             self.address += self.chunksize
-            return float(self.address) / self.chunksize
+            return float(self.address) / self.filesize
         else:
             self.outfile.write(self.image_buffer)
             self.outfile.close()
