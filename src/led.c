@@ -8,12 +8,15 @@
 #define LED_ENABLE_PIN   _BV(6)
 #define LED_SELECT_LEFT  _BV(5)
 #define LED_SELECT_RIGHT _BV(7)
+#define DEBOUNCE_PERIOD 30
 
 static struct {
     uint8_t value;
     uint8_t enabled;
     uint8_t selected;
 } __left_display, __right_display;
+
+static int debounce_counter = 0;
 
 ISR(LED_TC_OVF_vect, ISR_NOBLOCK) {
     static enum { __L_D, __R_D } __current = __L_D;
@@ -32,6 +35,16 @@ ISR(LED_TC_OVF_vect, ISR_NOBLOCK) {
                          | __left_display.selected;
             break;
     }
+
+    // IR debounce code since we ran out of timers
+    if (debounce_counter++ > DEBOUNCE_PERIOD) {
+        ir_debounced();
+        debounce_counter = 0;
+    }
+}
+
+void clear_debounce_counter() {
+    debounce_counter = 0;
 }
 
 void led_init() {

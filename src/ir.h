@@ -32,4 +32,7 @@ cmd_t ir_get_cmd(void);
  */
 void ir_set_callback(ir_callback);
 
+
+void ir_debounced();
+
 #endif

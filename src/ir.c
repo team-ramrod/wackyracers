@@ -16,6 +16,8 @@ uint8_t impulse = 0;
 uint16_t counter_ik = 0;
 uint16_t code = 0;
 
+static bool debouncing = false;
+
 #define BUFFER_SIZE 30
 #define increment(pos) ((pos + 1) % BUFFER_SIZE)
 
@@ -70,6 +72,8 @@ void ir_init(void) {
     //2963 gives an overflow rate of 10.8 kHz
 
     __ir_callback = __ir_buffer_write;
+
+    led_display(50);
 }
 
 uint16_t get_time(void) {
@@ -148,10 +152,16 @@ ISR(IR_TC_OVF_vect) {
     //end of receive
     if ((counter_impulse_0 > 50) && (flag_rx == 1) && (impulse == 0))
     {
-        cmd = __translate(code);
-        DEBUG("ir", "Received [%i] which translated to command [%i].", code, cmd);
-        __ir_callback(cmd);
-
+        if (!debouncing) { 
+            cmd = __translate(code);
+            DEBUG("ir", "Received [%i] which translated to command [%i].", code, cmd);
+            __ir_callback(cmd);
+            debouncing = true;
+            clear_debounce_counter();
+            LED_TC.CNT = 0;
+        } else {
+            DEBUG("ir", "Ignored [%i] which translated to command [%i].", code, cmd);
+        }
         flag_rx = 0;
         counter_impulse_0 = 0;
         counter_impulse_1 = 0;
@@ -161,3 +171,8 @@ ISR(IR_TC_OVF_vect) {
 
     impulse_prev = impulse;
 }
+
+void ir_debounced() {
+    debouncing = false;
+}
+

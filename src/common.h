@@ -10,16 +10,18 @@
 #include <avr/io.h>
 
 
-#define MOTOR_TC TCE0
-#define LED_TC   TCD1
-#define IR_TC    TCD0
+#define MOTOR_TC        TCE0
+#define LED_TC          TCD1
+#define IR_TC           TCD0
 #define SERVO_UPDATE_TC TCC0
 #define SERVO_STROBE_TC TCC1
+#define IR_DEBOUNCE_RTC RTC
 
 #define LED_TC_OVF_vect   TCD1_OVF_vect
 #define IR_TC_OVF_vect    TCD0_OVF_vect
 #define SERVO_UPDATE_TC_OVF_vect TCC0_OVF_vect
 #define SERVO_STROBE_TC_OVF_vect TCC1_OVF_vect
+#define IR_DEBOUNCE_RTC_OVF_vect RTC_OVF_vect
 
 #define LED_PORT          PORTA
 #define MOTOR_ENABLE_PORT PORTD

@@ -40,4 +40,6 @@ static inline void led_display(uint8_t number) {
     led_display_right((number / 10) < 1 ? 0x10 : number / 10);
 }
 
+void clear_debounce_counter();
+
 #endif
