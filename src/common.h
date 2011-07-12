@@ -14,8 +14,7 @@
 #define LED_TC          TCD1
 #define IR_TC           TCD0
 #define SERVO_UPDATE_TC TCC0
-#define DASTARDLY_IR1_TC TCC0
-#define DASTARDLY_IR2_TC TCE0
+#define DASTARDLY_IR_TC TCE0
 #define SERVO_STROBE_TC TCC1
 #define IR_DEBOUNCE_RTC RTC
 
