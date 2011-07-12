@@ -5,24 +5,31 @@
 
 #include "debug.h"
 
-#define IR_PWM DASTARDLY_IR_TC.CCA
+#define IR1_PWM DASTARDLY_IR1_TC.CCA
+#define IR2_PWM DASTARDLY_IR2_TC.CCB
 
 void dastardly_init(){
     DEBUG("dastardly", "Started initialization.");
 
     // Set the pre-scaler to clk/1
-    DASTARDLY_IR_TC.CTRLA = 0x01;
+    DASTARDLY_IR1_TC.CTRLA = 0x01;
+    DASTARDLY_IR2_TC.CTRLA = 0x01;
     
+    // Set PD5 pin required for PWM to be output.
+    PORTD.DIRSET = 0x10;
+
     // Set PC0 pin required for PWM to be output.
     PORTC.DIRSET = 0x01;
 
     // Set pwm output to override the pins
     // and set to single slope PWM mode.
-    DASTARDLY_IR_TC.CTRLB = 0xF0 | 0x03;
+    DASTARDLY_IR1_TC.CTRLB = 0xF0 | 0x03;
+    DASTARDLY_IR2_TC.CTRLB = 0xF0 | 0x03;
 
     // Set the period of the output.
     // 8 kHz at 32 MHz clock = period of 4096 - 1 = 0x0999.
-    DASTARDLY_IR_TC.PER = 880;
+    DASTARDLY_IR1_TC.PER = 880;
+    DASTARDLY_IR2_TC.PER = 1100;
 
     dastardly_ir_start();
 
@@ -31,11 +38,13 @@ void dastardly_init(){
 
 void dastardly_ir_start(){
     //set 50% duty cycle
-    IR_PWM = 400;
+    IR1_PWM = 400;
+    IR2_PWM = 500;
 }
 
 void dastardly_ir_stop(){
     //set 0% duty cycle
-    IR_PWM = 0x0000;
+    IR1_PWM = 0x0000;
+    IR2_PWM = 0x0000;
 }
 
