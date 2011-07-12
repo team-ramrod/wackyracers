@@ -210,6 +210,7 @@ void chassis_set_speed(motor_speed_t speed) {
             "Changing speed to [%i].",
             speed
          );
+    led_display(abs(speed));
 
     while (!__motor_set_direction(speed > 0 ? FORWARD : REVERSE)) {
         // Do nothing

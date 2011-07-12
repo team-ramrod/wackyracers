@@ -158,7 +158,6 @@ ISR(IR_TC_OVF_vect) {
             __ir_callback(cmd);
             debouncing = true;
             clear_debounce_counter();
-            LED_TC.CNT = 0;
         } else {
             DEBUG("ir", "Ignored [%i] which translated to command [%i].", code, cmd);
         }
