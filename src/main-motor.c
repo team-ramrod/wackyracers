@@ -43,6 +43,9 @@ bool decrement_speed(motor_speed_t *speed) {
 }
 
 int main(int argc, char *argv[]) {
+
+    bool changed = true;
+    
     clock_init();
 
     uart_init();

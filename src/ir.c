@@ -110,10 +110,10 @@ ISR(IR_TC_OVF_vect) {
         counter_impulse_1 = 0;
 
         //if receving input
-        if ((counter_impulse_0 > 3) && (flag_rx == 1) && (counter_impulse_0 < 23)) {
+        if ((counter_impulse_0 > 3) && (flag_rx == 1) && (counter_impulse_0 < 20)) {
 
             //logical 1 received
-            if (counter_impulse_0 > 12)
+            if (counter_impulse_0 > 16)
             {
                 code |= (1 << counter_ik++);
             }
@@ -126,7 +126,7 @@ ISR(IR_TC_OVF_vect) {
     }
 
     //counting positive pulses
-    if ((impulse == 1) && (counter_impulse_1 < 50)){
+    if ((impulse == 1) && (counter_impulse_1 < 35)){
             counter_impulse_1++;
     }
 
