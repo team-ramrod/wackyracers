@@ -19,9 +19,9 @@ translation = {
   'q': CMD_ASSUME_CTRL,
   'w': CMD_FORWARD,
   'a': CMD_LEFT,
-  's': CMD_BACK,
+  'x': CMD_BACK,
   'd': CMD_RIGHT,
-  'x': CMD_STOP,
+  's': CMD_STOP,
   '[': CMD_CAM_OFF,
   ']': CMD_CAM_ON
 }
