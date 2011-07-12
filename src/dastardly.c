@@ -12,22 +12,26 @@ void dastardly_init(){
 
     // Set the pre-scaler to clk/1
     DASTARDLY_IR_TC.CTRLA = 0x01;
-
+    
     // Set PC0 pin required for PWM to be output.
     PORTC.DIRSET = 0x01;
 
+    // Set pwm output to override the pins
+    // and set to single slope PWM mode.
+    DASTARDLY_IR_TC.CTRLB = 0xF0 | 0x03;
+
     // Set the period of the output.
     // 8 kHz at 32 MHz clock = period of 4096 - 1 = 0x0999.
-    MOTOR_TC.PER = 0x0999;
+    DASTARDLY_IR_TC.PER = 880;
 
-    dastardly_ir_stop();
+    dastardly_ir_start();
 
     DEBUG("dastardly", "Finished initialization.");
 }
 
 void dastardly_ir_start(){
     //set 50% duty cycle
-    IR_PWM = 0x00FF;
+    IR_PWM = 400;
 }
 
 void dastardly_ir_stop(){
