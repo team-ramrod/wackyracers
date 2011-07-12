@@ -97,7 +97,7 @@ static void __set_speed(motor_direction_t direction, motor_speed_t speed) {
 }
 void chassis_init() {
     DEBUG("motor", "Started initialization.");
-    // Set the pre-scaler to 1
+    // Set the pre-scaler to clk/8
     MOTOR_TC.CTRLA = 0x04;
 
     // Set the pins required for PWM to be outputs.

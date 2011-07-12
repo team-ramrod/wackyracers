@@ -5,6 +5,7 @@
 #include "uart_comms.h"
 #include "led.h"
 #include "clock.h"
+#include "dastardly.h"
 
 #include <avr/interrupt.h>
 #include <util/atomic.h>
@@ -26,6 +27,7 @@ int main(int argc, char *argv[]) {
 
     led_init();
     uart_init();
+    dastardly_init();
 
     interrupt_init();
 
