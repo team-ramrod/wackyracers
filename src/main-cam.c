@@ -17,12 +17,11 @@ void ir_debounced() {
 }
 
 static int16_t buffer_read();
+static void buffer_clear();
 static void buffer_write(uint8_t);
 static void send_to_board();
 static void send_to_cam(uint8_t);
 void main_loop();
-static void bt_timeout_enable();
-static void bt_timeout_disable();
 
 int main(int argc, char *argv[]) {
     clock_init();
@@ -42,8 +41,8 @@ int main(int argc, char *argv[]) {
     BT_TIMEOUT_TC.CTRLA = 0x07;
 
     // Set the period of the interrupts.
-    // Period of 31250 = 31250 / 31250 = 1 Hz.
-    BT_TIMEOUT_TC.PER = 0x7A12;
+    // Period of 31250 = 31250 / 3125 = 10 Hz.
+    BT_TIMEOUT_TC.PER = 0x0C35;
 
     // Enable the interrupt at a low level.
     BT_TIMEOUT_TC.INTCTRLA = 0x01;
@@ -53,10 +52,18 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+static enum { FIRST, SECOND, THIRD } state = FIRST;
+static uint8_t count = 2,
+               full_count = 2;
+
+ISR(BT_TIMEOUT_TC_OVF_vect) {
+    buffer_clear();
+    state = FIRST;
+    count = 2;
+    full_count = 2;
+}
+
 void main_loop() {
-    static enum { FIRST, SECOND, THIRD } state = FIRST;
-    static uint8_t count = 2,
-                   full_count = 2;
     int16_t c;
 
     while(1) {
@@ -66,7 +73,9 @@ void main_loop() {
         switch (state) {
             case FIRST:
                 if (--count == 0) {
-                    bt_timeout_disable();
+                    // Disable the BT timeout
+                    BT_TIMEOUT_TC.INTCTRLA = 0x00;
+
                     if (c == 0) {
                         state = SECOND;
                         count = 2;
@@ -78,7 +87,9 @@ void main_loop() {
                         full_count = 2;
                     }
                 } else {
-                    bt_timeout_enable();
+                    // Enable the BT timeout
+                    BT_TIMEOUT_TC.CTRLFSET = 0x08;
+                    BT_TIMEOUT_TC.INTCTRLA = 0x01;
                 }
                 break;
             case SECOND:
@@ -170,16 +181,6 @@ static void send_to_cam(uint8_t count) {
     }
 }
 
-static void bt_timeout_enable() {
-    BT_TIMEOUT_TC.INTCTRLA = 0x01;
-    BT_TIMEOUT_TC.CNT = 0x0000;
-}
-
-static void bt_timeout_disable() {
-    BT_TIMEOUT_TC.INTCTRLA = 0x00;
-}
-
-ISR(BT_TIMEOUT_TC_OVF_vect) { buffer_clear(); }
 ISR(BADISR_vect) { led_display(0x09); }
 ISR(INTERRUPT_CAM) { putc(getc(stream_cam), stream_bt); }
 EMPTY_INTERRUPT( INTERRUPT_BT )
