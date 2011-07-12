@@ -21,6 +21,8 @@ static void buffer_write(uint8_t);
 static void send_to_board();
 static void send_to_cam(uint8_t);
 void main_loop();
+static void bt_timeout_enable();
+static void bt_timeout_disable();
 
 int main(int argc, char *argv[]) {
     clock_init();
@@ -31,8 +33,20 @@ int main(int argc, char *argv[]) {
 
     interrupt_init();
 
+    // Enable the camera
     PORTC.DIRSET = _BV(1);
     PORTC.OUTSET = _BV(1);
+
+    // Set the pre-scalar to 1024.
+    // CLK freq is now 32 MHz / 1024 = 31250 Hz.
+    BT_TIMEOUT_TC.CTRLA = 0x07;
+
+    // Set the period of the interrupts.
+    // Period of 31250 = 31250 / 31250 = 1 Hz.
+    BT_TIMEOUT_TC.PER = 0x7A12;
+
+    // Enable the interrupt at a low level.
+    BT_TIMEOUT_TC.INTCTRLA = 0x01;
 
     main_loop();
 
@@ -52,6 +66,7 @@ void main_loop() {
         switch (state) {
             case FIRST:
                 if (--count == 0) {
+                    bt_timeout_disable();
                     if (c == 0) {
                         state = SECOND;
                         count = 2;
@@ -62,6 +77,8 @@ void main_loop() {
                         count = 2;
                         full_count = 2;
                     }
+                } else {
+                    bt_timeout_enable();
                 }
                 break;
             case SECOND:
@@ -102,6 +119,13 @@ static void buffer_write(uint8_t val) {
         }
         buffer[write_position] = val;
         write_position = increment(write_position);
+    }
+}
+
+static void buffer_clear() {
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
+        read_position = 0;
+        write_position = 0;
     }
 }
 
@@ -146,6 +170,16 @@ static void send_to_cam(uint8_t count) {
     }
 }
 
+static void bt_timeout_enable() {
+    BT_TIMEOUT_TC.INTCTRLA = 0x01;
+    BT_TIMEOUT_TC.CNT = 0x0000;
+}
+
+static void bt_timeout_disable() {
+    BT_TIMEOUT_TC.INTCTRLA = 0x00;
+}
+
+ISR(BT_TIMEOUT_TC_OVF_vect) { buffer_clear(); }
 ISR(BADISR_vect) { led_display(0x09); }
 ISR(INTERRUPT_CAM) { putc(getc(stream_cam), stream_bt); }
 EMPTY_INTERRUPT( INTERRUPT_BT )
