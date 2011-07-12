@@ -101,6 +101,8 @@ class Client:
         self.camera_state = self.camera.next_()
         if self.camera_state == 'idle':
           print '...image transferred, saved to [' + current_filename + '].'
+        else:
+          print '\rTransferring: -(', '#'*int(self.camera_state), ' '*(100-int(self.camera_state)), ')-',
 
 if __name__ == '__main__':
   Client().run()

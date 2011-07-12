@@ -20,7 +20,7 @@ class Camera(object):
             self.image_buffer = self.get_block(self.address, self.chunksize, 
                 self.image_buffer)
             self.address += self.chunksize
-            return 'running'
+            return float(self.address) / self.chunksize
         else:
             self.outfile.write(self.image_buffer)
             self.outfile.close()
@@ -40,7 +40,7 @@ class Camera(object):
         
         self.filesize = self.get_filesize()
         
-        return 'taking'
+        return 0
 
     def reset(self):
         cmd = [0x56, 0x00, 0x26, 0x00]
