@@ -43,7 +43,8 @@ typedef enum {
     CMD_RIGHT       = 8,
     CMD_STOP        = 16,
     CMD_ASSUME_CTRL = 32,
-    CMD_RESET_CAM   = 64,
+    CMD_CAM_OFF     = 64,
+    CMD_CAM_ON      = 128,
 } cmd_t;
 
 #endif
