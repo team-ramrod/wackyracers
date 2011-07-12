@@ -32,7 +32,6 @@ class Client:
     while 1:
       if key_pressed():
         c = getc()
-        print 'key [' + c + '] pressed'
         if c == 'e' and self.camera_state == 'idle':
           self.camera_state = self.camera.start()
         else:
